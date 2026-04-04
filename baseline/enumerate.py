@@ -39,7 +39,7 @@ def solve_ip_exists(vars_dict, constraints, uconstrs):
     col_up = [float(vars_dict[n].upper) for n in var_names]
     highs.addVars(col_low, col_up)
     for i, n in enumerate(var_names):
-        highs.changeColName(i, n)
+        highs.passColName(i, n)
     for i in range(len(var_names)):
         highs.changeColIntegrality(i, hp.HighsVarType.kInteger)
 
@@ -64,7 +64,10 @@ def solve_ip_exists(vars_dict, constraints, uconstrs):
         row_idxs = [var_names.index(n) for n in uc.coeffs if n in vars_dict]
         row_vals = [float(uc.coeffs[n]) for n in uc.coeffs if n in vars_dict]
         if row_idxs:
-            highs.addRow(row_idxs, row_vals, -hp.kHighsInf, float(uc.rhs))
+            import numpy as np
+            highs.addRow(-hp.kHighsInf, float(uc.rhs), len(row_idxs),
+                        np.array(row_idxs, dtype=np.int64),
+                        np.array(row_vals, dtype=np.float64))
 
     try:
         status = highs.run()

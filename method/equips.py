@@ -30,15 +30,17 @@ from data.qrandomparity import (
 # Import highspy (HiGHS)
 try:
     import highspy as hp
+    import numpy as np
 except ImportError:
-    # Try common install locations
     for p in ['/dev/shm/pylibs', '/home/user/.local/lib/python3.12/site-packages']:
         if p not in sys.path:
             sys.path.insert(0, p)
     try:
         import highspy as hp
+        import numpy as np
     except ImportError:
         hp = None
+        np = None
 
 
 def compute_min_lhs(vars_dict: dict[str, Variable], coeffs: dict[str, int]) -> int:
@@ -67,56 +69,73 @@ def compute_violation_gap(constraint: Constraint, vars_dict: dict[str, Variable]
     for name, coeff in constraint.coeffs.items():
         fractions.append(Fraction(coeff, 1))
 
-    lcm = 1
+    lcm_val = 1
     for f in fractions:
         if f.denominator > 1:
-            lcm = lcm * f.denominator // gcd(lcm, f.denominator)
+            lcm_val = lcm_val * f.denominator // gcd(lcm_val, f.denominator)
 
-    return 1.0 / lcm if lcm > 1 else 1.0
+    return 1.0 / lcm_val if lcm_val > 1 else 1.0
 
 
-def solve_ip_feasible(vars_dict: dict[str, Variable],
-                      constraints: list[Constraint],
-                      universal_constraints: list[UniversalConstraint],
-                      objective: Optional[dict[str, int]] = None,
-                      sense: str = "min") -> Optional[dict[str, int]]:
+def build_and_solve_ip(vars_dict: dict[str, Variable],
+                       constraints: list[Constraint],
+                       universal_constraints: list[UniversalConstraint],
+                       objective: Optional[dict[str, int]] = None,
+                       sense: str = "min",
+                       extra_vars: Optional[dict] = None) -> Optional[dict]:
     """
-    Solve an existential IP: find x satisfying all constraints.
-    This is Problem (1) in the paper.
-    Returns a satisfying assignment or None if infeasible.
+    Build and solve an IP using the HiGHS Python API.
+
+    extra_vars: dict of name -> (lower, upper, integrality) for extra variables
+    Returns solution dict or None.
     """
-    if hp is None:
+    if hp is None or np is None:
         raise RuntimeError("highspy (HiGHS) not available")
-
-    n_vars = len(vars_dict)
-    var_names = list(vars_dict.keys())
 
     highs = hp.Highs()
     highs.setOptionValue("log_to_console", False)
     highs.setOptionValue("output_flag", False)
+    highs.setOptionValue("time_limit", 5.0)  # 5 second limit per IP solve
 
-    # Add variables
-    col_low = []
-    col_up = []
-    for name in var_names:
-        v = vars_dict[name]
-        col_low.append(float(v.lower))
-        col_up.append(float(v.upper))
-    highs.addVars(col_low, col_up)
-    for i, name in enumerate(var_names):
-        highs.changeColName(i, name)
+    var_names = list(vars_dict.keys())
+    n_vars = len(var_names)
 
-    # Mark all as integer
-    for i in range(len(var_names)):
-        highs.changeColIntegrality(i, hp.HighsVarType.kInteger)
+    # Add problem variables
+    if n_vars > 0:
+        col_low = np.array([float(vars_dict[name].lower) for name in var_names], dtype=np.float64)
+        col_up = np.array([float(vars_dict[name].upper) for name in var_names], dtype=np.float64)
+        status = highs.addVars(n_vars, col_low, col_up)
+        if status != hp.HighsStatus.kOk:
+            return None
 
-    # Add existential constraints using addRow (one row per constraint)
+        for i, name in enumerate(var_names):
+            highs.passColName(i, name)
+
+        # Mark as integer
+        for i in range(n_vars):
+            highs.changeColIntegrality(i, hp.HighsVarType.kInteger)
+
+    # Add extra variables (y, v, etc.)
+    extra_indices = {}
+    if extra_vars:
+        for name, (lo, hi, is_int) in extra_vars.items():
+            col_l = np.array([float(lo)], dtype=np.float64)
+            col_u = np.array([float(hi)], dtype=np.float64)
+            idx = highs.addVars(1, col_l, col_u)
+            if idx != hp.HighsStatus.kOk:
+                return None
+            n = highs.getNumCol() - 1
+            highs.passColName(n, name)
+            if is_int:
+                highs.changeColIntegrality(n, hp.HighsVarType.kInteger)
+            extra_indices[name] = n
+
+    # Add problem constraints
     for c in constraints:
         row_idxs = []
         row_vals = []
-        for name in var_names:
-            coeff = c.coeffs.get(name, 0)
-            if coeff != 0:
+        for name, coeff in c.coeffs.items():
+            if name in var_names:
                 row_idxs.append(var_names.index(name))
                 row_vals.append(float(coeff))
         if c.is_equality:
@@ -126,9 +145,11 @@ def solve_ip_feasible(vars_dict: dict[str, Variable],
             lower = -hp.kHighsInf
             upper = float(c.rhs)
         if row_idxs:
-            highs.addRow(row_idxs, row_vals, lower, upper)
+            highs.addRow(lower, upper, len(row_idxs),
+                        np.array(row_idxs, dtype=np.int64),
+                        np.array(row_vals, dtype=np.float64))
 
-    # Add universal constraints (uncertainty set)
+    # Add universal constraints
     for uc in universal_constraints:
         row_idxs = []
         row_vals = []
@@ -137,16 +158,18 @@ def solve_ip_feasible(vars_dict: dict[str, Variable],
                 row_idxs.append(var_names.index(name))
                 row_vals.append(float(coeff))
         if row_idxs:
-            highs.addRow(row_idxs, row_vals, -hp.kHighsInf, float(uc.rhs))
+            highs.addRow(-hp.kHighsInf, float(uc.rhs), len(row_idxs),
+                        np.array(row_idxs, dtype=np.int64),
+                        np.array(row_vals, dtype=np.float64))
 
     # Set objective
     if objective:
         for i, name in enumerate(var_names):
             highs.changeColCost(i, float(objective.get(name, 0)))
         if sense == "min":
-            highs.changeObjSense(hp.ObjSense.kMinimize)
+            highs.changeObjectiveSense(hp.ObjSense.kMinimize)
         else:
-            highs.changeObjSense(hp.ObjSense.kMaximize)
+            highs.changeObjectiveSense(hp.ObjSense.kMaximize)
 
     # Solve
     try:
@@ -154,22 +177,40 @@ def solve_ip_feasible(vars_dict: dict[str, Variable],
     except Exception:
         return None
 
-    if status[0] != hp.HighsStatus.kOk:
+    if status != hp.HighsStatus.kOk:
         return None
 
     model_status = highs.getModelStatus()
-    if model_status in (hp.HighsModelStatus.kOptimal,
-                        hp.HighsModelStatus.kFeasible,
-                        hp.HighsModelStatus.kMipSolution):
-        try:
-            sol = highs.getSolution()
-            result = {}
-            for i, name in enumerate(var_names):
-                result[name] = int(round(sol.col_value[i]))
-            return result
-        except Exception:
-            return None
-    return None
+    # Feasible statuses: kOptimal, kSolutionLimit, kModelEmpty
+    # kInfeasible / kUnboundedOrInfeasible mean no solution exists
+    if model_status not in (hp.HighsModelStatus.kOptimal,
+                           hp.HighsModelStatus.kSolutionLimit,
+                           hp.HighsModelStatus.kModelEmpty):
+        return None
+
+    # Try to get solution
+    try:
+        sol = highs.getSolution()
+    except Exception:
+        return None
+
+    # Check if solution is valid
+    if not sol.col_value:
+        return None
+
+    result = {}
+    for i, name in enumerate(var_names):
+        result[name] = int(round(sol.col_value[i]))
+    return result
+
+
+def solve_ip_feasible(vars_dict: dict[str, Variable],
+                      constraints: list[Constraint],
+                      universal_constraints: list[UniversalConstraint],
+                      objective: Optional[dict[str, int]] = None,
+                      sense: str = "min") -> Optional[dict[str, int]]:
+    """Find x satisfying all constraints. Problem (1) from paper."""
+    return build_and_solve_ip(vars_dict, constraints, universal_constraints, objective, sense)
 
 
 def solve_ip_violate_all(vars_dict: dict[str, Variable],
@@ -178,63 +219,60 @@ def solve_ip_violate_all(vars_dict: dict[str, Variable],
     """
     Find assignment x that VIOLATES all constraint systems.
     For universal quantifier case in wins1.
-    This is Problem (2) in the paper.
-
-    Returns an assignment that violates all constraints, or None.
+    This is Problem (2) from the paper.
     """
-    if hp is None:
+    if hp is None or np is None:
         raise RuntimeError("highspy (HiGHS) not available")
 
     n_vars = len(vars_dict)
     var_names = list(vars_dict.keys())
 
     # Compute L and r for each constraint
-    L = [compute_min_lhs(vars_dict, c.coeffs) for c in constraints]
+    L = [float(compute_min_lhs(vars_dict, c.coeffs)) for c in constraints]
     r = [compute_violation_gap(c, vars_dict) for c in constraints]
     n_cons = len(constraints)
 
+    # Extra variables: v, v_l, y_l
+    extra_vars = {
+        '_v': (1.0, 1.0, True),  # v must be 1
+    }
+    for l in range(n_cons):
+        extra_vars[f'_vl{l}'] = (0.0, 1.0, True)
+        extra_vars[f'_y{l}'] = (0.0, 1.0, True)
+
+    # Add constraints: call build_and_solve_ip and add constraints
     highs = hp.Highs()
     highs.setOptionValue("log_to_console", False)
     highs.setOptionValue("output_flag", False)
+    highs.setOptionValue("time_limit", 5.0)  # 5 second limit per IP solve
 
     # Add x variables
-    col_low = [float(vars_dict[name].lower) for name in var_names]
-    col_up = [float(vars_dict[name].upper) for name in var_names]
-    highs.addVars(col_low, col_up)
-    for i, name in enumerate(var_names):
-        highs.changeColName(i, name)
+    if n_vars > 0:
+        col_low = np.array([float(vars_dict[name].lower) for name in var_names], dtype=np.float64)
+        col_up = np.array([float(vars_dict[name].upper) for name in var_names], dtype=np.float64)
+        highs.addVars(n_vars, col_low, col_up)
+        for i, name in enumerate(var_names):
+            highs.passColName(i, name)
+        for i in range(n_vars):
+            highs.changeColIntegrality(i, hp.HighsVarType.kInteger)
 
-    # Mark as integer
-    for i in range(len(var_names)):
-        highs.changeColIntegrality(i, hp.HighsVarType.kInteger)
+    # Add extra variables
+    extra_indices = {}
+    for name, (lo, hi, is_int) in extra_vars.items():
+        col_l = np.array([float(lo)], dtype=np.float64)
+        col_u = np.array([float(hi)], dtype=np.float64)
+        idx = highs.addVars(1, col_l, col_u)
+        n = highs.getNumCol() - 1
+        highs.passColName(n, name)
+        if is_int:
+            highs.changeColIntegrality(n, hp.HighsVarType.kInteger)
+        extra_indices[name] = n
 
-    # Add v variable (must be 1 = all violated)
-    v_idx = highs.addVars([1.0], [1.0])[0]
-    highs.changeColName(v_idx, "_v")
-    highs.changeColIntegrality(v_idx, hp.HighsVarType.kInteger)
-
-    # Add v_l variables (one per constraint)
-    v_l_indices = []
-    for l in range(n_cons):
-        idx = highs.addVars([0.0], [1.0])[0]
-        highs.changeColName(idx, f"_vl{l}")
-        highs.changeColIntegrality(idx, hp.HighsVarType.kInteger)
-        v_l_indices.append(idx)
-
-    # Add y_j_l variables (one per constraint, to identify which is violated)
-    y_indices = {}
-    for l in range(n_cons):
-        idx = highs.addVars([0.0], [1.0])[0]
-        highs.changeColName(idx, f"_y{l}")
-        highs.changeColIntegrality(idx, hp.HighsVarType.kInteger)
-        y_indices[l] = idx
-
-    # Constraint (2a): -A_l*x - (L_l - b_l - r_l)*y >= -L_l
+    # Constraint (2a): -A_l*x - (L_l - b_l - r_l)*y_l >= -L_l
     for l, c in enumerate(constraints):
-        L_l = float(L[l])
-        rhs_adj = L_l - float(c.rhs) - float(r[l])
+        L_l = L[l]
+        rhs_adj = L_l - float(c.rhs) - r[l]
 
-        # Build row
         row_idxs = []
         row_vals = []
 
@@ -245,42 +283,50 @@ def solve_ip_violate_all(vars_dict: dict[str, Variable],
                 row_vals.append(float(-coeff))
 
         # -(L_l - b_l - r_l)*y_l
-        row_idxs.append(y_indices[l])
+        row_idxs.append(extra_indices[f'_y{l}'])
         row_vals.append(float(-rhs_adj))
 
-        # Constraint: -A*x - (L-b-r)*y >= -L
-        highs.addRow(row_idxs, row_vals, float(-L_l), hp.kHighsInf)
+        highs.addRow(float(-L_l), hp.kHighsInf, len(row_idxs),
+                    np.array(row_idxs, dtype=np.int64),
+                    np.array(row_vals, dtype=np.float64))
 
-    # Constraint (2b): v_l <= y_l  (v_l implies at least one violated)
+    # Constraint (2b): v_l <= y_l  (v_l - y_l <= 0)
     for l in range(n_cons):
-        # v_l <= y_l  <=>  v_l - y_l <= 0
-        highs.addRow([v_l_indices[l], y_indices[l]], [1.0, -1.0], -hp.kHighsInf, 0.0)
+        highs.addRow(-hp.kHighsInf, 0.0, 2,
+            np.array([extra_indices[f'_vl{l}'], extra_indices[f'_y{l}']], dtype=np.int64),
+            np.array([1.0, -1.0], dtype=np.float64))
 
-    # Constraint (2c): v <= v_l for all l
+    # Constraint (2c): v <= v_l  (v - v_l <= 0)
     for l in range(n_cons):
-        highs.addRow([v_idx, v_l_indices[l]], [1.0, -1.0], -hp.kHighsInf, 0.0)
+        highs.addRow(-hp.kHighsInf, 0.0, 2,
+            np.array([extra_indices['_v'], extra_indices[f'_vl{l}']], dtype=np.int64),
+            np.array([1.0, -1.0], dtype=np.float64))
 
-    # Constraint (2d): v >= 1
-    highs.addRow([v_idx], [1.0], 1.0, hp.kHighsInf)
+    # Constraint (2d): v >= 1  (v >= 1)
+    highs.addRow(1.0, hp.kHighsInf, 1,
+        np.array([extra_indices['_v']], dtype=np.int64),
+        np.array([1.0], dtype=np.float64))
 
     # Add universal constraints (2e)
     for uc in universal_constraints:
         row_idxs = []
         row_vals = []
         for name, coeff in uc.coeffs.items():
-            if name in var_names:
+            if name in vars_dict:
                 row_idxs.append(var_names.index(name))
                 row_vals.append(float(coeff))
         if row_idxs:
-            highs.addRow(row_idxs, row_vals, -hp.kHighsInf, float(uc.rhs))
+            highs.addRow(-hp.kHighsInf, float(uc.rhs), len(row_idxs),
+                        np.array(row_idxs, dtype=np.int64),
+                        np.array(row_vals, dtype=np.float64))
 
     # Objective: maximize v
-    highs.changeColCost(v_idx, 1.0)
-    for idx in v_l_indices:
-        highs.changeColCost(idx, 0.0)
-    for idx in y_indices.values():
-        highs.changeColCost(idx, 0.0)
-    highs.changeObjSense(hp.ObjSense.kMaximize)
+    for i in range(highs.getNumCol()):
+        if i == extra_indices['_v']:
+            highs.changeColCost(i, 1.0)
+        else:
+            highs.changeColCost(i, 0.0)
+    highs.changeObjectiveSense(hp.ObjSense.kMaximize)
 
     # Solve
     try:
@@ -288,23 +334,28 @@ def solve_ip_violate_all(vars_dict: dict[str, Variable],
     except Exception:
         return None
 
-    if status[0] != hp.HighsStatus.kOk:
+    if status != hp.HighsStatus.kOk:
         return None
 
     model_status = highs.getModelStatus()
-    if model_status in (hp.HighsModelStatus.kOptimal,
-                        hp.HighsModelStatus.kFeasible,
-                        hp.HighsModelStatus.kMipSolution):
-        try:
-            sol = highs.getSolution()
-            v_val = sol.col_value[v_idx]
-            if v_val >= 0.99:  # v = 1 means we found a violating assignment
-                result = {}
-                for i, name in enumerate(var_names):
-                    result[name] = int(round(sol.col_value[i]))
-                return result
-        except Exception:
-            pass
+    if model_status not in (hp.HighsModelStatus.kOptimal,
+                           hp.HighsModelStatus.kSolutionLimit):
+        return None
+
+    try:
+        sol = highs.getSolution()
+    except Exception:
+        return None
+
+    if not sol.col_value:
+        return None
+
+    v_val = sol.col_value[extra_indices['_v']]
+    if v_val >= 0.99:  # v = 1 means we found violating assignment
+        result = {}
+        for i, name in enumerate(var_names):
+            result[name] = int(round(sol.col_value[i]))
+        return result
     return None
 
 
@@ -328,7 +379,7 @@ def wins1(multigame: MultiGame) -> Optional[dict[str, int]]:
 
     if Q == 'E':
         return solve_ip_feasible(vars_dict, all_constraints,
-                               multigame.universal_constraints)
+                              multigame.universal_constraints)
     else:
         return solve_ip_violate_all(vars_dict, all_constraints,
                                    multigame.universal_constraints)
@@ -339,14 +390,22 @@ def extract_assignment(full_assignment: dict[str, int], var_names: list[str]) ->
     return {name: full_assignment[name] for name in var_names if name in full_assignment}
 
 
-def equips(multigame: MultiGame, depth: int = 0, max_depth: int = 200) -> Optional[dict[str, int]]:
+def equips(multigame: MultiGame, depth: int = 0, max_depth: int = 200,
+            timeout_s: float = float('inf'), elapsed_start: float = None) -> Optional[dict[str, int]]:
     """
     EQuIPS: Expansion-based QIP Solver (Algorithm 1 from the paper).
 
     Finds a winning move for the outer quantifier block in a multi-game.
     Uses CEGAR: iteratively solve abstractions, find counter-moves, refine.
     """
+    if elapsed_start is None:
+        elapsed_start = time.time()
+
     if depth > max_depth:
+        return None
+
+    # Check timeout
+    if time.time() - elapsed_start > timeout_s:
         return None
 
     # Line 1: If all subgames are quantifier-free, call wins1
@@ -372,8 +431,12 @@ def equips(multigame: MultiGame, depth: int = 0, max_depth: int = 200) -> Option
         if iteration > 5000:
             return None
 
+        # Check timeout inside CEGAR loop
+        if time.time() - elapsed_start > timeout_s:
+            return None
+
         # Line 4: Solve current abstraction
-        tau = equips(abstraction, depth + 1, max_depth)
+        tau = equips(abstraction, depth + 1, max_depth, timeout_s, elapsed_start)
         if tau is None:
             # Line 5: No winning move
             return None
@@ -399,15 +462,13 @@ def equips(multigame: MultiGame, depth: int = 0, max_depth: int = 200) -> Option
                     subgames=[Subgame(problem=reduced)],
                     universal_constraints=reduced.universal_constraints
                 )
-                mu = equips(sub_multigame, depth + 1, max_depth)
-                if mu is not None:
-                    # Found a counter-move — reduced.game is won by opponent of outer player
+                counter = equips(sub_multigame, depth + 1, max_depth, timeout_s, elapsed_start)
+                if counter is not None:
+                    # Found a counter-move — reduced game is won by opponent
                     lambda_val = l
                     break
             else:
-                # Quantifier-free after substitution — use wins1
-                # For existential subgame: check if exists assignment wins
-                # For universal subgame: check if forall player can violate
+                # Quantifier-free after substitution
                 subgame_multigame = MultiGame(
                     outer_quantifier=reduced.outer_quantifier(),
                     outer_vars=[],
@@ -416,7 +477,6 @@ def equips(multigame: MultiGame, depth: int = 0, max_depth: int = 200) -> Option
                 )
                 counter = wins1(subgame_multigame)
                 if counter is not None:
-                    # Counter-move found
                     lambda_val = l
                     break
 
@@ -462,7 +522,10 @@ def solve_qip(problem: QIPProblem, timeout_s: float = 30.0) -> dict:
             'runtime': time.time() - start
         }
 
-    # Build initial multi-game
+    # Build initial multi-game matching the paper's Algorithm 1.
+    # All variables are outer_vars; the CEGAR loop handles quantifier alternation
+    # through recursive counter-move checking (equips calls itself on reduced
+    # problems, and wins1 handles universal quantifier via solve_ip_violate_all).
     multigame = MultiGame(
         outer_quantifier=problem.outer_quantifier(),
         outer_vars=problem.variables,
@@ -470,10 +533,11 @@ def solve_qip(problem: QIPProblem, timeout_s: float = 30.0) -> dict:
         universal_constraints=problem.universal_constraints
     )
 
-    result = equips(multigame, depth=0, max_depth=200)
+    result = equips(multigame, depth=0, max_depth=200,
+                    timeout_s=timeout_s, elapsed_start=start)
 
     return {
-        'status': 'SAT' if result else 'UNSAT',
+        'status': 'SAT' if result is not None else 'UNSAT',
         'assignment': result,
         'runtime': time.time() - start
     }
@@ -492,11 +556,10 @@ def solve_qip_optimization(problem: QIPProblem, timeout_s: float = 60.0) -> dict
     obj_coeffs = problem.objective
 
     # Compute bounds using variable domains
-    lb = sum(coeff * (problem.var_dict()[name].lower if coeff >= 0
-                      else problem.var_dict()[name].upper)
+    vd = problem.var_dict()
+    lb = sum(coeff * (vd[name].lower if coeff >= 0 else vd[name].upper)
               for name, coeff in obj_coeffs.items())
-    ub = sum(coeff * (problem.var_dict()[name].upper if coeff >= 0
-                      else problem.var_dict()[name].lower)
+    ub = sum(coeff * (vd[name].upper if coeff >= 0 else vd[name].lower)
              for name, coeff in obj_coeffs.items())
 
     lower = min(lb, ub)
@@ -511,7 +574,7 @@ def solve_qip_optimization(problem: QIPProblem, timeout_s: float = 60.0) -> dict
         z = (lower + upper) // 2 if lower != upper else lower
         test_problem = problem.with_objective_bound(z)
         remaining = timeout_s - (time.time() - start)
-        result = solve_qip(test_problem, remaining)
+        result = solve_qip(test_problem, max(remaining, 0.1))
 
         if result['status'] == 'SAT':
             best_feasible = result['assignment']

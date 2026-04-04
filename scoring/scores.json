@@ -1,0 +1,64 @@
+{
+  "experiments": {
+    "qrandomparity_median_runtime": {
+      "description": "EQuIPS on QRandomParity benchmark (Table 1)",
+      "results": {
+        "equips_n10": {
+          "type": "proposed",
+          "median_runtime_s": 0.0023,
+          "instances_solved": 10
+        },
+        "equips_n20": {
+          "type": "proposed",
+          "median_runtime_s": 0.0043,
+          "instances_solved": 10
+        },
+        "equips_n30": {
+          "type": "proposed",
+          "median_runtime_s": 0.0064,
+          "instances_solved": 10
+        },
+        "equips_n50": {
+          "type": "proposed",
+          "median_runtime_s": 0.0107,
+          "instances_solved": 10
+        }
+      }
+    },
+    "qrandomparity_vs_search": {
+      "description": "EQuIPS vs search-based QIP solvers",
+      "results": {
+        "equips_n10": {
+          "type": "proposed",
+          "median_runtime_s": 0.0023,
+          "instances_solved": 10
+        },
+        "equips_n20": {
+          "type": "proposed",
+          "median_runtime_s": 0.0043,
+          "instances_solved": 10
+        },
+        "equips_n30": {
+          "type": "proposed",
+          "median_runtime_s": 0.0064,
+          "instances_solved": 10
+        },
+        "equips_n50": {
+          "type": "proposed",
+          "median_runtime_s": 0.0107,
+          "instances_solved": 10
+        }
+      }
+    },
+    "mcn_instances_solved": {
+      "description": "MCN instances not evaluated in this run",
+      "results": {
+        "equips": {
+          "type": "proposed",
+          "instances_solved": null,
+          "median_runtime_s": null
+        }
+      }
+    }
+  }
+}

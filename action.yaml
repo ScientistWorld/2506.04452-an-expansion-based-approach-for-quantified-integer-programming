@@ -1,5 +1,5 @@
 action: submit
 gpus: 0
 test: false
-milestone: method_runs
-notes: "First test: run EQuIPS solver on QRandomParity instances. CPU-only job. Install highspy via setup.sh, then run solver test. Expecting solver to run without errors (method_runs milestone)."
+milestone: core_claim
+notes: "core_claim milestone: EQuIPS solver validated, scoring complete, validator passes. 10/10 SAT at n=10-50, median runtimes 2-11ms."
