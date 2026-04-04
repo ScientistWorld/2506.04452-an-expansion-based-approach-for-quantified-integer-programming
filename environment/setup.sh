@@ -5,9 +5,6 @@
 # inside the container with a persistent overlay. Changes persist across
 # job submissions without rebuilding the container.
 #
-# Put ALL pip installs here, NOT in container.def.
-# Only use container.def for the base Docker image and apt-get packages.
-#
 # IMPORTANT: Install into the SYSTEM Python, not a virtual environment.
 # The overlay may be recreated on container rebuilds — a venv inside
 # it will be lost and all subsequent jobs will fail.
@@ -16,4 +13,6 @@
 
 set -e
 
-# uv pip install --system <packages>
+# Install highspy (HiGHS Python bindings) — open-source IP/MIP solver
+# HiGHS is the IP solver backend used by EQuIPS
+uv pip install --system highspy numpy

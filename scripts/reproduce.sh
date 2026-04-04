@@ -10,7 +10,7 @@
 #   - Data and models are downloaded (via scripts/download.sh)
 #   - Working directory is /home/user
 #
-# This is the "gold standard" reproduction — 
+# This is the "gold standard" reproduction —
 # You do not need to run this, but keep this in good shape
 # so other agents can easily run a full loop of reproduction and get the paper's numbers.
 
@@ -18,7 +18,13 @@ set -e
 
 cd /home/user
 
-# TODO: implement full reproduction pipeline
-# e.g.:
-#   bash scripts/baseline.sh
-#   bash scripts/method.sh
+# Set PYTHONPATH for highspy
+if [ -d "/dev/shm/pylibs" ]; then
+    export PYTHONPATH="/dev/shm/pylibs:$PYTHONPATH"
+fi
+
+# Run the method
+bash scripts/method.sh
+
+# Run evaluation
+bash scripts/evaluate.sh

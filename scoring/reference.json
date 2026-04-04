@@ -1,0 +1,64 @@
+{
+  "experiments": {
+    "qrandomparity_median_runtime": {
+      "description": "QRandomParity median runtime comparison (Table 1 in paper). EQuIPS (proposed) vs QFUNcms (baseline QBF expansion solver).",
+      "weight": 0.5,
+      "primary_metric": "median_runtime_s",
+      "metrics": {
+        "median_runtime_s": {"higher_is_better": false, "coefficient": -1.0},
+        "instances_solved": {"higher_is_better": true, "coefficient": 0.5}
+      },
+      "results": {
+        "equips_n100":   {"type": "proposed",  "median_runtime_s": 0.06,  "instances_solved": 100},
+        "equips_n200":   {"type": "proposed",  "median_runtime_s": 0.18,  "instances_solved": 100},
+        "equips_n300":   {"type": "proposed",  "median_runtime_s": 0.37,  "instances_solved": 100},
+        "equips_n400":   {"type": "proposed",  "median_runtime_s": 0.68,  "instances_solved": 100},
+        "equips_n500":   {"type": "proposed",  "median_runtime_s": 0.99,  "instances_solved": 100},
+        "equips_n600":   {"type": "proposed",  "median_runtime_s": 1.31,  "instances_solved": 100},
+        "equips_n700":   {"type": "proposed",  "median_runtime_s": 1.72,  "instances_solved": 100},
+        "equips_n800":   {"type": "proposed",  "median_runtime_s": 2.13,  "instances_solved": 100},
+        "equips_n900":   {"type": "proposed",  "median_runtime_s": 2.64,  "instances_solved": 100},
+        "equips_n1000":  {"type": "proposed",  "median_runtime_s": 3.44,  "instances_solved": 90},
+        "qfuncms_n100":  {"type": "baseline",  "median_runtime_s": 1.67,  "instances_solved": 100},
+        "qfuncms_n200":  {"type": "baseline",  "median_runtime_s": 2.21,  "instances_solved": 100},
+        "qfuncms_n300":  {"type": "baseline",  "median_runtime_s": 2.09,  "instances_solved": 100},
+        "qfuncms_n400":  {"type": "baseline",  "median_runtime_s": 2.18,  "instances_solved": 100},
+        "qfuncms_n500":  {"type": "baseline",  "median_runtime_s": 2.37,  "instances_solved": 100},
+        "qfuncms_n600":  {"type": "baseline",  "median_runtime_s": 2.13,  "instances_solved": 99},
+        "qfuncms_n700":  {"type": "baseline",  "median_runtime_s": 2.51,  "instances_solved": 98},
+        "qfuncms_n800":  {"type": "baseline",  "median_runtime_s": 2.22,  "instances_solved": 97},
+        "qfuncms_n900":  {"type": "baseline",  "median_runtime_s": 3.04,  "instances_solved": 96},
+        "qfuncms_n1000": {"type": "baseline",  "median_runtime_s": null,  "instances_solved": 0}
+      }
+    },
+    "mcn_instances_solved": {
+      "description": "Multilevel Critical Node (MCN) instances solved within 2-hour timeout. EQuIPS vs search-based Yasol and column-row generation baseline.",
+      "weight": 0.3,
+      "primary_metric": "instances_solved",
+      "metrics": {
+        "instances_solved": {"higher_is_better": true, "coefficient": 1.0},
+        "median_runtime_s": {"higher_is_better": false, "coefficient": -0.3}
+      },
+      "results": {
+        "equips": {"type": "proposed",  "instances_solved": 465, "median_runtime_s": 83.8},
+        "yasol":  {"type": "baseline",  "instances_solved": 431, "median_runtime_s": 247.8},
+        "mcn_cr": {"type": "baseline",  "instances_solved": 475, "median_runtime_s": null}
+      }
+    },
+    "qrandomparity_vs_search": {
+      "description": "QRandomParity: expansion-based EQuIPS vs search-based methods. EQuIPS vastly outperforms Yasol/DepQBF/z3 (they solve 0 instances at n=100).",
+      "weight": 0.2,
+      "primary_metric": "median_runtime_s",
+      "metrics": {
+        "median_runtime_s": {"higher_is_better": false, "coefficient": -1.0},
+        "instances_solved": {"higher_is_better": true, "coefficient": 0.5}
+      },
+      "results": {
+        "equips":   {"type": "proposed",  "median_runtime_s": 0.06,  "instances_solved": 100},
+        "yasol":    {"type": "baseline",  "median_runtime_s": null,  "instances_solved": 0},
+        "depqbf":   {"type": "baseline",  "median_runtime_s": null,  "instances_solved": 0},
+        "z3_solver": {"type": "baseline", "median_runtime_s": null,  "instances_solved": 0}
+      }
+    }
+  }
+}

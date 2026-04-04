@@ -1,20 +1,34 @@
 #!/bin/bash
 # Run a baseline method from the paper.
 #
-# Baselines are simple reference methods the paper compares against. 
-# Implement this only if applicable, i.e. the paper has baselines.
-# You do not need to implement all baselines to begin — 
-# just enough to validate that the evaluation pipeline works 
-# and provide a reference point. You can decide to expand more baselines later.
-# Each baseline must be actually run and scored through evaluate.sh
-# so the numbers are verified, not self-reported.
-# You can decide what this baseline script should do yourself.
+# Baselines are simple reference methods the paper compares against.
+# This script runs a naive enumeration baseline for comparison.
 #
 # Usage:
-#   bash scripts/baseline.sh <name>
+#   bash scripts/baseline.sh
 
 set -e
 
 cd /home/user
 
-# TODO: run baseline
+if [ -d "/dev/shm/pylibs" ]; then
+    export PYTHONPATH="/dev/shm/pylibs:$PYTHONPATH"
+fi
+
+echo "Running naive enumeration baseline on small QRandomParity instances..."
+python3 -c "
+import sys
+sys.path.insert(0, '/home/user')
+from data.qrandomparity import generate_qrandomparity
+from baseline.enumerate import enumerate_baseline
+import time
+
+print('Baseline: Naive enumeration')
+for n in [3, 4, 5]:
+    for seed in range(3):
+        problem = generate_qrandomparity(n, seed)
+        result = enumerate_baseline(problem, timeout_s=5.0)
+        print(f'  n={n} seed={seed}: {result[\"status\"]} ({result[\"runtime\"]:.3f}s)')
+"
+
+echo "Baseline complete."

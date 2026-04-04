@@ -1,7 +1,5 @@
 #!/bin/bash
-# Run the paper's proposed method.
-#
-# This script trains/runs the paper's method using code in method/.
+# Run the paper's proposed method (EQuIPS).
 #
 # Usage:
 #   bash scripts/method.sh
@@ -10,5 +8,10 @@ set -e
 
 cd /home/user
 
-# TODO: run the paper's method
-# TODO: call scripts/evaluate.sh to score
+# Set PYTHONPATH to find highspy
+if [ -d "/dev/shm/pylibs" ]; then
+    export PYTHONPATH="/dev/shm/pylibs:$PYTHONPATH"
+fi
+
+# Run EQuIPS on QRandomParity benchmark
+python3 scripts/test_equips.py

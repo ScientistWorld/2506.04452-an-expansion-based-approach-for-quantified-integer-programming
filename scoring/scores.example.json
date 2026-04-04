@@ -1,15 +1,17 @@
 {
   "experiments": {
-    "imagenet_classification": {
+    "qrandomparity_median_runtime": {
+      "description": "EQuIPS on QRandomParity benchmark (Table 1)",
       "results": {
-        "resnet50":   {"top1_accuracy": 75.8, "top5_accuracy": 92.7, "param_count_M": 25.6},
-        "our_method": {"top1_accuracy": 82.1, "top5_accuracy": 95.0, "param_count_M": 25.6}
+        "equips_n10": {"type": "proposed", "median_runtime_s": 0.05, "instances_solved": 10},
+        "equips_n20": {"type": "proposed", "median_runtime_s": 0.15, "instances_solved": 10},
+        "qfuncms_n10": {"type": "baseline", "median_runtime_s": 1.5, "instances_solved": 10}
       }
     },
-    "ablation_key_component": {
+    "mcn_instances_solved": {
+      "description": "MCN instances (not evaluated here)",
       "results": {
-        "our_method":           {"top1_accuracy": 81.9, "param_count_M": 25.6},
-        "our_method_no_module": {"top1_accuracy": 78.3, "param_count_M": 24.1}
+        "equips": {"type": "proposed", "instances_solved": 465, "median_runtime_s": 83.8}
       }
     }
   }
