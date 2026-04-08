@@ -213,6 +213,10 @@ The scientist should focus on improving EQuIPS's runtime and number of solved in
 - **Milestone**: `core_claim` | **Status**: error
 - **Working time**: 5m | **GPU**: 0.0h
 
+### Iteration 2: glm-5.1
+- **Milestone**: `core_claim` | **Status**: error
+- **Working time**: 5m | **GPU**: 0.0h
+
 
 ---
 
