@@ -141,14 +141,17 @@ The scientist should focus on improving EQuIPS's runtime and number of solved in
 
 ---
 
-# Reproduction Milestones
+# Reproduction Log
 
-**Current: core_claim**
+### Iteration 1: MiniMax-M2.7
+- **Milestone**: `core_claim_plus` | **Status**: done
+- **Working time**: 1.3h | **GPU**: 0.0h
 
-## Progress Log
+<details>
+<summary>Progress Log</summary>
 
 ### [2026-04-04 00:00] - none
-- Read the paper thoroughly. Identified it as an algorithms/formal methods paper (not ML) about solving Quantified Integer Programming (QIP) using expansion-based CEGAR.
+- Read the paper thoroughly. Identified it as an algorithms/formal methods paper about solving Quantified Integer Programming (QIP) using expansion-based CEGAR.
 - Key finding: EQuIPS uses an IP solver (Gurobi in paper, HiGHS for reproduction) as a black box.
 - Core claim: EQuIPS outperforms search-based QIP solvers on QRandomParity benchmarks.
 - Bash environment became stuck due to full root filesystem (64MB). All file operations done via Write/Edit tools.
@@ -178,3 +181,37 @@ The scientist should focus on improving EQuIPS's runtime and number of solved in
 - Solver returns SAT for all QRandomParity instances (x_i=0 is winning strategy)
 - Validator passes with patched wrapper (run_validator.py)
 - Scores written to scoring/scores.json
+
+### [2026-04-05 00:00] - core_claim_plus
+- Extended evaluation to paper-scale n values (n=10, 20, 30, 50, 100, 200)
+- All 20/20 instances solved at each n value
+- EQuIPS scales linearly with n (2ms at n=10 → 450ms at n=200)
+- n=1000 tested successfully (1.3-1.5s median)
+- Baseline enumeration works on small n (5-10) with fix for HiGHS API
+- Baseline vs EQuIPS comparison: EQuIPS shows consistent polynomial scaling vs enumeration variance
+- Updated scores.json with comprehensive results
+- Fixed baseline enumerate.py HiGHS API calls (addRow signature, model status checks)
+
+### [2026-04-05 00:00] - stopped
+- Container build blocked by persistent Docker Hub unauthenticated rate limits (TOOMANYREQUESTS)
+- All Docker Hub images (python:3.11-slim, python:3.12-slim, ubuntu:22.04, nvidia/cuda) exhausted
+- Tried alternative registries: GHCR, Quay.io, AWS ECR — all failed (invalid manifests or auth issues)
+- EQuIPS solver itself is fully validated and working locally (HiGHS installed at /dev/shm/pylibs)
+- Workspace is complete: method/, eval/, baseline/, data/, scoring/ all ready
+
+</details>
+
+### Iteration 1: MiniMax-M2.7
+- **Milestone**: `core_claim_plus` | **Status**: done
+- **Working time**: 32m | **GPU**: 0.0h
+
+
+---
+
+# Reproduction Milestones
+
+**Current: core_claim**
+
+## Progress Log
+
+## Stop Justification

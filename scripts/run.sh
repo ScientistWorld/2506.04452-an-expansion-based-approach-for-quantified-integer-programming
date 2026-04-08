@@ -12,35 +12,34 @@ set -e
 
 cd /home/user
 
-# Set PYTHONPATH to find highspy
-# Try multiple possible locations
-export PYTHONPATH="/dev/shm/pylibs:$PYTHONPATH"
-export PYTHONPATH="$HOME/.local/lib/python3.12/site-packages:$PYTHONPATH"
-export PYTHONPATH="/usr/local/lib/python3.12/dist-packages:$PYTHONPATH"
+# Set PYTHONPATH to find highspy (installed via container.def/setup.sh)
+export PYTHONPATH="/home/user:$PYTHONPATH"
 
 echo "=== EQuIPS Evaluation ==="
 echo "Python: $(python3 --version)"
 echo "PYTHONPATH: $PYTHONPATH"
 
 # Test if highspy is importable
-python3 -c "import highspy; print(f'HiGHS version: {highspy.__version__}')" 2>&1 || echo "highspy not found, checking other locations..."
-for p in /dev/shm/pylibs $HOME/.local/lib/python3.12/site-packages /usr/local/lib/python3.12/dist-packages; do
-    if [ -d "$p" ]; then
-        echo "  Checking $p: $(ls $p | grep -i highspy | head -3)"
-    fi
-done
-
-# Try to install if not found
-if ! python3 -c "import highspy" 2>/dev/null; then
-    echo "Installing highspy..."
-    pip install highspy numpy --user --quiet 2>&1 || echo "pip install failed"
+if python3 -c "import highspy; h = highspy.Highs(); print('HiGHS works')" 2>&1; then
+    echo "HiGHS is available"
+else
+    echo "HiGHS not found, trying to install..."
+    python3 -m pip install --no-cache-dir highspy numpy 2>/dev/null || \
+    pip3 install --no-cache-dir highspy numpy 2>/dev/null || true
 fi
 
-# Run the solver test
+# Run comprehensive evaluation with paper-scale n values
 echo ""
-echo "=== Running EQuIPS Test ==="
-python3 run_solver_test.py
+echo "=== Running Comprehensive Evaluation ==="
+python3 eval/evaluate.py \
+    --n-values 10 20 30 50 100 200 \
+    --num-instances 20 \
+    --timeout 120.0 \
+    --seed 42 \
+    --scores-output scoring/scores.json
 
 echo ""
-echo "=== Running Full Evaluation ==="
-bash scripts/evaluate.sh
+echo "=== Comparison with Paper ==="
+echo "Paper EQuIPS n=100: median=0.06s, solved=100/100"
+echo "Reproduced EQuIPS n=100: see scoring/scores.json"
+echo "Evaluation complete. Results in scoring/scores.json"

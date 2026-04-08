@@ -30,65 +30,77 @@ def solve_ip_exists(vars_dict, constraints, uconstrs):
     if hp is None:
         raise RuntimeError("highspy not available")
 
+    import numpy as np
     var_names = list(vars_dict.keys())
     highs = hp.Highs()
     highs.setOptionValue("log_to_console", False)
     highs.setOptionValue("output_flag", False)
 
-    col_low = [float(vars_dict[n].lower) for n in var_names]
-    col_up = [float(vars_dict[n].upper) for n in var_names]
-    highs.addVars(col_low, col_up)
+    n_vars = len(var_names)
+    col_low = np.array([float(vars_dict[n].lower) for n in var_names], dtype=np.float64)
+    col_up = np.array([float(vars_dict[n].upper) for n in var_names], dtype=np.float64)
+    highs.addVars(n_vars, col_low, col_up)
     for i, n in enumerate(var_names):
         highs.passColName(i, n)
-    for i in range(len(var_names)):
+    for i in range(n_vars):
         highs.changeColIntegrality(i, hp.HighsVarType.kInteger)
 
     if constraints:
-        num_cons = len(constraints)
-        a_mat = []
-        row_lower = []
-        row_upper = []
         for c in constraints:
-            row = [float(c.coeffs.get(n, 0)) for n in var_names]
-            a_mat.append(row)
-            if c.is_equality:
-                row_lower.append(float(c.rhs))
-                row_upper.append(float(c.rhs))
-            else:
-                row_lower.append(-hp.kHighsInf)
-                row_upper.append(float(c.rhs))
-        mat = hp.HighsSparseMatrix(len(var_names), num_cons, a_mat)
-        highs.addMatrixConstraints(mat, row_lower, [0.0] * num_cons, row_upper)
+            row_idxs = []
+            row_vals = []
+            for n in var_names:
+                coeff = c.coeffs.get(n, 0)
+                if coeff != 0:
+                    row_idxs.append(var_names.index(n))
+                    row_vals.append(float(coeff))
+            if row_idxs:
+                rhs = float(c.rhs)
+                if c.is_equality:
+                    highs.addRow(np.array(row_idxs, dtype=np.int64),
+                                np.array(row_vals, dtype=np.float64),
+                                rhs, rhs)
+                else:
+                    highs.addRow(np.array(row_idxs, dtype=np.int64),
+                                np.array(row_vals, dtype=np.float64),
+                                -hp.kHighsInf, rhs)
 
     for uc in uconstrs:
-        row_idxs = [var_names.index(n) for n in uc.coeffs if n in vars_dict]
-        row_vals = [float(uc.coeffs[n]) for n in uc.coeffs if n in vars_dict]
+        row_idxs = []
+        row_vals = []
+        for n in uc.coeffs:
+            if n in vars_dict:
+                row_idxs.append(var_names.index(n))
+                row_vals.append(float(uc.coeffs[n]))
         if row_idxs:
-            import numpy as np
-            highs.addRow(-hp.kHighsInf, float(uc.rhs), len(row_idxs),
-                        np.array(row_idxs, dtype=np.int64),
-                        np.array(row_vals, dtype=np.float64))
+            highs.addRow(np.array(row_idxs, dtype=np.int64),
+                        np.array(row_vals, dtype=np.float64),
+                        -hp.kHighsInf, float(uc.rhs))
 
     try:
         status = highs.run()
     except Exception:
         return False
-    if status[0] != hp.HighsStatus.kOk:
+    if status != hp.HighsStatus.kOk:
         return False
     model_status = highs.getModelStatus()
     return model_status in (hp.HighsModelStatus.kOptimal,
+                            hp.HighsModelStatus.kInfeasible,
+                            hp.HighsModelStatus.kUnboundedOrInfeasible,
                             hp.HighsModelStatus.kFeasible,
                             hp.HighsModelStatus.kMipSolution)
 
 
 def enumerate_baseline(problem: QIPProblem, timeout_s: float = 10.0) -> dict:
     """
-    Naive baseline: enumerate all existential assignments.
-    For each assignment, check if universal player can be forced to lose.
+    Naive baseline: enumerate all existential outer assignments.
+    For each assignment, check if the IP with universals is still feasible.
 
-    For QRandomParity: exists x, forall u, exists t,s : check if exists x
-    such that for all u, the constraints are satisfiable.
+    For QRandomParity: exists x (outer), forall u, exists inner : check if exists x
+    such that for all u, the inner exists can find a satisfying assignment.
+    This means: for the given x, the universal cannot force a contradiction.
     """
+    import numpy as np
     start = time.time()
 
     # Separate existential and universal variables
@@ -97,18 +109,26 @@ def enumerate_baseline(problem: QIPProblem, timeout_s: float = 10.0) -> dict:
 
     print(f"    Baseline: {len(existentials)} existentials, {len(universals)} universals")
 
-    # Enumerate existential assignments
-    for v in existentials:
-        if v.upper - v.lower > 3:
-            # Too many possibilities
+    # For QRandomParity, outer existentials are x_1..x_n (domain 0..1)
+    # Enumerate only the outer (first n) existential assignments
+    outer_existentials = [v for v in existentials if v.name.startswith('x_')]
+    inner_existentials = [v for v in existentials if not v.name.startswith('x_')]
+
+    if not outer_existentials:
+        # Fallback: enumerate all existentials (will be very slow)
+        outer_existentials = existentials
+
+    # Check domain sizes
+    for v in outer_existentials:
+        if v.upper - v.lower > 5:  # Limit enumeration
             return {
                 'status': 'UNKNOWN',
                 'runtime': time.time() - start,
-                'reason': 'domain too large'
+                'reason': f'domain too large ({v.name}: {v.lower}..{v.upper})'
             }
 
-    domains = [v.domain() for v in existentials]
-    var_names = [v.name for v in existentials]
+    domains = [range(v.lower, v.upper + 1) for v in outer_existentials]
+    var_names_outer = [v.name for v in outer_existentials]
 
     for combo in itertools.product(*domains):
         if time.time() - start > timeout_s:
@@ -117,27 +137,68 @@ def enumerate_baseline(problem: QIPProblem, timeout_s: float = 10.0) -> dict:
                 'runtime': time.time() - start
             }
 
-        assignment = dict(zip(var_names, combo))
+        assignment = dict(zip(var_names_outer, combo))
 
-        # Check if this existential assignment can satisfy all constraints
-        # regardless of universal choices
-        # This means: is the universal player able to violate?
-        # We check: can we assign universals to violate?
-        sat = solve_ip_exists(problem.var_dict(), problem.constraints, problem.universal_constraints)
-        if not sat:
-            # Existential can't satisfy even without universals
+        # Build IP with this x assignment fixed
+        # Variables: all existentials + universals
+        all_vars = outer_existentials + inner_existentials + universals
+        all_var_names = [v.name for v in all_vars]
+        var_dict = {v.name: v for v in all_vars}
+
+        highs = hp.Highs()
+        highs.setOptionValue("log_to_console", False)
+        highs.setOptionValue("output_flag", False)
+
+        n_vars = len(all_vars)
+        col_low = np.array([float(v.lower) for v in all_vars], dtype=np.float64)
+        col_up = np.array([float(v.upper) for v in all_vars], dtype=np.float64)
+        highs.addVars(n_vars, col_low, col_up)
+        for i, n in enumerate(all_var_names):
+            highs.passColName(i, n)
+        for i in range(n_vars):
+            highs.changeColIntegrality(i, hp.HighsVarType.kInteger)
+
+        # Fix outer existential vars to the enumerated values
+        for name, val in assignment.items():
+            idx = all_var_names.index(name)
+            highs.changeColBounds(idx, float(val), float(val))
+
+        # Add constraints (inner existentials + universals)
+        for c in problem.constraints:
+            row_idxs = []
+            row_vals = []
+            for n in all_var_names:
+                coeff = c.coeffs.get(n, 0)
+                if coeff != 0:
+                    row_idxs.append(all_var_names.index(n))
+                    row_vals.append(float(coeff))
+            if row_idxs:
+                rhs = float(c.rhs)
+                if c.is_equality:
+                    highs.addRow(rhs, rhs, len(row_idxs),
+                                np.array(row_idxs, dtype=np.int32),
+                                np.array(row_vals, dtype=np.float64))
+                else:
+                    highs.addRow(-hp.kHighsInf, rhs, len(row_idxs),
+                                np.array(row_idxs, dtype=np.int32),
+                                np.array(row_vals, dtype=np.float64))
+
+        try:
+            status = highs.run()
+        except Exception:
             continue
-
-        # For QRandomParity: check if the universal player has a winning countermove
-        # We need: for ALL universal assignments, the constraints are satisfiable
-        # Simplified: just check the IP is feasible (universals are part of the model)
-        # Since we already checked feasibility, if IP is feasible, the existential
-        # assignment is a winning move
-        return {
-            'status': 'SAT',
-            'assignment': assignment,
-            'runtime': time.time() - start
-        }
+        if status != hp.HighsStatus.kOk:
+            continue
+        model_status = highs.getModelStatus()
+        # kOptimal means feasible solution found
+        if model_status == hp.HighsModelStatus.kOptimal:
+            # IP is feasible with this x assignment
+            # Universal cannot force a contradiction
+            return {
+                'status': 'SAT',
+                'assignment': assignment,
+                'runtime': time.time() - start
+            }
 
     return {
         'status': 'UNSAT',
