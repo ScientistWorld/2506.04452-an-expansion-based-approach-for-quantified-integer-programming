@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: true
 milestone: method_runs
-notes: "Final verification found missing trustworthy scored results; run the repaired QRandomParity validation on CPU test nodes to regenerate scoring/scores.json and determine whether core_claim is actually supported."
+notes: "Retry CPU test submission after transient MCR blob-stream cancellation; environment unchanged, goal remains to regenerate trustworthy QRandomParity scores and verify whether core_claim is supported."
