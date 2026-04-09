@@ -9,9 +9,9 @@
 # Python packages (torch, transformers, etc.) go in setup.sh, NOT here.
 # Only OS-level packages (apt-get) belong in %post.
 
-# --- Base image (GCR mirror — bypasses Docker Hub rate limits) ---
+# --- Base image (GCR mirror Ubuntu) ---
 Bootstrap: docker
-From: mirror.gcr.io/library/python:3.11-slim
+From: mirror.gcr.io/library/ubuntu:22.04
 
 %files
     # data/train.csv /home/user/data/train.csv
@@ -21,9 +21,9 @@ From: mirror.gcr.io/library/python:3.11-slim
     # test_initial_state.py /home/user/test_initial_state.py
 
 %post
-    # python:3.11-slim has Python — install basic tools only
+    # Ubuntu — install Python and basic tools
     apt-get update && apt-get install -y --no-install-recommends \
-        python3-pip nano vim-tiny less curl wget git && \
+        python3 python3-pip python3-dev nano vim-tiny less curl wget git && \
     ln -sf /usr/bin/vim.tiny /usr/bin/vim && \
     rm -rf /var/lib/apt/lists/*
 
