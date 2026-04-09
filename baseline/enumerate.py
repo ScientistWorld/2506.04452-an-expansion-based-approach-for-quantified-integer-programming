@@ -57,13 +57,13 @@ def solve_ip_exists(vars_dict, constraints, uconstrs):
             if row_idxs:
                 rhs = float(c.rhs)
                 if c.is_equality:
-                    highs.addRow(np.array(row_idxs, dtype=np.int64),
-                                np.array(row_vals, dtype=np.float64),
-                                rhs, rhs)
+                    highs.addRow(rhs, rhs, len(row_idxs),
+                                np.array(row_idxs, dtype=np.int64),
+                                np.array(row_vals, dtype=np.float64))
                 else:
-                    highs.addRow(np.array(row_idxs, dtype=np.int64),
-                                np.array(row_vals, dtype=np.float64),
-                                -hp.kHighsInf, rhs)
+                    highs.addRow(-hp.kHighsInf, rhs, len(row_idxs),
+                                np.array(row_idxs, dtype=np.int64),
+                                np.array(row_vals, dtype=np.float64))
 
     for uc in uconstrs:
         row_idxs = []
@@ -73,9 +73,9 @@ def solve_ip_exists(vars_dict, constraints, uconstrs):
                 row_idxs.append(var_names.index(n))
                 row_vals.append(float(uc.coeffs[n]))
         if row_idxs:
-            highs.addRow(np.array(row_idxs, dtype=np.int64),
-                        np.array(row_vals, dtype=np.float64),
-                        -hp.kHighsInf, float(uc.rhs))
+            highs.addRow(-hp.kHighsInf, float(uc.rhs), len(row_idxs),
+                        np.array(row_idxs, dtype=np.int64),
+                        np.array(row_vals, dtype=np.float64))
 
     try:
         status = highs.run()
@@ -109,10 +109,11 @@ def enumerate_baseline(problem: QIPProblem, timeout_s: float = 10.0) -> dict:
 
     print(f"    Baseline: {len(existentials)} existentials, {len(universals)} universals")
 
-    # For QRandomParity, outer existentials are x_1..x_n (domain 0..1)
-    # Enumerate only the outer (first n) existential assignments
-    outer_existentials = [v for v in existentials if v.name.startswith('x_')]
-    inner_existentials = [v for v in existentials if not v.name.startswith('x_')]
+    # For QRandomParity, outer existentials are x_i at level 1 (domain 0..1)
+    # Enumerate only the outer (level 1) existential assignments
+    # Fix: variables are named 'x1', 'x2', etc. (no underscore) and level 1
+    outer_existentials = [v for v in existentials if v.name.startswith('x') and v.level == 1]
+    inner_existentials = [v for v in existentials if not (v.name.startswith('x') and v.level == 1)]
 
     if not outer_existentials:
         # Fallback: enumerate all existentials (will be very slow)
@@ -176,11 +177,11 @@ def enumerate_baseline(problem: QIPProblem, timeout_s: float = 10.0) -> dict:
                 rhs = float(c.rhs)
                 if c.is_equality:
                     highs.addRow(rhs, rhs, len(row_idxs),
-                                np.array(row_idxs, dtype=np.int32),
+                                np.array(row_idxs, dtype=np.int64),
                                 np.array(row_vals, dtype=np.float64))
                 else:
                     highs.addRow(-hp.kHighsInf, rhs, len(row_idxs),
-                                np.array(row_idxs, dtype=np.int32),
+                                np.array(row_idxs, dtype=np.int64),
                                 np.array(row_vals, dtype=np.float64))
 
         try:
