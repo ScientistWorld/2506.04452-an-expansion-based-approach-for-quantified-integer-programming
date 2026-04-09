@@ -7,12 +7,18 @@
 - **Repaired EQuIPS core** in `method/equips.py`
   - Universal `wins1` now models the paper’s per-subgame violation condition instead of requiring every single constraint to be violated.
   - Leaf feasibility now preserves constant constraints after substitution, so contradictory fully instantiated branches are not silently discarded.
+  - Universal refinement now uses the correct direction for Problem (2a), so fixed existential witnesses are actually challenged by violating universal moves.
+  - Time-budget propagation now reaches the underlying HiGHS calls, and solver timeouts are reported as `TIMEOUT` instead of being mislabeled as `UNSAT`.
+  - Empty existential abstractions now use the paper's stronger existential-IP relaxation heuristic from Appendix A.1 / Table 4 instead of a trivial domain-only move.
 - **QRandomParity substitution** in `data/qrandomparity.py`
   - Substitution now keeps constant residual constraints and universal constraints, which is necessary for correct terminal checks.
+  - The terminal benchmark encoding for Constraint (4c) now matches the paper: `-u - t_n >= -1` is encoded as `u + t_n <= 1`.
 - **Executable run path**
-  - `scripts/method.sh` now writes a benchmark result file.
+  - `scripts/method.sh` now writes a benchmark result file and accepts environment overrides for benchmark size, timeout, and seed.
   - `scripts/evaluate.sh` now consumes solver result files using the actual interface of `eval/evaluate.py`.
-  - `scripts/run.sh` now calls the repaired method and evaluation scripts coherently.
+  - `scripts/run.sh` now targets a CPU validation run on the scored `n=100,200` slice with a small sample size suitable for a test node.
+- **Environment repair**
+  - `environment/container.def` now uses `python:3.11-slim` instead of the MCR image that previously failed during OCI fetch.
 - **Aligned scoring contract**
   - `scoring/reference.json`, `scoring/TARGETS.md`, `scoring/CONSTRAINTS.md`, and `scoring/EXPERIMENTS.md` now match the benchmark slice that `eval/evaluate.py` writes: QRandomParity at `n=100` and `n=200`.
 - **Static validation**
@@ -27,7 +33,8 @@
 
 - No new benchmark numbers are claimed in this turn.
 - `scoring/scores.json` has been cleared to an empty, schema-valid placeholder for the scored experiments so the workspace no longer advertises stale pre-audit numbers as reproduced results.
-- Existing root-level smoke-test logs show the solver executes, but they are not acceptable substitutes for the scored benchmark and do not justify `core_claim`.
+- Local correctness smoke tests using the packaged HiGHS wheels in `tmp/pylibs` now match exact enumeration on QRandomParity `n=4..6`: all tested instances are `UNSAT`.
+- Larger local smoke tests still time out (`n=20,40` at a 10-second cap), so no performance claim is made from the login node and compute-side validation is still required.
 
 ## Paper Reference Comparison
 
@@ -36,8 +43,11 @@
 ## Bugs Fixed
 1. **Universal `wins1` formulation**: fixed from “all constraints must be violated” to “each subgame must contain at least one violated constraint,” matching Algorithm 2 / Problem (2).
 2. **Constant-constraint handling**: fixed substitution and feasibility checks so contradictions are preserved at leaves.
-3. **Broken script interface**: fixed `scripts/method.sh`, `scripts/evaluate.sh`, and `scripts/run.sh` so they use the actual CLI of `method/run_qrandomparity.py` and `eval/evaluate.py`.
-4. **Baseline import breakage**: added a local `_sorted_blocks` helper in `baseline/enumerate.py`.
+3. **QRandomParity terminal constraint**: fixed the encoding of `-u - t_n >= -1`, which had been reversed into a satisfiable condition.
+4. **Universal violation MILP row direction**: fixed Problem (2a) so the universal player must truly violate a constraint when activating a `y` indicator.
+5. **Timeout status handling**: fixed HiGHS time-limit outcomes so they surface as `TIMEOUT`, not false `UNSAT`.
+6. **Broken script interface**: fixed `scripts/method.sh`, `scripts/evaluate.sh`, and `scripts/run.sh` so they use the actual CLI of `method/run_qrandomparity.py` and `eval/evaluate.py`.
+7. **Baseline import breakage**: added a local `_sorted_blocks` helper in `baseline/enumerate.py`.
 
 ## What Remains
 - Run the repaired solver on compute and regenerate `scoring/scores.json`.
@@ -46,7 +56,7 @@
 
 ## Issues
 - **HiGHS availability on login node**: `highspy` is not installed in the host Python, so dynamic execution should be validated on compute through the packaged environment rather than assumed from local shell tests.
-- **Container registry instability**: the previous build failed before `%post` with `invalid character 's' after top-level value` while fetching the OCI image. The base image reference has been switched from the MCR mirror path to direct `python:3.11-slim` to reduce the chance of another registry-side parse failure.
+- **Container registry instability**: the previous build failed before `%post` with `invalid character 's' after top-level value` while fetching the OCI image. The base image reference has now been updated in `environment/container.def` to direct `python:3.11-slim` to reduce the chance of another registry-side parse failure.
 - **Paper-vs-reproduction solver backend**: paper uses Gurobi 12.0; current reproduction uses HiGHS. This affects performance comparisons.
 - **MCN benchmark data**: not yet acquired.
 
@@ -55,4 +65,4 @@
 2. **QBF baselines**: Paper compares against QFUN, DepQBF, and Yasol. Current workspace includes only a simple enumeration baseline.
 3. **MCN instances**: Not yet evaluated.
 4. **Optimization**: Binary-search feasibility wrapper only; no Yasol+EQuIPS hybrid verification workflow yet.
-5. **Validation status**: current turn repairs correctness and submits a fresh run instead of claiming the stale pre-audit numbers.
+5. **Validation status**: current turn repairs correctness, verifies exact small unsatisfiable QRandomParity instances locally, and submits a fresh compute-side run instead of claiming stale pre-audit numbers.

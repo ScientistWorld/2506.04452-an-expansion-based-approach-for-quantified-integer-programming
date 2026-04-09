@@ -240,8 +240,8 @@ def generate_qrandomparity(n: int, seed: int = None) -> QIPProblem:
         constraints.append(Constraint({f's{i-1}': 1, f'x{sigma[i-1]}': 1, f's{i}': 1, f'e{i}': -2}, 0))
         constraints.append(Constraint({f's{i-1}': -1, f'x{sigma[i-1]}': -1, f's{i}': -1, f'e{i}': 2}, 0))
 
-    # (4c): -u - t_n >= -1  =>  -u - t_n <= -1
-    constraints.append(Constraint({'u': -1, f't{n}': -1}, -1))
+    # (4c): -u - t_n >= -1  <=>  u + t_n <= 1
+    constraints.append(Constraint({'u': 1, f't{n}': 1}, 1))
     # (4c): u + s_n >= 1  ->  -u - s_n <= -1
     constraints.append(Constraint({'u': -1, f's{n}': -1}, -1))
 

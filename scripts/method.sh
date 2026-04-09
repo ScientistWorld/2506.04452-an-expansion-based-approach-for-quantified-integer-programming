@@ -15,11 +15,16 @@ if [ -d "/dev/shm/pylibs" ]; then
 fi
 
 OUTPUT_PATH="${1:-/home/user/tmp/results/equips_results.json}"
+N_VALUES="${EQUIPS_N_VALUES:-100 200}"
+NUM_INSTANCES="${EQUIPS_NUM_INSTANCES:-10}"
+TIMEOUT_SECS="${EQUIPS_TIMEOUT_SECS:-120.0}"
+SEED="${EQUIPS_SEED:-42}"
+
 mkdir -p "$(dirname "$OUTPUT_PATH")"
 
 python3 method/run_qrandomparity.py \
-    --n-values 100 200 \
-    --num-instances 10 \
-    --timeout 120.0 \
-    --seed 42 \
+    --n-values ${N_VALUES} \
+    --num-instances "${NUM_INSTANCES}" \
+    --timeout "${TIMEOUT_SECS}" \
+    --seed "${SEED}" \
     --output "$OUTPUT_PATH"

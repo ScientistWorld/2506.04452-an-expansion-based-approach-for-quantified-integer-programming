@@ -10,9 +10,9 @@
 # Only OS-level packages (apt-get) belong in %post.
 
 # --- Base image ---
-# Use an anonymously pullable Microsoft Container Registry image with Python 3.11.
+# Use a stable public Python base image to avoid transient MCR fetch failures.
 Bootstrap: docker
-From: mcr.microsoft.com/devcontainers/python:0-3.11-bullseye
+From: python:3.11-slim
 
 %files
     # data/train.csv /home/user/data/train.csv

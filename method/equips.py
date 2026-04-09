@@ -19,6 +19,9 @@ import numpy as np
 from data.qrandomparity import Constraint, MultiGame, QIPProblem, Subgame, UniversalConstraint, Variable
 
 
+_TIMEOUT = object()
+
+
 def _current_level(problem: QIPProblem) -> int:
     return min(v.level for v in problem.variables)
 
@@ -66,11 +69,12 @@ def _rename_problem(problem: QIPProblem, suffix: str) -> QIPProblem:
     )
 
 
-def _new_highs() -> hp.Highs:
+def _new_highs(time_limit_s: Optional[float] = None) -> hp.Highs:
     highs = hp.Highs()
     highs.setOptionValue("log_to_console", False)
     highs.setOptionValue("output_flag", False)
-    highs.setOptionValue("time_limit", 30.0)
+    if time_limit_s is not None:
+        highs.setOptionValue("time_limit", max(0.1, float(time_limit_s)))
     return highs
 
 
@@ -163,30 +167,38 @@ def _constant_constraints_feasible(
     return True
 
 
-def _is_constraint_system_feasible(constraints: list[Constraint]) -> bool:
-    if not _constant_constraints_feasible(constraints):
-        return False
-    highs = _new_highs()
-    _add_constraints(highs, [], constraints)
-    if highs.run() != hp.HighsStatus.kOk:
-        return False
-    return highs.getModelStatus() in (hp.HighsModelStatus.kOptimal, hp.HighsModelStatus.kModelEmpty)
+def _is_constraint_system_feasible(
+    constraints: list[Constraint],
+    universal_constraints: Optional[list[UniversalConstraint]] = None,
+) -> bool:
+    return _constant_constraints_feasible(constraints, universal_constraints)
 
 
 def _solve_ip_feasible(
     variables: list[Variable],
     constraints: list[Constraint],
     universal_constraints: list[UniversalConstraint],
-) -> Optional[dict[str, int]]:
+    time_limit_s: Optional[float] = None,
+) -> object:
     if not _constant_constraints_feasible(constraints, universal_constraints):
         return None
-    highs = _new_highs()
+    highs = _new_highs(time_limit_s)
     names = _add_integer_vars(highs, variables)
     _add_constraints(highs, names, constraints)
     _add_universal_constraints(highs, names, universal_constraints)
-    if highs.run() != hp.HighsStatus.kOk:
+    run_status = highs.run()
+    model_status = highs.getModelStatus()
+    if run_status != hp.HighsStatus.kOk:
+        return _TIMEOUT
+    if model_status in (
+        hp.HighsModelStatus.kOptimal,
+        hp.HighsModelStatus.kSolutionLimit,
+        hp.HighsModelStatus.kModelEmpty,
+    ):
+        return _extract_solution(highs, names)
+    if model_status == hp.HighsModelStatus.kInfeasible:
         return None
-    return _extract_solution(highs, names)
+    return _TIMEOUT
 
 
 def _compute_min_lhs(vars_dict: dict[str, Variable], coeffs: dict[str, int]) -> int:
@@ -212,11 +224,12 @@ def _solve_ip_violate_all(
     variables: list[Variable],
     constraint_sets: list[list[Constraint]],
     universal_constraints: list[UniversalConstraint],
-) -> Optional[dict[str, int]]:
+    time_limit_s: Optional[float] = None,
+) -> object:
     if not _constant_constraints_feasible([], universal_constraints):
         return None
 
-    highs = _new_highs()
+    highs = _new_highs(time_limit_s)
     var_names = _add_integer_vars(highs, variables)
     index = {name: idx for idx, name in enumerate(var_names)}
 
@@ -269,8 +282,8 @@ def _solve_ip_violate_all(
             row_idx.append(y_col)
             row_val.append(float(-rhs_shift))
             highs.addRow(
+                -hp.kHighsInf,
                 float(-lower_bound),
-                hp.kHighsInf,
                 len(row_idx),
                 np.array(row_idx, dtype=np.int64),
                 np.array(row_val, dtype=np.float64),
@@ -297,22 +310,25 @@ def _solve_ip_violate_all(
     for col in range(highs.getNumCol()):
         highs.changeColCost(col, 0.0)
 
-    if highs.run() != hp.HighsStatus.kOk:
+    run_status = highs.run()
+    model_status = highs.getModelStatus()
+    if run_status != hp.HighsStatus.kOk:
+        return _TIMEOUT
+    if model_status == hp.HighsModelStatus.kInfeasible:
         return None
-
-    if highs.getModelStatus() not in (hp.HighsModelStatus.kOptimal, hp.HighsModelStatus.kSolutionLimit):
-        return None
+    if model_status not in (hp.HighsModelStatus.kOptimal, hp.HighsModelStatus.kSolutionLimit):
+        return _TIMEOUT
 
     solution = highs.getSolution()
     if extra_idx:
         for subgame_id in range(len(constraint_sets)):
             vl_name = f"_vl{subgame_id}"
             if vl_name in extra_idx and solution.col_value[extra_idx[vl_name]] < 0.99:
-                return None
+                return _TIMEOUT
     return {name: int(round(solution.col_value[i])) for i, name in enumerate(var_names)}
 
 
-def _wins1(multigame: MultiGame) -> Optional[dict[str, int]]:
+def _wins1(multigame: MultiGame, time_limit_s: Optional[float] = None) -> object:
     constraint_sets: list[list[Constraint]] = []
     for subgame in multigame.subgames:
         constraint_sets.append(subgame.constraints if subgame.problem is None else subgame.problem.constraints)
@@ -320,8 +336,46 @@ def _wins1(multigame: MultiGame) -> Optional[dict[str, int]]:
         constraints: list[Constraint] = []
         for constraint_set in constraint_sets:
             constraints.extend(constraint_set)
-        return _solve_ip_feasible(multigame.outer_vars, constraints, multigame.universal_constraints)
-    return _solve_ip_violate_all(multigame.outer_vars, constraint_sets, multigame.universal_constraints)
+        return _solve_ip_feasible(
+            multigame.outer_vars,
+            constraints,
+            multigame.universal_constraints,
+            time_limit_s=time_limit_s,
+        )
+    return _solve_ip_violate_all(
+        multigame.outer_vars,
+        constraint_sets,
+        multigame.universal_constraints,
+        time_limit_s=time_limit_s,
+    )
+
+
+def _existential_relaxation_move(multigame: MultiGame, time_limit_s: Optional[float] = None) -> object:
+    """Pick a stronger first move by solving the current multi-game as a plain IP.
+
+    This follows the paper's Appendix A.1 heuristic: on an empty existential
+    abstraction, solve the existential relaxation instead of picking an arbitrary
+    domain point.
+    """
+    variables_by_name = {var.name: var for var in multigame.outer_vars}
+    constraints: list[Constraint] = []
+    universal_constraints = list(multigame.universal_constraints)
+
+    for subgame in multigame.subgames:
+        if subgame.problem is None:
+            constraints.extend(subgame.constraints)
+            continue
+        for variable in subgame.problem.variables:
+            variables_by_name.setdefault(variable.name, variable)
+        constraints.extend(subgame.problem.constraints)
+        universal_constraints.extend(subgame.problem.universal_constraints)
+
+    return _solve_ip_feasible(
+        list(variables_by_name.values()),
+        constraints,
+        universal_constraints,
+        time_limit_s=time_limit_s,
+    )
 
 
 def _extract_assignment(assignment: dict[str, int], variables: list[Variable]) -> dict[str, int]:
@@ -388,15 +442,15 @@ def equips(
     timeout_s: float,
     start_time: float,
     refinement_state: Optional[_RefinementState] = None,
-) -> Optional[dict[str, int]]:
+) -> object:
     if refinement_state is None:
         refinement_state = _RefinementState()
 
-    if time.time() - start_time > timeout_s:
-        return None
+    if timeout_s - (time.time() - start_time) <= 0:
+        return _TIMEOUT
 
     if all(subgame.is_quantifier_free() for subgame in multigame.subgames):
-        return _wins1(multigame)
+        return _wins1(multigame, time_limit_s=timeout_s - (time.time() - start_time))
 
     abstraction = MultiGame(
         outer_quantifier=multigame.outer_quantifier,
@@ -406,7 +460,15 @@ def equips(
     )
 
     for _ in range(10000):
-        tau_full = equips(abstraction, timeout_s, start_time, refinement_state)
+        iteration_remaining = timeout_s - (time.time() - start_time)
+        if iteration_remaining <= 0:
+            return _TIMEOUT
+        if not abstraction.subgames and multigame.outer_quantifier == "E":
+            tau_full = _existential_relaxation_move(multigame, time_limit_s=iteration_remaining)
+        else:
+            tau_full = equips(abstraction, timeout_s, start_time, refinement_state)
+        if tau_full is _TIMEOUT:
+            return _TIMEOUT
         if tau_full is None:
             return None
         tau = _extract_assignment(tau_full, multigame.outer_vars)
@@ -418,12 +480,14 @@ def equips(
                 continue
             reduced = subgame.problem.substitute(tau)
             if not reduced.variables:
-                if not _is_constraint_system_feasible(reduced.constraints):
+                if not _is_constraint_system_feasible(reduced.constraints, reduced.universal_constraints):
                     found_counter = {}
                     found_subgame = subgame
                     break
                 continue
             counter = solve_qip(reduced, max(0.1, timeout_s - (time.time() - start_time)))
+            if counter["status"] == "TIMEOUT":
+                return _TIMEOUT
             if counter["status"] == "SAT":
                 found_counter = counter["assignment"]
                 found_subgame = subgame
@@ -442,7 +506,7 @@ def equips(
 def solve_qip(problem: QIPProblem, timeout_s: float = 30.0) -> dict:
     start = time.time()
     if not problem.variables:
-        feasible = _is_constraint_system_feasible(problem.constraints)
+        feasible = _is_constraint_system_feasible(problem.constraints, problem.universal_constraints)
         return {
             "status": "SAT" if feasible else "UNSAT",
             "assignment": {} if feasible else None,
@@ -451,6 +515,12 @@ def solve_qip(problem: QIPProblem, timeout_s: float = 30.0) -> dict:
 
     multigame = _problem_to_multigame(problem)
     assignment = equips(multigame, timeout_s, start)
+    if assignment is _TIMEOUT:
+        return {
+            "status": "TIMEOUT",
+            "assignment": None,
+            "runtime": time.time() - start,
+        }
     return {
         "status": "SAT" if assignment is not None else "UNSAT",
         "assignment": assignment,

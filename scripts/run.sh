@@ -10,12 +10,20 @@ set -e
 
 cd /home/user
 
-export PYTHONPATH="/home/user:/dev/shm/pylibs:$PYTHONPATH"
+export PYTHONPATH="/home/user:$PYTHONPATH"
+if [ -d "/dev/shm/pylibs" ]; then
+    export PYTHONPATH="/dev/shm/pylibs:$PYTHONPATH"
+fi
 
 echo "=== EQuIPS Validation Run ==="
 echo "Python: $(python3 --version)"
 
 mkdir -p /home/user/tmp/results
+
+export EQUIPS_N_VALUES="100 200"
+export EQUIPS_NUM_INSTANCES="2"
+export EQUIPS_TIMEOUT_SECS="120.0"
+export EQUIPS_SEED="42"
 
 bash /home/user/scripts/method.sh
 bash /home/user/scripts/evaluate.sh

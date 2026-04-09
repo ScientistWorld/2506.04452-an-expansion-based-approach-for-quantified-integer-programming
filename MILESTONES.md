@@ -21,4 +21,10 @@
 - Rewrote problem-side docs to remove method leakage and cleaned root-level scratch artifacts into `tmp/root_artifacts/`.
 - Prepared the workspace for a fresh scored validation run; `core_claim` is pending actual benchmark results.
 
+### [2026-04-09 08:41] - method_runs
+- Fixed a QRandomParity encoding bug in Constraint (4c): `-u - t_n >= -1` had been translated with the wrong inequality direction, which made benchmark instances spuriously satisfiable.
+- Fixed the universal `wins1` MILP so Problem (2a) is added with the correct inequality direction; universal refinement now finds real violating countermoves.
+- Added timeout propagation and `TIMEOUT` reporting, restored universal-constraint checks at fully substituted leaves, and added the paper's existential-IP relaxation heuristic for the first move on empty existential abstractions.
+- Verified locally with the packaged HiGHS wheels that `n=4..6` QRandomParity instances are `UNSAT` for both exact enumeration and EQuIPS; prepared a CPU test-node run for the scored `n=100,200` slice.
+
 ## Stop Justification
