@@ -21,21 +21,26 @@ The paper presents EQuIPS, the first expansion-based solver for Quantified Integ
 
 ## Research Question
 
-Quantified Integer Programming (QIP) extends Quantified Boolean Formulas (QBF) with general integer variables and linear constraints, and extends Integer Programming with variable quantification. How can we solve QIP problems efficiently? The paper focuses on QIP feasibility and optimization, where variables are either existentially (∃) or universally (∀) quantified, bounded by integer domains, and constrained by linear inequalities.
+Quantified Integer Programming (QIP) asks whether a bounded integer decision process with alternating existential and universal choices satisfies a linear constraint system. In the optimization variant, the existential side must also achieve the best worst-case objective value. The core problem in this workspace is to solve such quantified linear instances efficiently and correctly.
 
-## Why It Matters
+## Problem Setting
 
-QIP provides a unified framework for modeling adversarial decision-making and robust optimization, where universal variables represent uncertainty an adversary can exploit. Existing QIP solvers use search-based (QCDCL) methods. The paper shows that expansion-based methods—previously unexplored for QIP—can outperform search-based solvers on certain problem classes.
+Each instance contains:
+- Integer variables with finite lower and upper bounds
+- An ordered quantifier prefix over variable blocks
+- A linear feasibility system
+- Optionally, additional linear restrictions on the universally quantified choices
+
+The scored benchmark is a procedurally generated satisfiability family called QRandomParity. It produces hard quantified instances by combining parity relations under different variable orderings. The evaluation slice used in this gym focuses on the large-instance settings `n=100` and `n=200`.
 
 ## Success Criteria
 
-A successful QIP solver should:
-- Correctly determine whether a QIP instance is satisfiable (existential player wins) or unsatisfiable (universal player wins)
-- For optimization problems: find the optimal objective value
-- Solve instances within reasonable time limits
-- Handle problems with polyhedral uncertainty sets (universal constraints)
+A successful solver should:
+- Return the correct satisfiability outcome for each instance
+- Respect the bounded integer domains and any universal-domain restrictions
+- Solve more instances within the timeout and do so faster on the solved subset
 
-The evaluation uses runtime and number of instances solved as the primary metrics: faster solvers and solvers that complete more instances within a time limit are better.
+This gym scores runtime and solved-instance count, so both speed and reliability matter.
 
 ---
 
@@ -94,50 +99,33 @@ The QIP encoding uses auxiliary variables for XOR: x_i + x_j + t = 2d.
 
 # Evaluation
 
+## Scored Experiments
+
+The gym currently scores two QRandomParity settings:
+- `qrandomparity_n100`
+- `qrandomparity_n200`
+
+Each setting consists of a batch of procedurally generated instances at a fixed size parameter `n`. The scored output must report one result entry per method for each experiment it actually ran.
+
 ## Metrics
 
-The primary evaluation metric is **runtime** (in seconds) — lower is better. A solver succeeds on an instance if it returns the correct answer (SAT/UNSAT) within a time limit.
+Each scored experiment uses:
+- `median_runtime_s`: median runtime over solved instances, lower is better
+- `instances_solved`: number of instances solved within the timeout, higher is better
 
-Secondary metrics:
-- **Number of instances solved** within the time limit (higher is better)
-- **Median runtime** across solved instances (lower is better)
+The primary metric is runtime, but solved count is a required companion metric so a method cannot improve the score by timing out on harder cases.
 
-## Baselines and Targets
+## Protocol
 
-### QRandomParity (Table 1)
-QRandomParity is a family of QIP/QBF instances parameterized by n. Each n generates 100 random instances (varying the permutation σ). Solvers tested:
+1. Generate the benchmark instances with the provided QRandomParity generator.
+2. Run the candidate solver on the fixed instance batch for each scored `n`.
+3. Use the configured timeout for every instance in the batch.
+4. Record, for each instance, whether it was solved and how long it took.
+5. Aggregate per experiment into solved count and median runtime.
 
-| Solver | Description |
-|--------|-------------|
-| EQuIPS (proposed) | Expansion-based QIP solver using CEGAR |
-| QFUNcms | State-of-the-art QBF expansion solver with CryptoMiniSat backend |
-| DepQBF | Search-based QBF solver |
-| Yasol | Search-based QIP solver |
-| z3 | SMT solver |
+## Interpretation
 
-Target performance (median runtime in seconds, /N = instances unsolved out of 100):
-- EQuIPS at n=100: ~0.06s
-- EQuIPS at n=500: ~1.0s
-- EQuIPS at n=1000: ~3.4s (10 unsolved)
-- QFUNcms at n=1000: 100 unsolved
-
-### Multilevel Critical Node Problem (MCN)
-Robust optimization on graphs. Compare:
-- EQuIPS (proposed, expansion-based QIP)
-- Yasol (search-based QIP)
-- MCN_CR (column-and-row generation baseline)
-
-Target: EQuIPS should solve the most instances overall (reference: 465/500+ instances).
-
-## Evaluation Protocol
-
-1. Generate or load QRandomParity instances for various n values
-2. Run each solver with a 1800-second (30-minute) timeout per instance
-3. Record runtime and correctness (SOLVED/UNSOLVED)
-4. Compute median runtime and number of solved instances
-5. For MCN: run with a 2-hour timeout per instance
-
-The scientist should focus on improving EQuIPS's runtime and number of solved instances.
+Improvements should preserve correctness while reducing runtime and maintaining strong solved coverage on the same benchmark family. Results from easier instance sizes or different problem families can be useful for development, but they are not part of the scored contract unless added explicitly to `reference.json` and `scores.json`.
 
 ---
 
@@ -255,12 +243,38 @@ The scientist should focus on improving EQuIPS's runtime and number of solved in
 
 </details>
 
+### Iteration 4: gpt-5.4 (verifier)
+- **Milestone**: `core_claim` | **Status**: done
+- **Working time**: 17m | **GPU**: 0.0h
+
+<details>
+<summary>Progress Log</summary>
+
+### [2026-04-09 07:40] - none
+- Audited the existing EQuIPS implementation against Algorithms 1 and 2 in the paper.
+- Found correctness issues that invalidate the previous `core_claim` bookkeeping:
+  universal `wins1` was enforcing violation of every constraint instead of one per subgame,
+  and substitution dropped constant constraints, hiding leaf-level contradictions.
+- Repaired the solver core and fixed the broken script interface so the workspace is ready for a fresh validation run.
+
+### [2026-04-09 08:10] - none
+- Cleared stale `scoring/scores.json` contents so the workspace no longer claims pre-audit benchmark results.
+- Switched the container base image from the MCR mirror path to direct `python:3.11-slim` after the prior build failed during OCI metadata fetch.
+- Fixed `scripts/download.sh` to follow the environment protocol (`uv pip install --system`) and validated the scoring/structure files with `python validate.py`.
+
+### [2026-04-09 08:25] - method_runs
+- Final verification found that the workspace has a real implementation of the paper's algorithm and executable benchmark wiring, but no trustworthy reproduced scored results for the repaired solver.
+- Rewrote problem-side docs to remove method leakage and cleaned root-level scratch artifacts into `tmp/root_artifacts/`.
+- Prepared the workspace for a fresh scored validation run; `core_claim` is pending actual benchmark results.
+
+</details>
+
 
 ---
 
 # Reproduction Milestones
 
-**Current: none**
+**Current: method_runs**
 
 ## Progress Log
 
@@ -270,5 +284,15 @@ The scientist should focus on improving EQuIPS's runtime and number of solved in
   universal `wins1` was enforcing violation of every constraint instead of one per subgame,
   and substitution dropped constant constraints, hiding leaf-level contradictions.
 - Repaired the solver core and fixed the broken script interface so the workspace is ready for a fresh validation run.
+
+### [2026-04-09 08:10] - none
+- Cleared stale `scoring/scores.json` contents so the workspace no longer claims pre-audit benchmark results.
+- Switched the container base image from the MCR mirror path to direct `python:3.11-slim` after the prior build failed during OCI metadata fetch.
+- Fixed `scripts/download.sh` to follow the environment protocol (`uv pip install --system`) and validated the scoring/structure files with `python validate.py`.
+
+### [2026-04-09 08:25] - method_runs
+- Final verification found that the workspace has a real implementation of the paper's algorithm and executable benchmark wiring, but no trustworthy reproduced scored results for the repaired solver.
+- Rewrote problem-side docs to remove method leakage and cleaned root-level scratch artifacts into `tmp/root_artifacts/`.
+- Prepared the workspace for a fresh scored validation run; `core_claim` is pending actual benchmark results.
 
 ## Stop Justification
