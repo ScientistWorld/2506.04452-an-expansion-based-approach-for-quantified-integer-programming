@@ -1,103 +1,11 @@
 {
   "experiments": {
-    "qrandomparity_median_runtime": {
-      "description": "EQuIPS on QRandomParity benchmark (Table 1) - paper-scale evaluation",
+    "qrandomparity_n100": {
       "results": {
-        "equips_n10": {
-          "type": "proposed",
-          "median_runtime_s": 0.002469,
-          "instances_solved": 20
-        },
-        "equips_n20": {
-          "type": "proposed",
-          "median_runtime_s": 0.005898,
-          "instances_solved": 20
-        },
-        "equips_n30": {
-          "type": "proposed",
-          "median_runtime_s": 0.006509,
-          "instances_solved": 20
-        },
-        "equips_n50": {
-          "type": "proposed",
-          "median_runtime_s": 0.088639,
-          "instances_solved": 20
-        },
-        "equips_n100": {
-          "type": "proposed",
-          "median_runtime_s": 0.194722,
-          "instances_solved": 20
-        },
-        "equips_n200": {
-          "type": "proposed",
-          "median_runtime_s": 0.450553,
-          "instances_solved": 20
-        },
-        "paper_equips_n100": {
-          "type": "reference",
-          "median_runtime_s": 0.06,
-          "instances_solved": 100
-        },
-        "paper_qfuncms_n100": {
-          "type": "baseline",
-          "median_runtime_s": 1.67,
-          "instances_solved": 100
-        },
-        "paper_yasol_n100": {
-          "type": "baseline",
-          "median_runtime_s": 100.12,
-          "instances_solved": 91
-        }
       }
     },
-    "qrandomparity_vs_search": {
-      "description": "EQuIPS vs enumeration baseline - exponential vs polynomial scaling",
+    "qrandomparity_n200": {
       "results": {
-        "equips_n10": {
-          "type": "proposed",
-          "median_runtime_s": 0.002469,
-          "instances_solved": 20
-        },
-        "equips_n20": {
-          "type": "proposed",
-          "median_runtime_s": 0.005898,
-          "instances_solved": 20
-        },
-        "equips_n50": {
-          "type": "proposed",
-          "median_runtime_s": 0.088639,
-          "instances_solved": 20
-        },
-        "equips_n100": {
-          "type": "proposed",
-          "median_runtime_s": 0.194722,
-          "instances_solved": 20
-        },
-        "baseline_n5": {
-          "type": "baseline",
-          "median_runtime_s": 0.002288,
-          "instances_solved": 20
-        },
-        "baseline_n8": {
-          "type": "baseline",
-          "median_runtime_s": 0.003634,
-          "instances_solved": 20
-        },
-        "baseline_n10": {
-          "type": "baseline",
-          "median_runtime_s": 0.004745,
-          "instances_solved": 20
-        }
-      }
-    },
-    "mcn_instances_solved": {
-      "description": "MCN instances not evaluated (requires external benchmark data)",
-      "results": {
-        "equips": {
-          "type": "proposed",
-          "instances_solved": null,
-          "median_runtime_s": null
-        }
       }
     }
   }

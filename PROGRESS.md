@@ -22,7 +22,7 @@
 ## Results
 
 - No new benchmark numbers are claimed in this turn.
-- Existing numbers in `scoring/scores.json` should be treated as stale until the repaired solver is re-run on compute.
+- `scoring/scores.json` has been cleared to an empty, schema-valid placeholder for the scored experiments so the workspace no longer advertises stale pre-audit numbers as reproduced results.
 
 ## Paper Reference Comparison
 
@@ -41,6 +41,7 @@
 
 ## Issues
 - **HiGHS availability on login node**: `highspy` is not installed in the host Python, so dynamic execution should be validated on compute through the packaged environment rather than assumed from local shell tests.
+- **Container registry instability**: the previous build failed before `%post` with `invalid character 's' after top-level value` while fetching the OCI image. The base image reference has been switched from the MCR mirror path to direct `python:3.11-slim` to reduce the chance of another registry-side parse failure.
 - **Paper-vs-reproduction solver backend**: paper uses Gurobi 12.0; current reproduction uses HiGHS. This affects performance comparisons.
 - **MCN benchmark data**: not yet acquired.
 

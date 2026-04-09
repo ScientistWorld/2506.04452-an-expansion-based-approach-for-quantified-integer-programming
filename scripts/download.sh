@@ -1,23 +1,18 @@
 #!/bin/bash
 # Download all data and models needed for this environment.
 #
-# EQuIPS uses HiGHS as the IP solver backend.
-# HiGHS is installed via pip (highspy package).
-# No external datasets or models are needed — all QRandomParity instances
-# are generated procedurally.
-#
-# Estimated total download size: ~5 MB (numpy + highspy)
+# Estimated total download size: ~5 MB (Python wheels only)
 # Estimated disk usage after extraction: ~20 MB
 #
-# Run on a node with internet access BEFORE building the container
-# or submitting compute jobs.
+# QRandomParity instances are generated procedurally, so there are no external
+# datasets or pretrained models to fetch. The only required network step is
+# ensuring the Python dependencies are available in the environment overlay.
 
 set -e
 
-cd "$(dirname "$0")"
+cd /home/user
 
-# Install highspy and numpy (HiGHS Python bindings)
-# These provide the IP solver backend for EQuIPS
-pip install highspy numpy
+# Install Python dependencies into the system environment overlay.
+uv pip install --system highspy numpy
 
-echo "Download/setup complete. EQuIPS will generate QRandomParity instances procedurally."
+echo "Download/setup complete. QRandomParity instances are generated procedurally."

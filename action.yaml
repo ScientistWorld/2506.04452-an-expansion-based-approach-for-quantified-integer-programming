@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: true
 milestone: none
-notes: "Retry unchanged: the build still fails before %post while fetching OCI metadata, and all tested registry/bootstrap alternatives have failed for external infrastructure reasons rather than workspace configuration."
+notes: "Retry the repaired EQuIPS validation job after switching the container base image to direct python:3.11-slim and clearing stale scores; this is a CPU test to confirm the environment builds and the method/eval path runs end-to-end."
