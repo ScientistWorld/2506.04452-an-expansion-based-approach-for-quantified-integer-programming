@@ -7,11 +7,11 @@
 #
 # *** IMPORTANT ***
 # Python packages (torch, transformers, etc.) go in setup.sh, NOT here.
-# Only OS-level packages (apt-get) belong in %post.
+# Only OS-level packages belong in %post.
 
-# --- Base image (GCR mirror — bypasses Docker Hub rate limits) ---
+# --- Base image (AWS ECR Public — no Docker Hub rate limits) ---
 Bootstrap: docker
-From: mirror.gcr.io/library/python:3.11-slim
+From: public.ecr.aws/docker/library/python:3.11-slim
 
 %files
     # data/train.csv /home/user/data/train.csv
@@ -21,7 +21,7 @@ From: mirror.gcr.io/library/python:3.11-slim
     # test_initial_state.py /home/user/test_initial_state.py
 
 %post
-    # This image includes Python but limited tools — install what's needed
+    # python:3.11-slim has Python — install basic tools only
     apt-get update && apt-get install -y --no-install-recommends \
         python3-pip nano vim-tiny less curl wget git && \
     ln -sf /usr/bin/vim.tiny /usr/bin/vim && \
