@@ -55,6 +55,12 @@
 - Reassess whether the resulting QRandomParity scores support `core_claim`.
 - Extend beyond the minimum if time remains: more QRandomParity sizes, stronger baseline coverage, MCN if benchmark data can be acquired.
 
+## Final Status
+
+- Final wrap-up completed for documentation, scoring guidance, and environment packaging.
+- The workspace is suitable as a partial artifact for future continuation, but it is not yet a complete gym because the repaired solver still lacks a persisted scored benchmark run.
+- Highest defensible milestone at wrap-up: `method_runs`.
+
 ## Issues
 - **HiGHS availability on login node**: `highspy` is not installed in the host Python, so dynamic execution should be validated on compute through the packaged environment rather than assumed from local shell tests.
 - **Container registry instability**: the previous build failed before `%post` with `invalid character 's' after top-level value` while fetching the OCI image. The base image reference has now been updated in `environment/container.def` to direct `python:3.11-slim` to reduce the chance of another registry-side parse failure.

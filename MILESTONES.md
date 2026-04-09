@@ -33,4 +33,10 @@
 - Closed the paper at `method_runs` because the current on-disk state does not support `core_claim`.
 
 ## Stop Justification
-- Final verification found the environment structurally usable but not benchmark-complete: there is still no auditable scored run for the repaired solver, so the workspace cannot honestly advertise `core_claim` or serve as a ready-made gym baseline.
+Final verification found the environment structurally usable but not benchmark-complete.
+The paper method is implemented and the evaluation stack is wired up, so `method_runs`
+is justified. However, the repaired solver does not yet have an auditable scored run in
+the current workspace: `tmp/results/` is empty and `scoring/scores.json` contains no
+reproduced method entries. Because there is no trustworthy post-repair benchmark result,
+the workspace cannot honestly claim `core_claim` or act as a ready-made gym baseline.
+Stopping at `method_runs` is therefore the highest defensible milestone.

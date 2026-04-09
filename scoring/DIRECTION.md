@@ -1,26 +1,27 @@
 # Research Direction
 
-## Research Problem
-This paper addresses the problem of efficiently solving Quantified Integer Programming (QIP) — extending QBF with integer variables and linear constraints. The core challenge is that QIP combines the combinatorial complexity of quantification with continuous optimization, making both search-based and naive expansion-based approaches inefficient on many problem classes.
+Future scientist agents should treat this workspace as a benchmark for
+quantified-integer satisfiability solvers in the same broad family as the paper:
+expansion-based solving with iterative refinement on QIP instances.
 
-The paper shows that expansion-based methods with CEGAR can outperform search-based QIP solvers on certain problem families (like QRandomParity), while struggling on others (like deep quantifier alternations). The scientist should work on improving the expansion-based approach for QIP.
+## In Scope
 
-## Core Contribution
-The paper's novelty is EQuIPS: the first expansion-based QIP solver using CEGAR. The key insight is that by iteratively building partial expansions and refining them with counter-moves, the solver can avoid full exponential expansion while still being complete. The scientist must work within this CEGAR-based expansion paradigm — improving the abstraction construction, counter-move generation, or refinement strategy.
+- Improving how partial quantified expansions are chosen, reused, or refined.
+- Improving how violating counterexamples are detected inside the same overall solving paradigm.
+- Improving runtime on the scored QRandomParity settings without reducing solved coverage.
+- Extending the benchmark with additional QIP experiments, provided the existing scored experiments remain comparable.
 
-## Approach Scope
-The scientist should focus on improving the EQuIPS algorithm. They may:
-- Improve the wins1 subroutine for finding winning/violating moves
-- Improve the abstraction refinement strategy
-- Add heuristics for initial move selection
-- Combine with search-based techniques
-- Optimize the IP solver interface
-- Extend to additional problem types (MCN, etc.)
+## Still In Family
 
-The scientist may NOT replace the core CEGAR expansion approach with a fundamentally different algorithm.
+The intended research direction is "better expansion-based QIP solving," not
+"any method that solves some related optimization problem." A new method can be
+substantially different internally, but it should still operate as a quantified
+solver that reasons through iterative expansion/refinement rather than replacing
+the benchmark with a generic unrelated paradigm.
 
-## Out of Bounds
-- Replacing the CEGAR approach with pure QCDCL search
-- Using a generic MILP solver without the CEGAR expansion framework
-- Working on problem families that are known to be easy for search-based solvers
-- Modifying the QRandomParity benchmark to trivialize it
+## Out of Scope
+
+- Swapping the task to a different formalism while reusing the same score entries.
+- Treating the benchmark as a plain MILP dataset and ignoring the quantified structure.
+- Beating the score by simplifying or filtering the benchmark rather than improving the solver.
+- Reporting results from an unrelated search paradigm under the same experimental labels without documenting a new research direction.
