@@ -10,9 +10,9 @@
 # Only OS-level packages (apt-get) belong in %post.
 
 # --- Base image ---
-# Avoid Docker Hub metadata failures by using a Quay-hosted OCI image instead.
+# Use an anonymously pullable Microsoft Container Registry image with Python 3.11.
 Bootstrap: docker
-From: quay.io/rockylinux/rockylinux:9
+From: mcr.microsoft.com/devcontainers/python:0-3.11-bullseye
 
 %files
     # data/train.csv /home/user/data/train.csv
@@ -22,11 +22,11 @@ From: quay.io/rockylinux/rockylinux:9
     # test_initial_state.py /home/user/test_initial_state.py
 
 %post
-    dnf install -y \
-        python3 python3-pip nano vim-minimal less curl wget git && \
-    dnf clean all
+    apt-get update && apt-get install -y --no-install-recommends \
+        nano vim-tiny less curl wget git && \
+    rm -rf /var/lib/apt/lists/*
 
-    ln -sf /usr/bin/vi /usr/bin/vim || true
+    ln -sf /usr/bin/vim.tiny /usr/bin/vim || true
 
     mkdir -p /home/user/data
     chmod 755 /home/user
