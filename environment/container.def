@@ -10,13 +10,11 @@
 # Only OS-level packages (apt-get) belong in %post.
 
 # --- Base image ---
-# Avoid OCI registry metadata fetches entirely. The scheduler repeatedly fails
-# before %post while reading registry responses, so build from Ubuntu packages
-# directly instead of a Docker image.
-Bootstrap: debootstrap
-OSVersion: jammy
-MirrorURL: http://archive.ubuntu.com/ubuntu/
-Include: ca-certificates,python3,python3-pip,git,curl,wget,nano,vim-tiny,less
+# The scheduler log reveals the host-visible workspace path. Use the existing
+# local image there to avoid both OCI registry failures and the missing
+# debootstrap binary on the build host.
+Bootstrap: localimage
+From: /home/user/scratch/AgentWorkspaces/workspaces/2506.04452/environment/container.sif
 
 %files
     # data/train.csv /home/user/data/train.csv
@@ -26,6 +24,10 @@ Include: ca-certificates,python3,python3-pip,git,curl,wget,nano,vim-tiny,less
     # test_initial_state.py /home/user/test_initial_state.py
 
 %post
+    apt-get update && apt-get install -y --no-install-recommends \
+        python3-pip nano vim-tiny less curl wget git && \
+    rm -rf /var/lib/apt/lists/*
+
     ln -sf /usr/bin/vim.tiny /usr/bin/vim
 
     mkdir -p /home/user/data
