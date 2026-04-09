@@ -7,11 +7,11 @@
 #
 # *** IMPORTANT ***
 # Python packages (torch, transformers, etc.) go in setup.sh, NOT here.
-# Only OS-level packages belong in %post.
+# Only OS-level packages (apt-get) belong in %post.
 
-# --- Base image (AWS ECR Public — no Docker Hub rate limits) ---
+# --- Base image (GCR mirror — bypasses Docker Hub rate limits) ---
 Bootstrap: docker
-From: public.ecr.aws/docker/library/python:3.11-slim
+From: mirror.gcr.io/library/python:3.11-slim
 
 %files
     # data/train.csv /home/user/data/train.csv
