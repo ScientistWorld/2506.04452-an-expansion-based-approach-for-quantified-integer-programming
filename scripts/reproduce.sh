@@ -23,8 +23,6 @@ if [ -d "/dev/shm/pylibs" ]; then
     export PYTHONPATH="/dev/shm/pylibs:$PYTHONPATH"
 fi
 
-# Run the method
-bash scripts/method.sh
-
-# Run evaluation
-bash scripts/evaluate.sh
+RESULTS_FILE="/home/user/tmp/results/equips_results.json"
+bash scripts/method.sh "$RESULTS_FILE"
+bash scripts/evaluate.sh "$RESULTS_FILE"

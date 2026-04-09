@@ -8,11 +8,11 @@
 # IMPORTANT: Install into the SYSTEM Python, not a virtual environment.
 # The overlay may be recreated on container rebuilds — a venv inside
 # it will be lost and all subsequent jobs will fail.
-# Use: python3 -m pip install (pip3 is broken under fakeroot in container.def)
+# Use: uv pip install --system
 # Do NOT create a venv (python -m venv, virtualenv, etc.).
 
 set -e
 
 # Install highspy (HiGHS Python bindings) — open-source IP/MIP solver
 # HiGHS is the IP solver backend used by EQuIPS
-python3 -m pip install --no-cache-dir highspy numpy
+uv pip install --system highspy numpy
