@@ -9,9 +9,9 @@
 # Python packages (torch, transformers, etc.) go in setup.sh, NOT here.
 # Only OS-level packages (apt-get) belong in %post.
 
-# --- Base image (switch away from MCR after repeated malformed registry metadata) ---
+# --- Base image (use Google's Docker Hub mirror to avoid MCR metadata errors and Docker Hub rate limits) ---
 Bootstrap: docker
-From: docker.io/library/python:3.11-slim
+From: mirror.gcr.io/library/python:3.11-slim
 
 %files
     # data/train.csv /home/user/data/train.csv
