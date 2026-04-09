@@ -13,7 +13,7 @@
 # Use the already available local image to avoid transient registry metadata
 # failures during verification reruns.
 Bootstrap: localimage
-From: /home/user/environment/container.sif
+From: container.sif
 
 %files
     # data/train.csv /home/user/data/train.csv
