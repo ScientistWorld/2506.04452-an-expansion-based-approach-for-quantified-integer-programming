@@ -1,8 +1,8 @@
 # IMPORTANT: Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends. Sleeping blocks the entire pipeline.
-action: submit
+action: done
 gpus: 0
-test: true
+test: false
 milestone: method_runs
-notes: "Retry CPU test submission after repeated transient registry failures during base-image fetch; environment unchanged, goal remains to regenerate trustworthy QRandomParity scores and verify whether core_claim is supported."
+notes: "Stopped by the system after repeated container build failures. Workspace is left in a verified method_runs state; trustworthy scored results were not regenerated, so core_claim is not established."
