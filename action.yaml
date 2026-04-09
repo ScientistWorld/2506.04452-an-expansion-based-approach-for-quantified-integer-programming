@@ -1,6 +1,8 @@
 # IMPORTANT: Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends. Sleeping blocks the entire pipeline.
-action: done
+action: pending
+gpus: 1
+test: false
 milestone: core_claim
-notes: "Container build blocked by persistent transient registry errors (malformed responses from mirror.gcr.io, docker.io, ghcr.io, ECR). The EQuIPS solver, evaluation framework, baseline, and all workspace code are complete and validated. The existing container.sif (built Apr 5) works — only container rebuild fails. core_claim already achieved in prior sessions."
+notes: ""
