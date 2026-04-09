@@ -1,6 +1,6 @@
 # Reproduction Milestones
 
-**Current: none**
+**Current: method_runs**
 
 ## Progress Log
 
@@ -15,5 +15,10 @@
 - Cleared stale `scoring/scores.json` contents so the workspace no longer claims pre-audit benchmark results.
 - Switched the container base image from the MCR mirror path to direct `python:3.11-slim` after the prior build failed during OCI metadata fetch.
 - Fixed `scripts/download.sh` to follow the environment protocol (`uv pip install --system`) and validated the scoring/structure files with `python validate.py`.
+
+### [2026-04-09 08:25] - method_runs
+- Final verification found that the workspace has a real implementation of the paper's algorithm and executable benchmark wiring, but no trustworthy reproduced scored results for the repaired solver.
+- Rewrote problem-side docs to remove method leakage and cleaned root-level scratch artifacts into `tmp/root_artifacts/`.
+- Prepared the workspace for a fresh scored validation run; `core_claim` is pending actual benchmark results.
 
 ## Stop Justification

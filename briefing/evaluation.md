@@ -1,46 +1,29 @@
 # Evaluation
 
+## Scored Experiments
+
+The gym currently scores two QRandomParity settings:
+- `qrandomparity_n100`
+- `qrandomparity_n200`
+
+Each setting consists of a batch of procedurally generated instances at a fixed size parameter `n`. The scored output must report one result entry per method for each experiment it actually ran.
+
 ## Metrics
 
-The primary evaluation metric is **runtime** (in seconds) — lower is better. A solver succeeds on an instance if it returns the correct answer (SAT/UNSAT) within a time limit.
+Each scored experiment uses:
+- `median_runtime_s`: median runtime over solved instances, lower is better
+- `instances_solved`: number of instances solved within the timeout, higher is better
 
-Secondary metrics:
-- **Number of instances solved** within the time limit (higher is better)
-- **Median runtime** across solved instances (lower is better)
+The primary metric is runtime, but solved count is a required companion metric so a method cannot improve the score by timing out on harder cases.
 
-## Baselines and Targets
+## Protocol
 
-### QRandomParity (Table 1)
-QRandomParity is a family of QIP/QBF instances parameterized by n. Each n generates 100 random instances (varying the permutation σ). Solvers tested:
+1. Generate the benchmark instances with the provided QRandomParity generator.
+2. Run the candidate solver on the fixed instance batch for each scored `n`.
+3. Use the configured timeout for every instance in the batch.
+4. Record, for each instance, whether it was solved and how long it took.
+5. Aggregate per experiment into solved count and median runtime.
 
-| Solver | Description |
-|--------|-------------|
-| EQuIPS (proposed) | Expansion-based QIP solver using CEGAR |
-| QFUNcms | State-of-the-art QBF expansion solver with CryptoMiniSat backend |
-| DepQBF | Search-based QBF solver |
-| Yasol | Search-based QIP solver |
-| z3 | SMT solver |
+## Interpretation
 
-Target performance (median runtime in seconds, /N = instances unsolved out of 100):
-- EQuIPS at n=100: ~0.06s
-- EQuIPS at n=500: ~1.0s
-- EQuIPS at n=1000: ~3.4s (10 unsolved)
-- QFUNcms at n=1000: 100 unsolved
-
-### Multilevel Critical Node Problem (MCN)
-Robust optimization on graphs. Compare:
-- EQuIPS (proposed, expansion-based QIP)
-- Yasol (search-based QIP)
-- MCN_CR (column-and-row generation baseline)
-
-Target: EQuIPS should solve the most instances overall (reference: 465/500+ instances).
-
-## Evaluation Protocol
-
-1. Generate or load QRandomParity instances for various n values
-2. Run each solver with a 1800-second (30-minute) timeout per instance
-3. Record runtime and correctness (SOLVED/UNSOLVED)
-4. Compute median runtime and number of solved instances
-5. For MCN: run with a 2-hour timeout per instance
-
-The scientist should focus on improving EQuIPS's runtime and number of solved instances.
+Improvements should preserve correctness while reducing runtime and maintaining strong solved coverage on the same benchmark family. Results from easier instance sizes or different problem families can be useful for development, but they are not part of the scored contract unless added explicitly to `reference.json` and `scores.json`.

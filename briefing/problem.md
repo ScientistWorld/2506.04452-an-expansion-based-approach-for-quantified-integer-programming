@@ -2,18 +2,23 @@
 
 ## Research Question
 
-Quantified Integer Programming (QIP) extends Quantified Boolean Formulas (QBF) with general integer variables and linear constraints, and extends Integer Programming with variable quantification. How can we solve QIP problems efficiently? The paper focuses on QIP feasibility and optimization, where variables are either existentially (∃) or universally (∀) quantified, bounded by integer domains, and constrained by linear inequalities.
+Quantified Integer Programming (QIP) asks whether a bounded integer decision process with alternating existential and universal choices satisfies a linear constraint system. In the optimization variant, the existential side must also achieve the best worst-case objective value. The core problem in this workspace is to solve such quantified linear instances efficiently and correctly.
 
-## Why It Matters
+## Problem Setting
 
-QIP provides a unified framework for modeling adversarial decision-making and robust optimization, where universal variables represent uncertainty an adversary can exploit. Existing QIP solvers use search-based (QCDCL) methods. The paper shows that expansion-based methods—previously unexplored for QIP—can outperform search-based solvers on certain problem classes.
+Each instance contains:
+- Integer variables with finite lower and upper bounds
+- An ordered quantifier prefix over variable blocks
+- A linear feasibility system
+- Optionally, additional linear restrictions on the universally quantified choices
+
+The scored benchmark is a procedurally generated satisfiability family called QRandomParity. It produces hard quantified instances by combining parity relations under different variable orderings. The evaluation slice used in this gym focuses on the large-instance settings `n=100` and `n=200`.
 
 ## Success Criteria
 
-A successful QIP solver should:
-- Correctly determine whether a QIP instance is satisfiable (existential player wins) or unsatisfiable (universal player wins)
-- For optimization problems: find the optimal objective value
-- Solve instances within reasonable time limits
-- Handle problems with polyhedral uncertainty sets (universal constraints)
+A successful solver should:
+- Return the correct satisfiability outcome for each instance
+- Respect the bounded integer domains and any universal-domain restrictions
+- Solve more instances within the timeout and do so faster on the solved subset
 
-The evaluation uses runtime and number of instances solved as the primary metrics: faster solvers and solvers that complete more instances within a time limit are better.
+This gym scores runtime and solved-instance count, so both speed and reliability matter.

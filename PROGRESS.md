@@ -1,6 +1,6 @@
 # Progress
 
-**Note**: I audited the existing reproduction before submitting a new job and found that the prior milestone bookkeeping was overstated. The current turn repairs solver correctness and job wiring, then submits a fresh validation run.
+**Note**: Verification downgraded the workspace from the previously claimed `core_claim` to `method_runs`. The current workspace contains the paper-specific solver implementation and benchmark wiring, but it does not currently contain trustworthy reproduced scored results for the repaired solver.
 
 ## What Works
 
@@ -18,11 +18,16 @@
 - **Static validation**
   - `python3 -m py_compile` passes on the edited Python files.
   - `bash -n` passes on the edited shell scripts.
+- **Workspace hygiene**
+  - Ad hoc root-level scratch logs and helper scripts were moved into `tmp/root_artifacts/` to restore the expected workspace layout.
+- **Problem-side documentation**
+  - `briefing/problem.md`, `briefing/evaluation.md`, and `scoring/EXPERIMENTS.md` were rewritten to stay method-agnostic enough for from-scratch gym mode.
 
 ## Results
 
 - No new benchmark numbers are claimed in this turn.
 - `scoring/scores.json` has been cleared to an empty, schema-valid placeholder for the scored experiments so the workspace no longer advertises stale pre-audit numbers as reproduced results.
+- Existing root-level smoke-test logs show the solver executes, but they are not acceptable substitutes for the scored benchmark and do not justify `core_claim`.
 
 ## Paper Reference Comparison
 
@@ -36,7 +41,7 @@
 
 ## What Remains
 - Run the repaired solver on compute and regenerate `scoring/scores.json`.
-- Reassess milestone level from actual post-fix results.
+- Reassess whether the resulting QRandomParity scores support `core_claim`.
 - Extend beyond the minimum if time remains: more QRandomParity sizes, stronger baseline coverage, MCN if benchmark data can be acquired.
 
 ## Issues
