@@ -8,6 +8,9 @@ checkpoints/
 
 # Data — reproduced via scripts/download.sh, not tracked
 data/
+!data/
+data/*
+!data/*.py
 
 # Container artifacts (multi-GB)
 environment/container.sif
