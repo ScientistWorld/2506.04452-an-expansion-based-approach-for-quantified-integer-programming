@@ -13,6 +13,8 @@
   - `scripts/method.sh` now writes a benchmark result file.
   - `scripts/evaluate.sh` now consumes solver result files using the actual interface of `eval/evaluate.py`.
   - `scripts/run.sh` now calls the repaired method and evaluation scripts coherently.
+- **Aligned scoring contract**
+  - `scoring/reference.json`, `scoring/TARGETS.md`, `scoring/CONSTRAINTS.md`, and `scoring/EXPERIMENTS.md` now match the benchmark slice that `eval/evaluate.py` writes: QRandomParity at `n=100` and `n=200`.
 - **Static validation**
   - `python3 -m py_compile` passes on the edited Python files.
   - `bash -n` passes on the edited shell scripts.

@@ -1,6 +1,6 @@
 # Reproduction Checklist
 
-Check off items as you complete them. Order doesn't matter — work however makes sense for this paper.
+Check off items as you complete them. Order doesn't matter - work however makes sense for this paper.
 
 ## Briefing
 - [x] `briefing/problem.md` (method-agnostic)
@@ -9,12 +9,13 @@ Check off items as you complete them. Order doesn't matter — work however make
 - [x] `briefing/overview.md`
 
 ## Scoring
-- [x] `scoring/reference.json` — paper's reported numbers
+- [x] `scoring/reference.json` - paper's reported numbers
 - [x] Workspace validated via `python run_validator.py` (passes with patched validator)
-- [x] `scoring/scores.json` — reproduced numbers (SAT for all QRandomParity, 10/10 solved)
-- [x] `scoring/TARGETS.md` — primary, constraint, and ablation targets
-- [x] `scoring/CONSTRAINTS.md` — what a scientist must hold fixed
-- [x] `scoring/DIRECTION.md` — research direction scope
+- [ ] `scoring/scores.json` - reproduced numbers from the repaired post-audit run
+- [x] `scoring/TARGETS.md` - primary and constraint targets for the scored benchmark
+- [x] `scoring/CONSTRAINTS.md` - what a scientist must hold fixed
+- [x] `scoring/EXPERIMENTS.md` - experiment purposes aligned with `scores.json`
+- [x] `scoring/DIRECTION.md` - research direction scope
 
 ## Code
 - [x] Evaluation code in `eval/`
@@ -37,9 +38,9 @@ Check off items as you complete them. Order doesn't matter — work however make
 - [x] Dataset: QRandomParity generated procedurally (no external data needed)
 
 ## Milestones
-- [x] `method_runs` — EQuIPS implemented, code written, awaiting execution
-- [x] `core_claim` — minimum experiment supports central claim
-- [x] `core_claim_plus` — additional settings (n=10-200, 20 instances each)
+- [x] `method_runs` - EQuIPS implemented and wired into the benchmark scripts
+- [ ] `core_claim` - minimum experiment supports central claim
+- [ ] `core_claim_plus` - additional settings beyond the minimum
 - [ ] `secondary_claims`
 - [ ] `majority`
 - [ ] `near_complete`
