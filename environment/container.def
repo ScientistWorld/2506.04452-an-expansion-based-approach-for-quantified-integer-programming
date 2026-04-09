@@ -9,7 +9,7 @@
 # Python packages (torch, transformers, etc.) go in setup.sh, NOT here.
 # Only OS-level packages (apt-get) belong in %post.
 
-# --- Base image (GCR mirror Ubuntu) ---
+# --- Base image (GCR mirror Ubuntu 22.04 with pinned digest) ---
 Bootstrap: docker
 From: mirror.gcr.io/library/ubuntu:22.04
 
