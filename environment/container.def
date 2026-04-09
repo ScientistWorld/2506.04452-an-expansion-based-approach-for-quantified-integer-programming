@@ -10,10 +10,11 @@
 # Only OS-level packages (apt-get) belong in %post.
 
 # --- Base image ---
-# Use the already available local image to avoid transient registry metadata
-# failures during verification reruns.
-Bootstrap: localimage
-From: container.sif
+# Use the public Python slim image. The earlier fetch failure was a transient
+# registry metadata error; localimage paths are not resolved correctly by this
+# scheduler's build environment.
+Bootstrap: docker
+From: python:3.11-slim
 
 %files
     # data/train.csv /home/user/data/train.csv
@@ -23,7 +24,7 @@ From: container.sif
     # test_initial_state.py /home/user/test_initial_state.py
 
 %post
-    # The local base image already includes Python. Install basic shell tools only.
+    # python:3.11-slim has Python — install basic tools only.
     apt-get update && apt-get install -y --no-install-recommends \
         python3-pip nano vim-tiny less curl wget git && \
     ln -sf /usr/bin/vim.tiny /usr/bin/vim && \
