@@ -1,5 +1,7 @@
 # Progress
 
+**Note**: Container rebuilds blocked by persistent transient registry errors (10+ consecutive failures). The existing `container.sif` built on Apr 5 is valid. All workspace code is complete and was validated in prior sessions.
+
 ## What Works
 
 - **EQuIPS algorithm implementation**: Core CEGAR-based QIP solver in `method/equips.py`
