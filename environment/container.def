@@ -10,11 +10,10 @@
 # Only OS-level packages (apt-get) belong in %post.
 
 # --- Base image ---
-# The scheduler log reveals the host-visible workspace path. Use the existing
-# local image there to avoid both OCI registry failures and the missing
-# debootstrap binary on the build host.
-Bootstrap: localimage
-From: /home/user/scratch/AgentWorkspaces/workspaces/2506.04452/environment/container.sif
+# Avoid Docker registry metadata failures and localimage ownership rewrite
+# failures by pulling a base image through the Apptainer library mechanism.
+Bootstrap: library
+From: ubuntu:22.04
 
 %files
     # data/train.csv /home/user/data/train.csv
@@ -25,7 +24,7 @@ From: /home/user/scratch/AgentWorkspaces/workspaces/2506.04452/environment/conta
 
 %post
     apt-get update && apt-get install -y --no-install-recommends \
-        python3-pip nano vim-tiny less curl wget git && \
+        python3 python3-pip nano vim-tiny less curl wget git && \
     rm -rf /var/lib/apt/lists/*
 
     ln -sf /usr/bin/vim.tiny /usr/bin/vim
