@@ -2,7 +2,5 @@
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends. Sleeping blocks the entire pipeline.
 action: done
-gpus: 0
-test: false
 milestone: method_runs
-notes: "Stopped by the system after repeated container build failures. Workspace is left in a verified method_runs state; trustworthy scored results were not regenerated, so core_claim is not established."
+notes: "Final verification: workspace is structurally sound but not gym-ready because no auditable scored run exists for the repaired solver."

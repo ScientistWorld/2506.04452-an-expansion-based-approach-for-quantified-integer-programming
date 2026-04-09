@@ -27,4 +27,10 @@
 - Added timeout propagation and `TIMEOUT` reporting, restored universal-constraint checks at fully substituted leaves, and added the paper's existential-IP relaxation heuristic for the first move on empty existential abstractions.
 - Verified locally with the packaged HiGHS wheels that `n=4..6` QRandomParity instances are `UNSAT` for both exact enumeration and EQuIPS; prepared a CPU test-node run for the scored `n=100,200` slice.
 
+### [2026-04-09 08:45] - method_runs
+- Final verification confirmed that the repaired workspace layout, scoring files, and problem/method separation are largely in shape for future gym use.
+- Re-checking the workspace found no persisted outputs from the submitted validation run: `tmp/results/` is empty and `scoring/scores.json` still has no reproduced method entries.
+- Closed the paper at `method_runs` because the current on-disk state does not support `core_claim`.
+
 ## Stop Justification
+- Final verification found the environment structurally usable but not benchmark-complete: there is still no auditable scored run for the repaired solver, so the workspace cannot honestly advertise `core_claim` or serve as a ready-made gym baseline.

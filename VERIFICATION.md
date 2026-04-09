@@ -15,6 +15,7 @@ Because of the missing scored results, the previously claimed `core_claim` was n
 - Critical: Method leakage in `briefing/evaluation.md`.
 - Minor: Root directory contained many scratch artifacts that violated the expected workspace structure.
 - Minor: `briefing/problem.md` and `scoring/EXPERIMENTS.md` benefited from tighter, more gym-oriented wording.
+- Minor: the final submitted validation job left no persisted result file in `tmp/results/` or `logs/`, so the repaired solver still lacks an auditable scored run in this workspace.
 
 ## Fixes Applied
 
@@ -24,12 +25,13 @@ Because of the missing scored results, the previously claimed `core_claim` was n
 - Moved root-level scratch outputs and helper scripts into `tmp/root_artifacts/`.
 - Moved `examples/` under `tmp/examples/` to keep the workspace root closer to the required structure.
 - Updated `PROGRESS.md`, `MILESTONES.md`, and `action.yaml` to reflect the verified state: `method_runs`, not `core_claim`.
+- Re-checked the post-audit workspace and confirmed that `tmp/results/` is empty and `scoring/scores.json` still has no method entries, so the missing benchmark evidence is a real blocker rather than a documentation mismatch.
 
 ## Final Judgment
 
-The workspace is not yet ready to serve as a complete gym baseline because it lacks trustworthy reproduced scored results for the repaired solver. It is, however, structurally close: the problem/method separation is now much cleaner, the evaluation path is reusable, and the next required step is a fresh scored validation run rather than a redesign.
+The workspace is not yet ready to serve as a complete gym baseline because it lacks trustworthy reproduced scored results for the repaired solver. It is, however, structurally close: the problem/method separation is much cleaner, the evaluation path is reusable, and the remaining blocker is a fresh scored validation run rather than a redesign of the environment.
 
 - Milestone: method_runs
-- Ready for gym use: partial
+- Ready for gym use: no
 - Confidence: high
 - Key limitation: `scoring/scores.json` does not yet contain trustworthy reproduced benchmark results for the repaired solver

@@ -33,6 +33,7 @@
 
 - No new benchmark numbers are claimed in this turn.
 - `scoring/scores.json` has been cleared to an empty, schema-valid placeholder for the scored experiments so the workspace no longer advertises stale pre-audit numbers as reproduced results.
+- Final verification re-checked `tmp/results/` and `logs/` and found no persisted outputs from the pending validation run, so there is still no auditable scored benchmark artifact for the repaired solver.
 - Local correctness smoke tests using the packaged HiGHS wheels in `tmp/pylibs` now match exact enumeration on QRandomParity `n=4..6`: all tested instances are `UNSAT`.
 - Larger local smoke tests still time out (`n=20,40` at a 10-second cap), so no performance claim is made from the login node and compute-side validation is still required.
 
