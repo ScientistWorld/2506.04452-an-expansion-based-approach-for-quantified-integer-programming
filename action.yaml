@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: true
 milestone: method_runs
-notes: "Retry CPU test submission after transient MCR blob-stream cancellation; environment unchanged, goal remains to regenerate trustworthy QRandomParity scores and verify whether core_claim is supported."
+notes: "Retry CPU test submission after repeated transient registry failures during base-image fetch; environment unchanged, goal remains to regenerate trustworthy QRandomParity scores and verify whether core_claim is supported."
