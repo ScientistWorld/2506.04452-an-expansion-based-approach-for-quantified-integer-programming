@@ -10,11 +10,13 @@
 # Only OS-level packages (apt-get) belong in %post.
 
 # --- Base image ---
-# Use the public Python slim image. The earlier fetch failure was a transient
-# registry metadata error; localimage paths are not resolved correctly by this
-# scheduler's build environment.
-Bootstrap: docker
-From: python:3.11-slim
+# Avoid OCI registry metadata fetches entirely. The scheduler repeatedly fails
+# before %post while reading registry responses, so build from Ubuntu packages
+# directly instead of a Docker image.
+Bootstrap: debootstrap
+OSVersion: jammy
+MirrorURL: http://archive.ubuntu.com/ubuntu/
+Include: ca-certificates,python3,python3-pip,git,curl,wget,nano,vim-tiny,less
 
 %files
     # data/train.csv /home/user/data/train.csv
@@ -24,11 +26,7 @@ From: python:3.11-slim
     # test_initial_state.py /home/user/test_initial_state.py
 
 %post
-    # python:3.11-slim has Python — install basic tools only.
-    apt-get update && apt-get install -y --no-install-recommends \
-        python3-pip nano vim-tiny less curl wget git && \
-    ln -sf /usr/bin/vim.tiny /usr/bin/vim && \
-    rm -rf /var/lib/apt/lists/*
+    ln -sf /usr/bin/vim.tiny /usr/bin/vim
 
     mkdir -p /home/user/data
     chmod 755 /home/user
