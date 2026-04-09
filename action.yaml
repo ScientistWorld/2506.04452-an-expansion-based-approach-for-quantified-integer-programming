@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: true
 milestone: none
-notes: "Validate the repaired CPU-only EQuIPS solver on QRandomParity n=100 and n=200, and regenerate scoring/scores.json from the actual result file."
+notes: "Retry unchanged: the build still fails before %post while fetching OCI metadata, and all tested registry/bootstrap alternatives have failed for external infrastructure reasons rather than workspace configuration."
