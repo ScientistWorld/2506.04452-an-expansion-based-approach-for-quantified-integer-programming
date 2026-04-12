@@ -41,3 +41,8 @@
 - Final verification found that the queued validation job was still using a 5-instance smoke-test slice, which is not a valid scored benchmark because the reference experiments use 100 instances per setting.
 - Hardened `eval/evaluate.py` so the scored `n=100` and `n=200` experiments now require the full 100-instance batch instead of silently accepting undersized samples.
 - Replaced the queued smoke test with a normal CPU submission for the minimum full-size scored benchmark (`n=100`, 100 instances) to establish an auditable `scores.json` artifact.
+
+### [2026-04-12 07:20] - method_runs
+- Audited the local workspace against the upstream EQuIPS repository and corrected a QRandomParity benchmark mismatch: the local generator had included an extra unconstrained `s1` variable that is not present in the released benchmark instances.
+- Fixed the dormant QDIMACS helper numbering for the same benchmark family so the local tooling no longer encodes an invalid variable map.
+- Updated the queued CPU validation run to cover both scored settings (`n=100` and `n=200`) with 100 instances each.

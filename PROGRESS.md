@@ -13,6 +13,7 @@ The workspace currently sits at `method_runs`. The solver core implements the pa
 - **QRandomParity substitution** in `data/qrandomparity.py`
   - Substitution now keeps constant residual constraints and universal constraints, which is necessary for correct terminal checks.
   - The terminal benchmark encoding for Constraint (4c) now matches the paper: `-u - t_n >= -1` is encoded as `u + t_n <= 1`.
+  - The benchmark generator no longer introduces an extra unconstrained `s1`; the second parity chain now starts at `s2`, matching the released benchmark instances.
 - **Executable run path**
   - `scripts/method.sh` now writes a benchmark result file and accepts environment overrides for benchmark size, timeout, and seed.
   - `scripts/evaluate.sh` now consumes solver result files using the actual interface of `eval/evaluate.py`.
@@ -50,6 +51,7 @@ The workspace currently sits at `method_runs`. The solver core implements the pa
 5. **Timeout status handling**: fixed HiGHS time-limit outcomes so they surface as `TIMEOUT`, not false `UNSAT`.
 6. **Broken script interface**: fixed `scripts/method.sh`, `scripts/evaluate.sh`, and `scripts/run.sh` so they use the actual CLI of `method/run_qrandomparity.py` and `eval/evaluate.py`.
 7. **Baseline import breakage**: added a local `_sorted_blocks` helper in `baseline/enumerate.py`.
+8. **Benchmark generator drift**: removed an extra unconstrained `s1` variable from the local QRandomParity encoding and fixed the dormant QDIMACS numbering helper.
 
 ## What Remains
 - Run the repaired solver on compute and regenerate `scoring/scores.json`.
@@ -67,7 +69,7 @@ The workspace currently sits at `method_runs`. The solver core implements the pa
 - **Container registry instability**: the previous build failed before `%post` with `invalid character 's' after top-level value` while fetching the OCI image. The base image reference has now been updated in `environment/container.def` to direct `python:3.11-slim` to reduce the chance of another registry-side parse failure.
 - **Paper-vs-reproduction solver backend**: paper uses Gurobi 12.0; current reproduction uses HiGHS. This affects performance comparisons.
 - **MCN benchmark data**: not yet acquired.
-- **Missing full-size scored run**: the workspace still lacks a persisted 100-instance scored benchmark artifact, which blocks `core_claim`.
+- **Missing full-size scored run**: the workspace still lacks a persisted scored benchmark artifact for the declared QRandomParity targets, which blocks `core_claim`.
 
 ## Deviations from Paper
 1. **IP Solver**: Paper uses Gurobi 12.0. We use HiGHS (open-source).
@@ -75,3 +77,9 @@ The workspace currently sits at `method_runs`. The solver core implements the pa
 3. **MCN instances**: Not yet evaluated.
 4. **Optimization**: Binary-search feasibility wrapper only; no Yasol+EQuIPS hybrid verification workflow yet.
 5. **Validation status**: current state repairs correctness and packaging, verifies exact small unsatisfiable QRandomParity instances locally, rejects undersized scored batches, and prepares a fresh compute-side run instead of claiming stale pre-audit numbers.
+
+### [2026-04-12 07:20] Generator And Scoring Audit
+
+- Compared the local workspace against the upstream EQuIPS repository and found a benchmark mismatch in the local QRandomParity generator: an extra unconstrained `s1` variable was present even though the released instances start the second parity chain at `s2`.
+- Fixed the local generator and the dormant `to_qdimacs()` numbering helper to match that benchmark convention more closely.
+- Expanded the queued CPU benchmark run from only `n=100` to the full declared scored slice `n=100,200` so the next job can populate both scoring targets if it completes.

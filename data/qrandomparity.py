@@ -174,14 +174,14 @@ def generate_qrandomparity(n: int, seed: int = None) -> QIPProblem:
     Variables: x_1..x_n (existential),
                u (universal, binary),
                t_2..t_n, d_2..d_n (existential, for first parity chain),
-               s_1..s_n, e_2..e_n (existential, for second parity chain)
+               s_2..s_n, e_2..e_n (existential, for second parity chain)
 
     The QIP is:
-    exists x_1..x_n  forall u  exists t_2..t_n, d_2..d_n, s_1..s_n, e_2..e_n :
-        x_1 + x_2 = 2*d_2
-        x_σ(1) + x_σ(2) = 2*e_2
-        t_{i-1} + x_i = 2*d_i   for i=3..n
-        s_{i-1} + x_{σ(i)} = 2*e_i  for i=3..n
+    exists x_1..x_n  forall u  exists t_2..t_n, d_2..d_n, s_2..s_n, e_2..e_n :
+        x_1 + x_2 + t_2 = 2*d_2
+        x_σ(1) + x_σ(2) + s_2 = 2*e_2
+        t_{i-1} + x_i + t_i = 2*d_i   for i=3..n
+        s_{i-1} + x_{σ(i)} + s_i = 2*e_i  for i=3..n
         -u - t_n >= -1   (u + t_n >= 1)
         u + s_n >= 1
     """
@@ -213,7 +213,8 @@ def generate_qrandomparity(n: int, seed: int = None) -> QIPProblem:
         variables.append(Variable(name=f"d{i}", lower=0, upper=1, quantifier='E', level=3))
 
     # s_i: existential, level 3, domain {0, 1}
-    for i in range(1, n + 1):
+    # The released benchmark instances start this chain at s_2.
+    for i in range(2, n + 1):
         variables.append(Variable(name=f"s{i}", lower=0, upper=1, quantifier='E', level=3))
 
     # e_i: existential, level 3, domain {0, 1}
@@ -251,8 +252,9 @@ def generate_qrandomparity(n: int, seed: int = None) -> QIPProblem:
 def to_qdimacs(problem: QIPProblem, sigma: list[int]) -> str:
     """Convert to QDIMACS format for QBF solvers."""
     n = len([v for v in problem.variables if v.quantifier == 'E' and v.name.startswith('x')])
-    # Count variables: x_1..x_n (n), u (1), t_2..t_n (n-1), d_2..d_n (n-1), s_1..s_n (n), e_2..e_n (n-1)
-    total_vars = 4 * n
+    # Count variables in the QBF encoding:
+    # x_1..x_n (n), u (1), t_2..t_n (n-1), s_2..s_n (n-1)
+    total_vars = 3 * n - 1
     n_clauses = 4 * n - 2
 
     lines = [f"c QRandomParity n={n}", f"p cnf {total_vars} {n_clauses}"]
@@ -261,8 +263,8 @@ def to_qdimacs(problem: QIPProblem, sigma: list[int]) -> str:
     lines.append("e " + " ".join(str(i+1) for i in range(n)))
     lines.append(f"a {n+1}")  # u
 
-    # Remaining variables: t_2..s_n
-    remaining = list(range(n+2, 4*n+1))
+    # Remaining variables: t_2..t_n, s_2..s_n
+    remaining = list(range(n + 2, total_vars + 1))
     if remaining:
         lines.append("e " + " ".join(str(x) for x in remaining))
 
@@ -273,11 +275,11 @@ def to_qdimacs(problem: QIPProblem, sigma: list[int]) -> str:
     lines.append(f"-1 -2 {n+2} 0")
 
     # s chain init
-    s1 = 2*n
-    lines.append(f"{sigma[0]+1} {sigma[1]+1} {s1} 0")
-    lines.append(f"{-sigma[0]-1} {sigma[1]+1} {s1} 0")
-    lines.append(f"{sigma[0]+1} {-sigma[1]-1} {s1} 0")
-    lines.append(f"{-sigma[0]-1} {-sigma[1]-1} {s1} 0")
+    s2 = 2 * n
+    lines.append(f"{sigma[0]+1} {sigma[1]+1} {s2} 0")
+    lines.append(f"{-sigma[0]-1} {sigma[1]+1} {s2} 0")
+    lines.append(f"{sigma[0]+1} {-sigma[1]-1} {s2} 0")
+    lines.append(f"{-sigma[0]-1} {-sigma[1]-1} {s2} 0")
 
     # t chain propagation for i=3..n
     for i in range(3, n+1):
@@ -290,8 +292,8 @@ def to_qdimacs(problem: QIPProblem, sigma: list[int]) -> str:
 
     # s chain propagation for i=3..n
     for i in range(3, n+1):
-        s_prev = 2*n + i - 2
-        s_curr = 2*n + i - 1
+        s_prev = 2 * n + i - 3
+        s_curr = 2 * n + i - 2
         x_si = sigma[i-1] + 1
         lines.append(f"{-x_si} {s_prev} {s_curr} 0")
         lines.append(f"{x_si} {-(s_prev)} {s_curr} 0")
@@ -299,8 +301,8 @@ def to_qdimacs(problem: QIPProblem, sigma: list[int]) -> str:
         lines.append(f"{-x_si} {-(s_prev)} {-(s_curr)} 0")
 
     # Final
-    t_n = 2*n - 1
-    s_n = 3*n - 1
+    t_n = 2 * n - 1
+    s_n = 3 * n - 1
     u = n + 1
     lines.append(f"{-u} {-t_n} 0")
     lines.append(f"{u} {s_n} 0")

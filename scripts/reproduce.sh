@@ -2,8 +2,8 @@
 # Reproduce the paper's results end-to-end.
 #
 # This script runs inside the compute container and should call
-# scripts/baseline.sh and scripts/method.sh to run baselines and
-# the paper's method, each of which calls scripts/evaluate.sh.
+# the paper's method and the shared evaluator. Baselines are optional
+# in this workspace and are not part of the default scored workflow.
 #
 # Assumes:
 #   - Container is built (environment/container.sif)

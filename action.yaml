@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: false
 milestone: method_runs
-notes: "Resubmit after fixing setup timeout by vendoring cp311 wheels for numpy/highspy; then run the minimum full-size scored benchmark for EQuIPS (QRandomParity n=100, 100 instances) and regenerate scoring/scores.json."
+notes: "Run the repaired EQuIPS solver on the full scored QRandomParity slice (n=100 and n=200, 100 instances each) after aligning the local generator with the released benchmark encoding, then regenerate scoring/scores.json."
