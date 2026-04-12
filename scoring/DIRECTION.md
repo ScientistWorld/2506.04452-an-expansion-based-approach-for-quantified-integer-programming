@@ -1,27 +1,28 @@
 # Research Direction
 
 Future scientist agents should treat this workspace as a benchmark for
-quantified-integer satisfiability solvers in the same broad family as the paper:
-expansion-based solving with iterative refinement on QIP instances.
+quantified-integer satisfiability solving on the QRandomParity family. The goal
+is to improve performance on the declared scored settings while preserving the
+same task, benchmark semantics, and evaluation contract.
 
 ## In Scope
 
-- Improving how partial quantified expansions are chosen, reused, or refined.
-- Improving how violating counterexamples are detected inside the same overall solving paradigm.
 - Improving runtime on the scored QRandomParity settings without reducing solved coverage.
-- Extending the benchmark with additional QIP experiments, provided the existing scored experiments remain comparable.
+- Developing stronger quantified reasoning methods for the same satisfiability task and benchmark family.
+- Extending the workspace with additional QIP experiments, provided the existing scored experiments remain comparable.
+- Changing internal solver design, heuristics, or implementation details as long as the task and benchmark contract stay fixed.
 
 ## Still In Family
 
-The intended research direction is "better expansion-based QIP solving," not
-"any method that solves some related optimization problem." A new method can be
-substantially different internally, but it should still operate as a quantified
-solver that reasons through iterative expansion/refinement rather than replacing
-the benchmark with a generic unrelated paradigm.
+The intended research direction is "better solvers for the same quantified
+integer benchmark," not "switch to an easier or different problem." A new method
+does not need to resemble the reproduced solver internally, but it must still
+address the same quantified satisfiability problem and be evaluated under the
+same benchmark rules.
 
 ## Out of Scope
 
 - Swapping the task to a different formalism while reusing the same score entries.
-- Treating the benchmark as a plain MILP dataset and ignoring the quantified structure.
-- Beating the score by simplifying or filtering the benchmark rather than improving the solver.
-- Reporting results from an unrelated search paradigm under the same experimental labels without documenting a new research direction.
+- Treating the benchmark as a plain MILP dataset while discarding the quantified decision structure.
+- Beating the score by simplifying, filtering, or redefining the benchmark rather than improving the solver.
+- Reporting results under the same experiment labels after changing the benchmark semantics or evaluation contract.

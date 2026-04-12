@@ -63,6 +63,7 @@ The workspace currently sits at `method_runs`. The solver core implements the pa
 - The workspace is packaged for another validation attempt rather than final closure.
 - The next step is a CPU benchmark run that writes `tmp/results/equips_results.json` and regenerates `scoring/scores.json`.
 - Highest defensible milestone before that run remains `method_runs`.
+- Final verification on 2026-04-12 found that the currently committed workspace still has no persisted benchmark output in `tmp/results/`, no `logs/run.log`, and an empty `scoring/scores.json`; therefore `core_claim` is not justified by the on-disk evidence yet.
 
 ## Issues
 - **HiGHS availability on login node**: `highspy` is not installed in the host Python, so dynamic execution should be validated on compute through the packaged environment rather than assumed from local shell tests.
@@ -83,3 +84,9 @@ The workspace currently sits at `method_runs`. The solver core implements the pa
 - Compared the local workspace against the upstream EQuIPS repository and found a benchmark mismatch in the local QRandomParity generator: an extra unconstrained `s1` variable was present even though the released instances start the second parity chain at `s2`.
 - Fixed the local generator and the dormant `to_qdimacs()` numbering helper to match that benchmark convention more closely.
 - Expanded the queued CPU benchmark run from only `n=100` to the full declared scored slice `n=100,200` so the next job can populate both scoring targets if it completes.
+
+### [2026-04-12 07:05] Final Verification Status
+
+- Verified that the scored benchmark outputs are still missing from the workspace: `tmp/results/` has no result JSON, `logs/run.log` does not exist, and `scoring/scores.json` is still empty.
+- Because the reproduction numbers are not yet backed by auditable on-disk artifacts, the highest defensible milestone remains `method_runs`.
+- Updated `scripts/run.sh` to persist a compute-side run log and to pass an explicit results path through the method and evaluation scripts.

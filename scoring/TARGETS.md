@@ -1,8 +1,8 @@
 # Evaluation Targets
 
 This file documents the scored targets that future scientist agents should optimize.
-Every named target below corresponds to an experiment key that already exists in
-`scoring/scores.json`.
+These target names are defined by the benchmark contract in `scoring/reference.json`
+and should appear in `scoring/scores.json` once a scored run has been completed.
 
 Run evaluation with:
 

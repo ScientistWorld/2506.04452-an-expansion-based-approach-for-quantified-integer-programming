@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: false
 milestone: method_runs
-notes: "Run the repaired EQuIPS solver on the full scored QRandomParity slice (n=100 and n=200, 100 instances each) after aligning the local generator with the released benchmark encoding, then regenerate scoring/scores.json."
+notes: "Verification found that the claimed core_claim is not yet backed by on-disk score artifacts; rerun the full scored CPU benchmark (n=100 and n=200, 100 instances each) and persist tmp/results/equips_results.json, logs/run.log, and scoring/scores.json."

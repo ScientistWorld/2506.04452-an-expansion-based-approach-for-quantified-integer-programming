@@ -2,26 +2,30 @@
 
 ## Initial Assessment
 
-The workspace contains a real implementation of the paper's recursive EQuIPS solver and the problem/evaluation separation is mostly in good shape. However, the claimed `core_claim` was not justified by the on-disk state when I started: `scoring/scores.json` was still empty, and the queued validation run was configured as a 5-instance smoke test rather than the full scored benchmark.
+The workspace contains a plausible implementation of the paper's EQuIPS-style solver, method-agnostic problem and evaluation files, and a reasonable scoring rubric for the intended QRandomParity benchmark. However, the claimed `core_claim` milestone was not justified by the current filesystem state when verification started: `scoring/scores.json` was empty, `tmp/results/` contained no benchmark output, and there was no persisted `logs/run.log` from the queued benchmark run.
 
 ## Issues Found
 
-- Critical: No trustworthy reproduced scored results in `scoring/scores.json`.
-- Critical: The queued `scripts/run.sh` configuration used only 5 instances, which is not comparable to the 100-instance reference experiments and would have allowed an undersized sample to count as a scored reproduction.
-- Minor: The scoring docs did not explicitly state that the scored `n=100` and `n=200` experiments each require 100 generated instances.
+- Critical: `core_claim` was not supported by auditable on-disk results. The reproduced score artifact was missing, so the workspace could not yet serve as a trustworthy benchmark baseline.
+- Minor: `scripts/run.sh` did not persist its stdout/stderr to a workspace log file, which makes future verification and debugging harder if a compute job fails or is interrupted.
+- Minor: `action.yaml` still pointed at a pending `submit` with milestone `method_runs`, confirming that the prior benchmark cycle had not yet been finalized.
+- Minor: `scoring/DIRECTION.md` leaked the reproduced solver family, which would have biased from-scratch scientist agents toward the paper's internal approach.
+- Minor: `scoring/TARGETS.md` claimed all targets already existed in `scoring/scores.json`, which was false for the current empty score artifact.
 
 ## Fixes Applied
 
-- Hardened `eval/evaluate.py` so the scored QRandomParity experiments now require exactly 100 instances per scored size (`n=100`, `n=200`).
-- Updated `briefing/evaluation.md`, `scoring/TARGETS.md`, and `scoring/CONSTRAINTS.md` to make the fixed 100-instance scored batch explicit.
-- Replaced the queued 5-instance smoke test with a normal CPU benchmark submission for the minimum full-size scored benchmark: `n=100`, 100 instances, 300-second per-instance cap.
-- Kept the milestone at `method_runs` and updated the progress log to reflect that a valid scored artifact is still pending.
+- Kept the milestone at `method_runs` instead of incorrectly accepting `core_claim`.
+- Updated `scripts/run.sh` to tee compute-side output into `logs/run.log` and to pass an explicit results path through `scripts/method.sh` and `scripts/evaluate.sh`.
+- Updated `PROGRESS.md` and `MILESTONES.md` to document that the benchmark artifacts are still missing and that another CPU submission is required.
+- Rewrote `scoring/DIRECTION.md` to keep the research direction method-safe for from-scratch agents while still constraining the benchmark task.
+- Corrected `scoring/TARGETS.md` so it no longer claims that the missing score entries already exist.
+- Left `action.yaml` in `submit` mode for a CPU run so the missing score artifact can be produced.
 
 ## Final Judgment
 
-The workspace is not yet ready to serve as a complete gym baseline because it still lacks a persisted, auditable scored run for the repaired solver. The evaluation contract is now materially safer: undersized samples cannot be scored as if they were real benchmark results, and the next submission is aligned with the benchmark definition. If that run succeeds and populates `scoring/scores.json`, the workspace should be re-checked for a final milestone judgment.
+The workspace is close to usable as a gym, but not fully ready yet because the central reproduced benchmark artifact is still missing. A scientist agent could read the problem definition and use the environment structure, but there is not yet an auditable baseline in `scoring/scores.json` to compete against.
 
 - Milestone: method_runs
 - Ready for gym use: partial
 - Confidence: high
-- Key limitation: `scoring/scores.json` does not yet contain a full-size reproduced benchmark result for the repaired solver
+- Key limitation: missing persisted scored benchmark outputs for the declared QRandomParity targets

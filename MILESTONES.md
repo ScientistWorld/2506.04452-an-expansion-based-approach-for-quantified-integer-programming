@@ -46,3 +46,8 @@
 - Audited the local workspace against the upstream EQuIPS repository and corrected a QRandomParity benchmark mismatch: the local generator had included an extra unconstrained `s1` variable that is not present in the released benchmark instances.
 - Fixed the dormant QDIMACS helper numbering for the same benchmark family so the local tooling no longer encodes an invalid variable map.
 - Updated the queued CPU validation run to cover both scored settings (`n=100` and `n=200`) with 100 instances each.
+
+### [2026-04-12 07:05] - method_runs
+- Final verification found that the workspace still lacks the auditable artifacts needed to justify `core_claim`: there is no persisted benchmark result file in `tmp/results/`, no `logs/run.log`, and `scoring/scores.json` is empty.
+- Kept the milestone at `method_runs` and prepared another CPU submission rather than incorrectly signaling done.
+- Updated `scripts/run.sh` so the next compute-side run will write a persistent run log and use an explicit results path for both method execution and evaluation.
