@@ -7,6 +7,7 @@ Quantifier-free subproblems are solved with HiGHS.
 
 from __future__ import annotations
 
+import os
 import time
 from dataclasses import asdict, dataclass, field
 from fractions import Fraction
@@ -15,6 +16,10 @@ from typing import Optional
 
 import highspy as hp
 import numpy as np
+try:
+    from ortools.sat.python import cp_model
+except Exception:  # pragma: no cover - optional backend
+    cp_model = None
 
 from data.qrandomparity import Constraint, MultiGame, QIPProblem, Subgame, UniversalConstraint, Variable
 
@@ -76,6 +81,10 @@ def _new_highs(time_limit_s: Optional[float] = None) -> hp.Highs:
     if time_limit_s is not None:
         highs.setOptionValue("time_limit", max(0.1, float(time_limit_s)))
     return highs
+
+
+def _mip_backend() -> str:
+    return os.environ.get("EQUIPS_MIP_BACKEND", "highs").strip().lower()
 
 
 def _add_integer_vars(highs: hp.Highs, variables: list[Variable]) -> list[str]:
@@ -172,6 +181,95 @@ def _is_constraint_system_feasible(
     universal_constraints: Optional[list[UniversalConstraint]] = None,
 ) -> bool:
     return _constant_constraints_feasible(constraints, universal_constraints)
+
+
+def _build_cp_sat_vars(model: "cp_model.CpModel", variables: list[Variable]) -> dict[str, "cp_model.IntVar"]:
+    return {
+        variable.name: model.NewIntVar(int(variable.lower), int(variable.upper), variable.name)
+        for variable in variables
+    }
+
+
+def _cp_sat_expr(var_map: dict[str, "cp_model.IntVar"], coeffs: dict[str, int]):
+    terms = [int(coeff) * var_map[name] for name, coeff in coeffs.items() if name in var_map]
+    return sum(terms) if terms else 0
+
+
+def _solve_cp_sat_feasible(
+    variables: list[Variable],
+    constraints: list[Constraint],
+    universal_constraints: list[UniversalConstraint],
+    time_limit_s: Optional[float] = None,
+) -> object:
+    if cp_model is None:
+        raise RuntimeError("cp-sat backend requested but ortools is not installed")
+    model = cp_model.CpModel()
+    var_map = _build_cp_sat_vars(model, variables)
+    for constraint in constraints:
+        expr = _cp_sat_expr(var_map, constraint.coeffs)
+        if constraint.is_equality:
+            model.Add(expr == int(constraint.rhs))
+        else:
+            model.Add(expr <= int(constraint.rhs))
+    for constraint in universal_constraints:
+        model.Add(_cp_sat_expr(var_map, constraint.coeffs) <= int(constraint.rhs))
+
+    solver = cp_model.CpSolver()
+    solver.parameters.num_search_workers = 1
+    solver.parameters.log_search_progress = False
+    if time_limit_s is not None:
+        solver.parameters.max_time_in_seconds = max(0.1, float(time_limit_s))
+    status = solver.Solve(model)
+    if status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
+        return {name: int(solver.Value(var)) for name, var in var_map.items()}
+    if status == cp_model.INFEASIBLE:
+        return None
+    return _TIMEOUT
+
+
+def _solve_cp_sat_violate_all(
+    variables: list[Variable],
+    constraint_sets: list[list[Constraint]],
+    universal_constraints: list[UniversalConstraint],
+    time_limit_s: Optional[float] = None,
+) -> object:
+    if cp_model is None:
+        raise RuntimeError("cp-sat backend requested but ortools is not installed")
+    model = cp_model.CpModel()
+    var_map = _build_cp_sat_vars(model, variables)
+    for constraint in universal_constraints:
+        model.Add(_cp_sat_expr(var_map, constraint.coeffs) <= int(constraint.rhs))
+
+    for subgame_id, constraints in enumerate(constraint_sets):
+        if not constraints:
+            return None
+        literals = []
+        for row_id, constraint in enumerate(constraints):
+            violated = model.NewBoolVar(f"viol_{subgame_id}_{row_id}")
+            expr = _cp_sat_expr(var_map, constraint.coeffs)
+            rhs = int(constraint.rhs)
+            if constraint.is_equality:
+                direction = model.NewBoolVar(f"viol_eq_dir_{subgame_id}_{row_id}")
+                model.Add(expr == rhs).OnlyEnforceIf(violated.Not())
+                model.Add(expr <= rhs - 1).OnlyEnforceIf([violated, direction.Not()])
+                model.Add(expr >= rhs + 1).OnlyEnforceIf([violated, direction])
+            else:
+                model.Add(expr <= rhs).OnlyEnforceIf(violated.Not())
+                model.Add(expr >= rhs + 1).OnlyEnforceIf(violated)
+            literals.append(violated)
+        model.Add(sum(literals) >= 1)
+
+    solver = cp_model.CpSolver()
+    solver.parameters.num_search_workers = 1
+    solver.parameters.log_search_progress = False
+    if time_limit_s is not None:
+        solver.parameters.max_time_in_seconds = max(0.1, float(time_limit_s))
+    status = solver.Solve(model)
+    if status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
+        return {name: int(solver.Value(var)) for name, var in var_map.items()}
+    if status == cp_model.INFEASIBLE:
+        return None
+    return _TIMEOUT
 
 
 def _solve_ip_feasible(
@@ -417,6 +515,12 @@ class SolverStats:
     max_subgames: int = 0
     max_problem_variables: int = 0
     max_problem_constraints: int = 0
+    ip_feasible_calls: int = 0
+    ip_feasible_time_s: float = 0.0
+    ip_violate_calls: int = 0
+    ip_violate_time_s: float = 0.0
+    exist_relax_calls: int = 0
+    exist_relax_time_s: float = 0.0
 
 
 def _update_stats(stats: SolverStats, multigame: MultiGame, depth: int) -> None:
