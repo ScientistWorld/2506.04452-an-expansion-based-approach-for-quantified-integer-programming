@@ -1,10 +1,9 @@
 #!/bin/bash
-# CPU diagnostic job for the EQuIPS reproduction.
+# CPU benchmark job for the scaled core-claim reproduction.
 #
-# Goals:
-# 1. Exercise the lower-overhead equality encoding plus hybrid backend path.
-# 2. Persist per-instance recursion/refinement stats for timeout analysis.
-# 3. Print a compact summary that will guide the next scored submission.
+# This submission runs the paper's EQuIPS algorithm and a search-style exact
+# baseline on the same QRandomParity batch, then writes scoring/scores.json.
+# Result JSON files are preserved across retries so interrupted jobs can resume.
 
 set -e
 
@@ -18,50 +17,43 @@ if [ -d "/dev/shm/pylibs" ]; then
     export PYTHONPATH="/dev/shm/pylibs:$PYTHONPATH"
 fi
 
-echo "=== EQuIPS Validation Run ==="
+echo "=== Scaled EQuIPS Benchmark ==="
 echo "Python: $(python3 --version)"
 
-RESULTS_FILE="/home/user/tmp/results/equips_diagnostic.json"
-rm -f "$RESULTS_FILE"
+METHOD_RESULTS="/home/user/tmp/results/equips_results.json"
+BASELINE_RESULTS="/home/user/tmp/results/search_baseline_results.json"
+rm -f /home/user/scoring/scores.json
 
-export EQUIPS_N_VALUES="5 20 50 100"
-export EQUIPS_NUM_INSTANCES="1"
-export EQUIPS_TIMEOUT_SECS="10.0"
+export EQUIPS_N_VALUES="10"
+export EQUIPS_NUM_INSTANCES="100"
+export EQUIPS_TIMEOUT_SECS="5.0"
 export EQUIPS_INSTANCE_START="0"
 export EQUIPS_SEED="42"
-export EQUIPS_RESUME="0"
+export EQUIPS_RESUME="1"
 export EQUIPS_MIP_BACKEND="auto"
 
-bash /home/user/scripts/method.sh "$RESULTS_FILE"
+export BASELINE_N_VALUES="10"
+export BASELINE_NUM_INSTANCES="100"
+export BASELINE_TIMEOUT_SECS="5.0"
+export BASELINE_INSTANCE_START="0"
+export BASELINE_SEED="42"
+export BASELINE_RESUME="1"
+
+bash /home/user/scripts/method.sh "$METHOD_RESULTS"
+bash /home/user/scripts/baseline.sh "$BASELINE_RESULTS"
+bash /home/user/scripts/evaluate.sh "$METHOD_RESULTS" "$BASELINE_RESULTS"
 
 python3 - <<'PY'
 import json
 from pathlib import Path
 
-path = Path("/home/user/tmp/results/equips_diagnostic.json")
-payload = json.loads(path.read_text())
-print("=== Diagnostic Summary ===")
-for record in payload.get("results", []):
-    stats = record.get("stats") or {}
-    print(
-        "n={n} status={status} runtime={runtime:.3f}s calls={calls} nested={nested} "
-        "iters={iters} refs={refs} depth={depth} outer={outer} subgames={subgames} "
-        "max_vars={max_vars} max_cons={max_cons}".format(
-            n=record["n"],
-            status=record["status"],
-            runtime=record["runtime_s"],
-            calls=stats.get("recursive_calls", 0),
-            nested=stats.get("nested_solves", 0),
-            iters=stats.get("abstraction_iterations", 0),
-            refs=stats.get("refinements", 0),
-            depth=stats.get("max_recursion_depth", 0),
-            outer=stats.get("max_outer_vars", 0),
-            subgames=stats.get("max_subgames", 0),
-            max_vars=stats.get("max_problem_variables", 0),
-            max_cons=stats.get("max_problem_constraints", 0),
+scores = json.loads(Path("/home/user/scoring/scores.json").read_text())
+print("=== Score Summary ===")
+for exp_name, exp in scores.get("experiments", {}).items():
+    print(exp_name)
+    for method_name, metrics in exp.get("results", {}).items():
+        print(
+            f"  {method_name}: solved={metrics['instances_solved']} "
+            f"median_runtime_s={metrics['median_runtime_s']}"
         )
-    )
 PY
-
-echo "=== DONE ==="
-echo "Diagnostic results written to $RESULTS_FILE"

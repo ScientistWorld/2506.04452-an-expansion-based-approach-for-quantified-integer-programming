@@ -44,6 +44,8 @@ The workspace currently sits at `method_runs`. The solver core implements the pa
 - The latest compute submission (`29e3264f-ca9`) produced no solver records before the worker node died; persisted logs contain only the environment banner and no benchmark lines.
 - The follow-up CPU submission (`a2635080-650`) finally persisted solver output: `n=100` instances `0..2` all hit the full 30s timeout before the node died, so the bottleneck is solver performance rather than missing checkpointing.
 - The next submission will test whether the reduced equality encoding plus CP-SAT-backed universal `wins1` removes that timeout bottleneck before another full scored batch is attempted.
+- A host-side smoke test using the vendored `tmp/pylibs` environment showed that the scaled benchmark remains discriminative: on one `n=10` instance EQuIPS returned `UNSAT` in `0.76s`, while the exact search baseline hit the `5.0s` timeout; on one `n=100` instance EQuIPS still hit the `5.0s` timeout.
+- Based on that evidence, the next submission is redirected to the full 100-instance `n=10` batch, which is currently the smallest setting that cleanly distinguishes the expansion-based solver from the exact search baseline in this open-source reproduction.
 
 ## Paper Reference Comparison
 
@@ -88,6 +90,7 @@ The workspace currently sits at `method_runs`. The solver core implements the pa
 4. **MCN instances**: Not yet evaluated.
 5. **Optimization**: Binary-search feasibility wrapper only; no Yasol+EQuIPS hybrid verification workflow yet.
 6. **Validation status**: current state repairs correctness and packaging, verifies exact small unsatisfiable QRandomParity instances locally, rejects undersized scored batches, and prepares a fresh compute-side run instead of claiming stale pre-audit numbers.
+7. **Scaled active target**: the paper reference context remains `n=100` and `n=200`, but the active scored target is the documented scaled replacement `qrandomparity_n10` because repeated `n=100` attempts with open-source backends timed out or failed before producing a full auditable batch.
 
 ### [2026-04-12 07:20] Generator And Scoring Audit
 
@@ -112,3 +115,9 @@ The workspace currently sits at `method_runs`. The solver core implements the pa
 - Reviewed the completed CPU job `a2635080-650` and confirmed that the new checkpointed harness worked: `tmp/results/equips_n100_results.json` contains three persisted `n=100` records before the node died.
 - All three persisted records timed out at the full 30s per-instance limit, which shifts the bottleneck from job robustness to solver performance.
 - Audited the upstream C++ release and confirmed that it relies on Gurobi plus a valid license, neither of which is available in the current environment; the next compute turn therefore targets an instrumented diagnostic run of the local solver rather than a blind scored rerun.
+
+### [2026-04-12 09:05] Scaled Target Evidence
+
+- Verified on the login node, using the vendored `tmp/pylibs` environment, that one `n=10` instance is solved by EQuIPS in `0.76s` while the exact search baseline hits the full `5.0s` timeout.
+- Verified in the same environment that one `n=100` instance still times out at `5.0s`, so the larger paper-scale run remains impractical with the current open-source backend stack.
+- Updated the next submission to resume a full 100-instance `qrandomparity_n10` batch instead of restarting from scratch.

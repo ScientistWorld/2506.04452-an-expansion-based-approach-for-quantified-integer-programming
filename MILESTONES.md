@@ -66,3 +66,8 @@
 - Reduced the QRandomParity encoding to the paper's native equality form instead of expressing each XOR relation as two inequalities, shrinking the quantifier-free models without changing benchmark semantics.
 - Enabled a hybrid open-source `wins1` backend: HiGHS remains the default for existential feasibility, while universal violation subproblems now use OR-Tools CP-SAT in `EQUIPS_MIP_BACKEND=auto`.
 - Updated the environment and run scripts so the next CPU diagnostic submission installs OR-Tools, exercises the new backend path, and records whether `n=100` still times out before the next scored batch.
+
+### [2026-04-12 09:05] - method_runs
+- Ran a lightweight host-side smoke test using the vendored solver packages: EQuIPS solved one `qrandomparity_n10` instance in `0.76s`, while the exact search baseline timed out at `5.0s`.
+- Confirmed that one `qrandomparity_n100` instance still times out at `5.0s` with the current open-source backend stack, so the large paper-scale run remains blocked on backend performance rather than wiring.
+- Repointed the next submission to the full 100-instance `qrandomparity_n10` batch and preserved result checkpoints across retries to maximize the chance of reaching an auditable scaled `core_claim`.

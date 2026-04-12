@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: true
 milestone: method_runs
-notes: "Run the CPU diagnostic matrix again after two solver-side changes: native equality encoding for QRandomParity and auto backend selection that uses CP-SAT for universal wins1. Persist recursion/refinement stats in tmp/results/equips_diagnostic.json to see whether n=100 still times out before another full scored batch."
+notes: "Run the full 100-instance scaled QRandomParity n=10 batch on CPU, comparing EQuIPS against the exact search baseline and resuming from persisted JSON checkpoints if the job is interrupted."
