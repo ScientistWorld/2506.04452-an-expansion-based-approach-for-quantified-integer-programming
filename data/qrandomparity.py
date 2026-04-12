@@ -224,22 +224,36 @@ def generate_qrandomparity(n: int, seed: int = None) -> QIPProblem:
     constraints = []
 
     # (4a): x_1 + x_2 + t_2 = 2*d_2
-    constraints.append(Constraint({'x1': 1, 'x2': 1, 't2': 1, 'd2': -2}, 0))
-    constraints.append(Constraint({'x1': -1, 'x2': -1, 't2': -1, 'd2': 2}, 0))
+    constraints.append(Constraint({'x1': 1, 'x2': 1, 't2': 1, 'd2': -2}, 0, is_equality=True))
 
     # (4a): x_{σ(1)} + x_{σ(2)} + s_2 = 2*e_2
-    constraints.append(Constraint({f'x{sigma[0]}': 1, f'x{sigma[1]}': 1, 's2': 1, 'e2': -2}, 0))
-    constraints.append(Constraint({f'x{sigma[0]}': -1, f'x{sigma[1]}': -1, 's2': -1, 'e2': 2}, 0))
+    constraints.append(
+        Constraint(
+            {f'x{sigma[0]}': 1, f'x{sigma[1]}': 1, 's2': 1, 'e2': -2},
+            0,
+            is_equality=True,
+        )
+    )
 
     # (4b) t chain: t_{i-1} + x_i + t_i = 2*d_i  for i=3..n
     for i in range(3, n + 1):
-        constraints.append(Constraint({f't{i-1}': 1, f'x{i}': 1, f't{i}': 1, f'd{i}': -2}, 0))
-        constraints.append(Constraint({f't{i-1}': -1, f'x{i}': -1, f't{i}': -1, f'd{i}': 2}, 0))
+        constraints.append(
+            Constraint(
+                {f't{i-1}': 1, f'x{i}': 1, f't{i}': 1, f'd{i}': -2},
+                0,
+                is_equality=True,
+            )
+        )
 
     # (4b) s chain: s_{i-1} + x_{σ(i)} + s_i = 2*e_i  for i=3..n
     for i in range(3, n + 1):
-        constraints.append(Constraint({f's{i-1}': 1, f'x{sigma[i-1]}': 1, f's{i}': 1, f'e{i}': -2}, 0))
-        constraints.append(Constraint({f's{i-1}': -1, f'x{sigma[i-1]}': -1, f's{i}': -1, f'e{i}': 2}, 0))
+        constraints.append(
+            Constraint(
+                {f's{i-1}': 1, f'x{sigma[i-1]}': 1, f's{i}': 1, f'e{i}': -2},
+                0,
+                is_equality=True,
+            )
+        )
 
     # (4c): -u - t_n >= -1  <=>  u + t_n <= 1
     constraints.append(Constraint({'u': 1, f't{n}': 1}, 1))

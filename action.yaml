@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: true
 milestone: method_runs
-notes: "Job a2635080-650 showed that checkpointing works but the local solver times out on n=100 before scoring can complete. Run the new CPU diagnostic matrix (n=5,20,50,100; one instance each; 10s timeout) and persist recursion/refinement stats in tmp/results/equips_diagnostic.json to guide the next solver rewrite."
+notes: "Run the CPU diagnostic matrix again after two solver-side changes: native equality encoding for QRandomParity and auto backend selection that uses CP-SAT for universal wins1. Persist recursion/refinement stats in tmp/results/equips_diagnostic.json to see whether n=100 still times out before another full scored batch."

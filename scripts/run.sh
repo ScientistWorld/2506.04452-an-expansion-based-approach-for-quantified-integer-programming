@@ -2,9 +2,9 @@
 # CPU diagnostic job for the EQuIPS reproduction.
 #
 # Goals:
-# 1. Run the instrumented EQuIPS solver on a small diagnostic matrix.
+# 1. Exercise the lower-overhead equality encoding plus hybrid backend path.
 # 2. Persist per-instance recursion/refinement stats for timeout analysis.
-# 3. Print a compact summary that will guide the next implementation step.
+# 3. Print a compact summary that will guide the next scored submission.
 
 set -e
 
@@ -30,6 +30,7 @@ export EQUIPS_TIMEOUT_SECS="10.0"
 export EQUIPS_INSTANCE_START="0"
 export EQUIPS_SEED="42"
 export EQUIPS_RESUME="0"
+export EQUIPS_MIP_BACKEND="auto"
 
 bash /home/user/scripts/method.sh "$RESULTS_FILE"
 

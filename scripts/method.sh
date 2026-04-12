@@ -17,7 +17,7 @@ fi
 python3 - <<'PY'
 import importlib
 
-for module_name in ("numpy", "highspy"):
+for module_name in ("numpy", "highspy", "ortools"):
     module = importlib.import_module(module_name)
     print(f"{module_name}={getattr(module, '__version__', 'unknown')}")
 PY
@@ -29,6 +29,7 @@ INSTANCE_START="${EQUIPS_INSTANCE_START:-0}"
 TIMEOUT_SECS="${EQUIPS_TIMEOUT_SECS:-120.0}"
 SEED="${EQUIPS_SEED:-42}"
 RESUME_FLAG="${EQUIPS_RESUME:-1}"
+export EQUIPS_MIP_BACKEND="${EQUIPS_MIP_BACKEND:-auto}"
 
 mkdir -p "$(dirname "$OUTPUT_PATH")"
 

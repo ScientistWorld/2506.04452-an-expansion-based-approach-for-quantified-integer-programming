@@ -61,3 +61,8 @@
 - Reviewed the completed CPU job `a2635080-650`; it persisted three `qrandomparity_n100` records before the worker node died, and all three hit the full 30s per-instance timeout.
 - This is real progress in diagnosis because it proves the current bottleneck is solver performance, not just missing checkpointing or missing logs.
 - Added solver instrumentation and switched the next submission to a short diagnostic matrix that records recursion, refinement, and abstraction-growth statistics instead of attempting another full scored batch immediately.
+
+### [2026-04-12 08:13] - method_runs
+- Reduced the QRandomParity encoding to the paper's native equality form instead of expressing each XOR relation as two inequalities, shrinking the quantifier-free models without changing benchmark semantics.
+- Enabled a hybrid open-source `wins1` backend: HiGHS remains the default for existential feasibility, while universal violation subproblems now use OR-Tools CP-SAT in `EQUIPS_MIP_BACKEND=auto`.
+- Updated the environment and run scripts so the next CPU diagnostic submission installs OR-Tools, exercises the new backend path, and records whether `n=100` still times out before the next scored batch.

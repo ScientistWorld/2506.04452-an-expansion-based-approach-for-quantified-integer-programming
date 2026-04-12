@@ -2,7 +2,7 @@
 EQuIPS: expansion-based quantified integer programming solver.
 
 This implements the paper's CEGAR + expansion scheme for bounded QIP.
-Quantifier-free subproblems are solved with HiGHS.
+Quantifier-free subproblems are solved with open-source IP/CP-SAT backends.
 """
 
 from __future__ import annotations
@@ -84,7 +84,19 @@ def _new_highs(time_limit_s: Optional[float] = None) -> hp.Highs:
 
 
 def _mip_backend() -> str:
-    return os.environ.get("EQUIPS_MIP_BACKEND", "highs").strip().lower()
+    return os.environ.get("EQUIPS_MIP_BACKEND", "auto").strip().lower()
+
+
+def _use_cp_sat(quantifier: str) -> bool:
+    backend = _mip_backend()
+    if backend in {"cp-sat", "cpsat"}:
+        return True
+    if backend == "auto":
+        # The universal wins1 model is a pure feasibility/violation search with
+        # many indicator-style choices. CP-SAT is a better open-source default
+        # there, while HiGHS remains a good default for existential feasibility.
+        return cp_model is not None and quantifier == "A"
+    return False
 
 
 def _add_integer_vars(highs: hp.Highs, variables: list[Variable]) -> list[str]:
@@ -431,12 +443,29 @@ def _wins1(multigame: MultiGame, time_limit_s: Optional[float] = None) -> object
     for subgame in multigame.subgames:
         constraint_sets.append(subgame.constraints if subgame.problem is None else subgame.problem.constraints)
     if multigame.outer_quantifier == "E":
+        if _use_cp_sat(multigame.outer_quantifier):
+            constraints: list[Constraint] = []
+            for constraint_set in constraint_sets:
+                constraints.extend(constraint_set)
+            return _solve_cp_sat_feasible(
+                multigame.outer_vars,
+                constraints,
+                multigame.universal_constraints,
+                time_limit_s=time_limit_s,
+            )
         constraints: list[Constraint] = []
         for constraint_set in constraint_sets:
             constraints.extend(constraint_set)
         return _solve_ip_feasible(
             multigame.outer_vars,
             constraints,
+            multigame.universal_constraints,
+            time_limit_s=time_limit_s,
+        )
+    if _use_cp_sat(multigame.outer_quantifier):
+        return _solve_cp_sat_violate_all(
+            multigame.outer_vars,
+            constraint_sets,
             multigame.universal_constraints,
             time_limit_s=time_limit_s,
         )

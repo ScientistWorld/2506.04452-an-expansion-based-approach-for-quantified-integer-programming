@@ -10,16 +10,19 @@ The workspace currently sits at `method_runs`. The solver core implements the pa
   - Universal refinement now uses the correct direction for Problem (2a), so fixed existential witnesses are actually challenged by violating universal moves.
   - Time-budget propagation now reaches the underlying HiGHS calls, and solver timeouts are reported as `TIMEOUT` instead of being mislabeled as `UNSAT`.
   - Empty existential abstractions now use the paper's stronger existential-IP relaxation heuristic from Appendix A.1 / Table 4 instead of a trivial domain-only move.
+  - `wins1` now supports a hybrid backend mode: existential feasibility stays on HiGHS, while universal violation checks use OR-Tools CP-SAT when available.
 - **QRandomParity substitution** in `data/qrandomparity.py`
   - Substitution now keeps constant residual constraints and universal constraints, which is necessary for correct terminal checks.
   - The terminal benchmark encoding for Constraint (4c) now matches the paper: `-u - t_n >= -1` is encoded as `u + t_n <= 1`.
   - The benchmark generator no longer introduces an extra unconstrained `s1`; the second parity chain now starts at `s2`, matching the released benchmark instances.
+  - The parity-chain XOR relations now use the paper's native equality form instead of doubling each relation into paired inequalities, reducing model size for large instances.
 - **Executable run path**
   - `scripts/method.sh` now writes a benchmark result file and accepts environment overrides for benchmark size, timeout, and seed.
   - `scripts/evaluate.sh` now consumes solver result files using the actual interface of `eval/evaluate.py`.
   - `scripts/run.sh` now targets a CPU validation run on the scored `n=100,200` slice with a small sample size suitable for a test node.
 - **Environment repair**
   - `environment/container.def` now uses `python:3.11-slim` instead of the MCR image that previously failed during OCI fetch.
+  - `environment/setup.sh` now installs OR-Tools alongside the vendored NumPy and HiGHS wheels so the hybrid backend path is available on compute.
 - **Aligned scoring contract**
   - `scoring/reference.json`, `scoring/TARGETS.md`, `scoring/CONSTRAINTS.md`, and `scoring/EXPERIMENTS.md` now match the benchmark slice that `eval/evaluate.py` writes: QRandomParity at `n=100` and `n=200`.
 - **Static validation**
@@ -40,6 +43,7 @@ The workspace currently sits at `method_runs`. The solver core implements the pa
 - The evaluator now rejects undersized scored batches, so a 5-instance smoke test can no longer masquerade as a valid reproduction result.
 - The latest compute submission (`29e3264f-ca9`) produced no solver records before the worker node died; persisted logs contain only the environment banner and no benchmark lines.
 - The follow-up CPU submission (`a2635080-650`) finally persisted solver output: `n=100` instances `0..2` all hit the full 30s timeout before the node died, so the bottleneck is solver performance rather than missing checkpointing.
+- The next submission will test whether the reduced equality encoding plus CP-SAT-backed universal `wins1` removes that timeout bottleneck before another full scored batch is attempted.
 
 ## Paper Reference Comparison
 
@@ -72,16 +76,18 @@ The workspace currently sits at `method_runs`. The solver core implements the pa
 - **HiGHS availability on login node**: `highspy` is not installed in the host Python, so dynamic execution should be validated on compute through the packaged environment rather than assumed from local shell tests.
 - **Container registry instability**: the previous build failed before `%post` with `invalid character 's' after top-level value` while fetching the OCI image. The base image reference has now been updated in `environment/container.def` to direct `python:3.11-slim` to reduce the chance of another registry-side parse failure.
 - **Paper-vs-reproduction solver backend**: paper uses Gurobi 12.0; current reproduction uses HiGHS. This affects performance comparisons.
+- **Hybrid backend deviation**: universal `wins1` is now routed through OR-Tools CP-SAT in auto mode because the pure-HiGHS path was too slow on the reproduced large unsatisfiable instances.
 - **MCN benchmark data**: not yet acquired.
 - **Missing full-size scored run**: the workspace still lacks a persisted scored benchmark artifact for the declared QRandomParity targets, which blocks `core_claim`.
 - **Official code dependency**: the released upstream EQuIPS code depends on Gurobi plus a valid license, and no `GUROBI_HOME`, Gurobi library, or license file is present in this workspace or system search paths.
 
 ## Deviations from Paper
 1. **IP Solver**: Paper uses Gurobi 12.0. We use HiGHS (open-source).
-2. **QBF baselines**: Paper compares against QFUN, DepQBF, and Yasol. Current workspace includes only a simple enumeration baseline.
-3. **MCN instances**: Not yet evaluated.
-4. **Optimization**: Binary-search feasibility wrapper only; no Yasol+EQuIPS hybrid verification workflow yet.
-5. **Validation status**: current state repairs correctness and packaging, verifies exact small unsatisfiable QRandomParity instances locally, rejects undersized scored batches, and prepares a fresh compute-side run instead of claiming stale pre-audit numbers.
+2. **Universal subproblem backend**: The paper solves all quantifier-free subproblems with Gurobi. We now route universal `wins1` subproblems through OR-Tools CP-SAT in auto mode while keeping existential feasibility on HiGHS.
+3. **QBF baselines**: Paper compares against QFUN, DepQBF, and Yasol. Current workspace includes only a simple enumeration baseline.
+4. **MCN instances**: Not yet evaluated.
+5. **Optimization**: Binary-search feasibility wrapper only; no Yasol+EQuIPS hybrid verification workflow yet.
+6. **Validation status**: current state repairs correctness and packaging, verifies exact small unsatisfiable QRandomParity instances locally, rejects undersized scored batches, and prepares a fresh compute-side run instead of claiming stale pre-audit numbers.
 
 ### [2026-04-12 07:20] Generator And Scoring Audit
 
