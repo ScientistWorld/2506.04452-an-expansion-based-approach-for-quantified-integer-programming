@@ -153,6 +153,7 @@ class Subgame:
     """A subgame in a multi-game."""
     problem: QIPProblem = None
     constraints: list[Constraint] = field(default_factory=list)
+    universal_constraints: list[UniversalConstraint] = field(default_factory=list)
 
     def is_quantifier_free(self) -> bool:
         return self.problem is None
@@ -289,7 +290,7 @@ def to_qdimacs(problem: QIPProblem, sigma: list[int]) -> str:
     lines.append(f"-1 -2 {n+2} 0")
 
     # s chain init
-    s2 = 2 * n
+    s2 = 2 * n + 1
     lines.append(f"{sigma[0]+1} {sigma[1]+1} {s2} 0")
     lines.append(f"{-sigma[0]-1} {sigma[1]+1} {s2} 0")
     lines.append(f"{sigma[0]+1} {-sigma[1]-1} {s2} 0")
@@ -306,8 +307,8 @@ def to_qdimacs(problem: QIPProblem, sigma: list[int]) -> str:
 
     # s chain propagation for i=3..n
     for i in range(3, n+1):
-        s_prev = 2 * n + i - 3
-        s_curr = 2 * n + i - 2
+        s_prev = 2 * n + i - 2
+        s_curr = 2 * n + i - 1
         x_si = sigma[i-1] + 1
         lines.append(f"{-x_si} {s_prev} {s_curr} 0")
         lines.append(f"{x_si} {-(s_prev)} {s_curr} 0")

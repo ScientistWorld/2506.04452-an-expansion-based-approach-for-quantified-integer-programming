@@ -23,14 +23,9 @@ if [ -d "/dev/shm/pylibs" ]; then
     export PYTHONPATH="/dev/shm/pylibs:$PYTHONPATH"
 fi
 
-python3 - <<'PY'
-import importlib
+METHOD_RESULTS="/home/user/tmp/results/equips_results.json"
+BASELINE_RESULTS="/home/user/tmp/results/search_baseline_results.json"
 
-for module_name in ("numpy", "highspy"):
-    module = importlib.import_module(module_name)
-    print(f"{module_name}={getattr(module, '__version__', 'unknown')}")
-PY
-
-RESULTS_FILE="/home/user/tmp/results/equips_results.json"
-bash scripts/method.sh "$RESULTS_FILE"
-bash scripts/evaluate.sh "$RESULTS_FILE"
+bash scripts/method.sh "$METHOD_RESULTS"
+bash scripts/baseline.sh "$BASELINE_RESULTS"
+bash scripts/evaluate.sh "$METHOD_RESULTS" "$BASELINE_RESULTS"

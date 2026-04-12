@@ -1,8 +1,8 @@
 """
-Evaluate precomputed benchmark results and write scoring/scores.json.
+Evaluate solver result files and write scoring/scores.json.
 
 This module is intentionally method-agnostic: it reads result files produced by
-any solver and computes the benchmark metrics without importing from method/.
+any solver and computes benchmark metrics without importing from method/.
 """
 
 from __future__ import annotations
@@ -11,34 +11,32 @@ import argparse
 import json
 from pathlib import Path
 
-EXPECTED_INSTANCE_COUNTS = {
-    100: 100,
-    200: 100,
-}
-
 
 def load_results(path: Path) -> dict:
     with path.open() as handle:
         return json.load(handle)
 
 
-def group_metrics(records: list[dict], timeout_s: float) -> dict[int, dict]:
+def group_metrics(records: list[dict], expected_count: int | None, timeout_s: float) -> dict[int, dict]:
     grouped: dict[int, list[dict]] = {}
     for record in records:
         grouped.setdefault(int(record["n"]), []).append(record)
 
     metrics: dict[int, dict] = {}
     for n, items in grouped.items():
-        expected = EXPECTED_INSTANCE_COUNTS.get(n)
-        if expected is not None and len(items) != expected:
+        if expected_count is not None and len(items) != expected_count:
             raise ValueError(
-                f"Expected {expected} instances for n={n}, but found {len(items)} in the results file."
+                f"Expected {expected_count} instances for n={n}, but found {len(items)} in the results file."
             )
         solved = [item for item in items if item["status"] in {"SAT", "UNSAT"} and float(item["runtime_s"]) <= timeout_s]
         runtimes = sorted(float(item["runtime_s"]) for item in solved)
         median = None
         if runtimes:
-            median = runtimes[len(runtimes) // 2]
+            middle = len(runtimes) // 2
+            if len(runtimes) % 2 == 1:
+                median = runtimes[middle]
+            else:
+                median = (runtimes[middle - 1] + runtimes[middle]) / 2.0
         metrics[n] = {
             "instances_solved": len(solved),
             "total_instances": len(items),
@@ -53,15 +51,14 @@ def build_scores(result_blobs: list[dict]) -> dict:
     for blob in result_blobs:
         solver_name = blob["solver"]
         timeout_s = float(blob["timeout_s"])
-        metrics = group_metrics(blob["results"], timeout_s=timeout_s)
-        for n in (100, 200):
-            if n not in metrics:
-                continue
+        expected_count = blob.get("num_instances")
+        metrics = group_metrics(blob["results"], expected_count=expected_count, timeout_s=timeout_s)
+        for n, n_metrics in metrics.items():
             experiment = f"qrandomparity_n{n}"
             scores["experiments"].setdefault(experiment, {"results": {}})
             scores["experiments"][experiment]["results"][solver_name] = {
-                "median_runtime_s": metrics[n]["median_runtime_s"],
-                "instances_solved": metrics[n]["instances_solved"],
+                "median_runtime_s": n_metrics["median_runtime_s"],
+                "instances_solved": n_metrics["instances_solved"],
             }
     return scores
 

@@ -438,10 +438,31 @@ def _solve_ip_violate_all(
     return {name: int(round(solution.col_value[i])) for i, name in enumerate(var_names)}
 
 
+def _normalize_violation_constraints(constraints: list[Constraint]) -> list[Constraint]:
+    normalized: list[Constraint] = []
+    for constraint in constraints:
+        if constraint.is_equality:
+            normalized.append(Constraint(dict(constraint.coeffs), constraint.rhs))
+            normalized.append(
+                Constraint(
+                    {name: -coeff for name, coeff in constraint.coeffs.items()},
+                    -constraint.rhs,
+                )
+            )
+            continue
+        normalized.append(constraint)
+    return normalized
+
+
 def _wins1(multigame: MultiGame, time_limit_s: Optional[float] = None) -> object:
     constraint_sets: list[list[Constraint]] = []
+    universal_constraints = list(multigame.universal_constraints)
     for subgame in multigame.subgames:
-        constraint_sets.append(subgame.constraints if subgame.problem is None else subgame.problem.constraints)
+        if subgame.problem is None:
+            constraint_sets.append(subgame.constraints)
+            universal_constraints.extend(subgame.universal_constraints)
+            continue
+        constraint_sets.append(subgame.problem.constraints)
     if multigame.outer_quantifier == "E":
         if _use_cp_sat(multigame.outer_quantifier):
             constraints: list[Constraint] = []
@@ -450,7 +471,7 @@ def _wins1(multigame: MultiGame, time_limit_s: Optional[float] = None) -> object
             return _solve_cp_sat_feasible(
                 multigame.outer_vars,
                 constraints,
-                multigame.universal_constraints,
+                universal_constraints,
                 time_limit_s=time_limit_s,
             )
         constraints: list[Constraint] = []
@@ -459,20 +480,21 @@ def _wins1(multigame: MultiGame, time_limit_s: Optional[float] = None) -> object
         return _solve_ip_feasible(
             multigame.outer_vars,
             constraints,
-            multigame.universal_constraints,
+            universal_constraints,
             time_limit_s=time_limit_s,
         )
+    constraint_sets = [_normalize_violation_constraints(constraint_set) for constraint_set in constraint_sets]
     if _use_cp_sat(multigame.outer_quantifier):
         return _solve_cp_sat_violate_all(
             multigame.outer_vars,
             constraint_sets,
-            multigame.universal_constraints,
+            universal_constraints,
             time_limit_s=time_limit_s,
         )
     return _solve_ip_violate_all(
         multigame.outer_vars,
         constraint_sets,
-        multigame.universal_constraints,
+        universal_constraints,
         time_limit_s=time_limit_s,
     )
 
@@ -577,7 +599,13 @@ def _refine_from_counter(
         return MultiGame(
             outer_quantifier=abstraction.outer_quantifier,
             outer_vars=abstraction.outer_vars,
-            subgames=abstraction.subgames + [Subgame(constraints=reduced.constraints)],
+            subgames=abstraction.subgames
+            + [
+                Subgame(
+                    constraints=reduced.constraints,
+                    universal_constraints=reduced.universal_constraints,
+                )
+            ],
             universal_constraints=abstraction.universal_constraints,
         )
 
@@ -587,7 +615,12 @@ def _refine_from_counter(
     tail = _tail_problem(renamed)
     new_subgames = list(abstraction.subgames)
     if tail is None:
-        new_subgames.append(Subgame(constraints=renamed.constraints))
+        new_subgames.append(
+            Subgame(
+                constraints=renamed.constraints,
+                universal_constraints=renamed.universal_constraints,
+            )
+        )
     else:
         new_subgames.append(Subgame(problem=tail))
 

@@ -23,6 +23,7 @@ def _save_payload(
     output_path: Path,
     timeout: float,
     n_values: list[int],
+    num_instances: int,
     records: list[dict],
 ) -> None:
     payload = {
@@ -30,6 +31,7 @@ def _save_payload(
         "solver": "equips",
         "timeout_s": timeout,
         "n_values": list(n_values),
+        "num_instances": num_instances,
         "results": records,
     }
     tmp_path = output_path.with_suffix(output_path.suffix + ".tmp")
@@ -83,7 +85,7 @@ def main() -> None:
                 }
             )
             seen.add((n, instance_id))
-            _save_payload(output_path, args.timeout, args.n_values, records)
+            _save_payload(output_path, args.timeout, args.n_values, args.num_instances, records)
             stats = result.get("stats") or {}
             print(
                 (
@@ -99,7 +101,7 @@ def main() -> None:
                 flush=True,
             )
 
-    _save_payload(output_path, args.timeout, args.n_values, records)
+    _save_payload(output_path, args.timeout, args.n_values, args.num_instances, records)
 
 
 if __name__ == "__main__":
