@@ -32,11 +32,7 @@
 - Re-checking the workspace found no persisted outputs from the submitted validation run: `tmp/results/` is empty and `scoring/scores.json` still has no reproduced method entries.
 - Closed the paper at `method_runs` because the current on-disk state does not support `core_claim`.
 
-## Stop Justification
-Final verification found the environment structurally usable but not benchmark-complete.
-The paper method is implemented and the evaluation stack is wired up, so `method_runs`
-is justified. However, the repaired solver does not yet have an auditable scored run in
-the current workspace: `tmp/results/` is empty and `scoring/scores.json` contains no
-reproduced method entries. Because there is no trustworthy post-repair benchmark result,
-the workspace cannot honestly claim `core_claim` or act as a ready-made gym baseline.
-Stopping at `method_runs` is therefore the highest defensible milestone.
+### [2026-04-12 02:06] - method_runs
+- Reopened the workspace after confirming the solver core is a real EQuIPS-style recursive expansion/CEGAR implementation rather than a surrogate.
+- Fixed packaging protocol violations so `environment/container.def` now stays OS-only and `scripts/download.sh` no longer installs Python packages.
+- Prepared a new CPU validation submission on the scored `qrandomparity_n100` and `qrandomparity_n200` settings to regenerate auditable benchmark artifacts.

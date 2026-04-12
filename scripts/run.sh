@@ -1,5 +1,5 @@
 #!/bin/bash
-# Validation job for the EQuIPS reproduction.
+# CPU validation job for the EQuIPS reproduction.
 #
 # Goals:
 # 1. Run the repaired EQuIPS solver on the scored QRandomParity settings.
@@ -21,8 +21,8 @@ echo "Python: $(python3 --version)"
 mkdir -p /home/user/tmp/results
 
 export EQUIPS_N_VALUES="100 200"
-export EQUIPS_NUM_INSTANCES="2"
-export EQUIPS_TIMEOUT_SECS="120.0"
+export EQUIPS_NUM_INSTANCES="5"
+export EQUIPS_TIMEOUT_SECS="180.0"
 export EQUIPS_SEED="42"
 
 bash /home/user/scripts/method.sh
