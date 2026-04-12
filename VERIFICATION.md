@@ -2,36 +2,26 @@
 
 ## Initial Assessment
 
-The workspace contained a plausible implementation of the paper's EQuIPS solver and a mostly coherent benchmark layout, but it was not actually ready for gym use in its current state. The main problems were:
-- `briefing/evaluation.md` leaked the paper's specific method and baseline lineup into the method-agnostic problem definition.
-- `scoring/scores.json` had been cleared to an empty placeholder, so there were no trustworthy reproduced scored results available for future scientist agents to improve on.
-- The workspace root still contained many ad hoc logs, helper scripts, and test artifacts that should have lived under `tmp/`.
-
-Because of the missing scored results, the previously claimed `core_claim` was not justified by the current on-disk state.
+The workspace contains a real implementation of the paper's recursive EQuIPS solver and the problem/evaluation separation is mostly in good shape. However, the claimed `core_claim` was not justified by the on-disk state when I started: `scoring/scores.json` was still empty, and the queued validation run was configured as a 5-instance smoke test rather than the full scored benchmark.
 
 ## Issues Found
 
 - Critical: No trustworthy reproduced scored results in `scoring/scores.json`.
-- Critical: Method leakage in `briefing/evaluation.md`.
-- Minor: Root directory contained many scratch artifacts that violated the expected workspace structure.
-- Minor: `briefing/problem.md` and `scoring/EXPERIMENTS.md` benefited from tighter, more gym-oriented wording.
-- Minor: the final submitted validation job left no persisted result file in `tmp/results/` or `logs/`, so the repaired solver still lacks an auditable scored run in this workspace.
+- Critical: The queued `scripts/run.sh` configuration used only 5 instances, which is not comparable to the 100-instance reference experiments and would have allowed an undersized sample to count as a scored reproduction.
+- Minor: The scoring docs did not explicitly state that the scored `n=100` and `n=200` experiments each require 100 generated instances.
 
 ## Fixes Applied
 
-- Rewrote `briefing/problem.md` to define the task and benchmark without revealing the paper's implementation.
-- Rewrote `briefing/evaluation.md` to describe the scored experiments, metrics, and protocol in a method-agnostic way.
-- Tightened `scoring/EXPERIMENTS.md` so it matches the scored experiment names while staying high-level.
-- Moved root-level scratch outputs and helper scripts into `tmp/root_artifacts/`.
-- Moved `examples/` under `tmp/examples/` to keep the workspace root closer to the required structure.
-- Updated `PROGRESS.md`, `MILESTONES.md`, and `action.yaml` to reflect the verified state: `method_runs`, not `core_claim`.
-- Re-checked the post-audit workspace and confirmed that `tmp/results/` is empty and `scoring/scores.json` still has no method entries, so the missing benchmark evidence is a real blocker rather than a documentation mismatch.
+- Hardened `eval/evaluate.py` so the scored QRandomParity experiments now require exactly 100 instances per scored size (`n=100`, `n=200`).
+- Updated `briefing/evaluation.md`, `scoring/TARGETS.md`, and `scoring/CONSTRAINTS.md` to make the fixed 100-instance scored batch explicit.
+- Replaced the queued 5-instance smoke test with a normal CPU benchmark submission for the minimum full-size scored benchmark: `n=100`, 100 instances, 300-second per-instance cap.
+- Kept the milestone at `method_runs` and updated the progress log to reflect that a valid scored artifact is still pending.
 
 ## Final Judgment
 
-The workspace is not yet ready to serve as a complete gym baseline because it lacks trustworthy reproduced scored results for the repaired solver. It is, however, structurally close: the problem/method separation is much cleaner, the evaluation path is reusable, and the remaining blocker is a fresh scored validation run rather than a redesign of the environment.
+The workspace is not yet ready to serve as a complete gym baseline because it still lacks a persisted, auditable scored run for the repaired solver. The evaluation contract is now materially safer: undersized samples cannot be scored as if they were real benchmark results, and the next submission is aligned with the benchmark definition. If that run succeeds and populates `scoring/scores.json`, the workspace should be re-checked for a final milestone judgment.
 
 - Milestone: method_runs
-- Ready for gym use: no
+- Ready for gym use: partial
 - Confidence: high
-- Key limitation: `scoring/scores.json` does not yet contain trustworthy reproduced benchmark results for the repaired solver
+- Key limitation: `scoring/scores.json` does not yet contain a full-size reproduced benchmark result for the repaired solver

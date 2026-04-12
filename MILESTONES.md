@@ -36,3 +36,8 @@
 - Reopened the workspace after confirming the solver core is a real EQuIPS-style recursive expansion/CEGAR implementation rather than a surrogate.
 - Fixed packaging protocol violations so `environment/container.def` now stays OS-only and `scripts/download.sh` no longer installs Python packages.
 - Prepared a new CPU validation submission on the scored `qrandomparity_n100` and `qrandomparity_n200` settings to regenerate auditable benchmark artifacts.
+
+### [2026-04-12 02:20] - method_runs
+- Final verification found that the queued validation job was still using a 5-instance smoke-test slice, which is not a valid scored benchmark because the reference experiments use 100 instances per setting.
+- Hardened `eval/evaluate.py` so the scored `n=100` and `n=200` experiments now require the full 100-instance batch instead of silently accepting undersized samples.
+- Replaced the queued smoke test with a normal CPU submission for the minimum full-size scored benchmark (`n=100`, 100 instances) to establish an auditable `scores.json` artifact.

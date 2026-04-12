@@ -12,6 +12,7 @@ improvement over this workspace.
 ## Data and Generation
 
 - Use the provided QRandomParity generation code and keep the semantics of the benchmark unchanged.
+- Keep the scored batch size fixed at 100 generated instances for each scored setting (`n=100` and `n=200`).
 - Do not alter the instance family to make parity constraints easier, reduce quantifier interaction, or otherwise simplify the satisfiability structure.
 - Record the exact seeds and number of generated instances in any claimed improvement.
 - If you expand beyond the current scored slice, do so in new experiment entries rather than silently changing the existing ones.

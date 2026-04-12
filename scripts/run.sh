@@ -1,8 +1,8 @@
 #!/bin/bash
-# CPU validation job for the EQuIPS reproduction.
+# CPU benchmark job for the EQuIPS reproduction.
 #
 # Goals:
-# 1. Run the repaired EQuIPS solver on the scored QRandomParity settings.
+# 1. Run the repaired EQuIPS solver on the minimum full-size scored QRandomParity setting.
 # 2. Write tmp/results/equips_results.json.
 # 3. Convert results into scoring/scores.json.
 
@@ -20,9 +20,9 @@ echo "Python: $(python3 --version)"
 
 mkdir -p /home/user/tmp/results
 
-export EQUIPS_N_VALUES="100 200"
-export EQUIPS_NUM_INSTANCES="5"
-export EQUIPS_TIMEOUT_SECS="180.0"
+export EQUIPS_N_VALUES="100"
+export EQUIPS_NUM_INSTANCES="100"
+export EQUIPS_TIMEOUT_SECS="300.0"
 export EQUIPS_SEED="42"
 
 bash /home/user/scripts/method.sh

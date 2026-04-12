@@ -18,13 +18,13 @@ The evaluator writes `scoring/scores.json`.
 - What it tests: whether a solver improves turnaround time on the easier of the two scored QRandomParity settings.
 - Primary metric: `median_runtime_s`
 - Direction: lower is better
-- Evaluation: produce a results JSON containing runs for `n=100`, then call `bash scripts/evaluate.sh /path/to/results.json`
+- Evaluation: produce a results JSON containing the full 100 scored runs for `n=100`, then call `bash scripts/evaluate.sh /path/to/results.json`
 
 ### `qrandomparity_n200`
 - What it tests: whether a solver maintains or improves efficiency on the harder scored QRandomParity setting.
 - Primary metric: `median_runtime_s`
 - Direction: lower is better
-- Evaluation: produce a results JSON containing runs for `n=200`, then call `bash scripts/evaluate.sh /path/to/results.json`
+- Evaluation: produce a results JSON containing the full 100 scored runs for `n=200`, then call `bash scripts/evaluate.sh /path/to/results.json`
 
 ## Constraint Targets
 

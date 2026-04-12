@@ -11,6 +11,11 @@ import argparse
 import json
 from pathlib import Path
 
+EXPECTED_INSTANCE_COUNTS = {
+    100: 100,
+    200: 100,
+}
+
 
 def load_results(path: Path) -> dict:
     with path.open() as handle:
@@ -24,6 +29,11 @@ def group_metrics(records: list[dict], timeout_s: float) -> dict[int, dict]:
 
     metrics: dict[int, dict] = {}
     for n, items in grouped.items():
+        expected = EXPECTED_INSTANCE_COUNTS.get(n)
+        if expected is not None and len(items) != expected:
+            raise ValueError(
+                f"Expected {expected} instances for n={n}, but found {len(items)} in the results file."
+            )
         solved = [item for item in items if item["status"] in {"SAT", "UNSAT"} and float(item["runtime_s"]) <= timeout_s]
         runtimes = sorted(float(item["runtime_s"]) for item in solved)
         median = None

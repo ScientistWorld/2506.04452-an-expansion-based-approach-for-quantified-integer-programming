@@ -3,6 +3,6 @@
 # only after your turn ends. Sleeping blocks the entire pipeline.
 action: submit
 gpus: 0
-test: true
+test: false
 milestone: method_runs
-notes: "CPU validation run for repaired EQuIPS on scored QRandomParity n=100 and n=200 settings; regenerate tmp/results/equips_results.json and scoring/scores.json."
+notes: "Final verification resubmission: run the minimum full-size scored benchmark for repaired EQuIPS (QRandomParity n=100, 100 instances) and regenerate scoring/scores.json."

@@ -7,6 +7,7 @@ The gym currently scores two QRandomParity settings:
 - `qrandomparity_n200`
 
 Each setting consists of a batch of procedurally generated instances at a fixed size parameter `n`. The scored output must report one result entry per method for each experiment it actually ran.
+For the scored contract, each setting uses exactly 100 generated instances, matching the paper's evaluation protocol for these QRandomParity sizes.
 
 ## Metrics
 
@@ -19,7 +20,7 @@ The primary metric is runtime, but solved count is a required companion metric s
 ## Protocol
 
 1. Generate the benchmark instances with the provided QRandomParity generator.
-2. Run the candidate solver on the fixed instance batch for each scored `n`.
+2. Run the candidate solver on the fixed 100-instance batch for each scored `n`.
 3. Use the configured timeout for every instance in the batch.
 4. Record, for each instance, whether it was solved and how long it took.
 5. Aggregate per experiment into solved count and median runtime.
