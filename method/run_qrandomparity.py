@@ -79,11 +79,25 @@ def main() -> None:
                     "status": status,
                     "runtime_s": runtime_s,
                     "assignment_found": result.get("assignment") is not None,
+                    "stats": result.get("stats"),
                 }
             )
             seen.add((n, instance_id))
             _save_payload(output_path, args.timeout, args.n_values, records)
-            print(f"n={n} instance={instance_id} status={status} runtime={runtime_s:.4f}s", flush=True)
+            stats = result.get("stats") or {}
+            print(
+                (
+                    f"n={n} instance={instance_id} status={status} runtime={runtime_s:.4f}s "
+                    f"calls={stats.get('recursive_calls', 0)} "
+                    f"iters={stats.get('abstraction_iterations', 0)} "
+                    f"refs={stats.get('refinements', 0)} "
+                    f"nested={stats.get('nested_solves', 0)} "
+                    f"depth={stats.get('max_recursion_depth', 0)} "
+                    f"outer={stats.get('max_outer_vars', 0)} "
+                    f"subgames={stats.get('max_subgames', 0)}"
+                ),
+                flush=True,
+            )
 
     _save_payload(output_path, args.timeout, args.n_values, records)
 

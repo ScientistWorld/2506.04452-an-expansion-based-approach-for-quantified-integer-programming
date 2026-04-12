@@ -3,6 +3,6 @@
 # only after your turn ends. Sleeping blocks the entire pipeline.
 action: submit
 gpus: 0
-test: false
+test: true
 milestone: method_runs
-notes: "Job 29e3264f-ca9 died before producing any solver records. Resubmit a resumable CPU benchmark for the minimum valid scored target qrandomparity_n100 (100 instances, 30s timeout), writing incremental checkpoints to tmp/results/equips_n100_results.json and regenerating scoring/scores.json if the batch completes."
+notes: "Job a2635080-650 showed that checkpointing works but the local solver times out on n=100 before scoring can complete. Run the new CPU diagnostic matrix (n=5,20,50,100; one instance each; 10s timeout) and persist recursion/refinement stats in tmp/results/equips_diagnostic.json to guide the next solver rewrite."

@@ -8,7 +8,7 @@ Quantifier-free subproblems are solved with HiGHS.
 from __future__ import annotations
 
 import time
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from fractions import Fraction
 from math import gcd
 from typing import Optional
@@ -403,6 +403,35 @@ class _RefinementState:
     copy_outer_constraints: list[UniversalConstraint] = field(default_factory=list)
 
 
+@dataclass
+class SolverStats:
+    recursive_calls: int = 0
+    nested_solves: int = 0
+    quantifier_free_calls: int = 0
+    wins1_calls: int = 0
+    abstraction_iterations: int = 0
+    counterexample_checks: int = 0
+    refinements: int = 0
+    max_recursion_depth: int = 0
+    max_outer_vars: int = 0
+    max_subgames: int = 0
+    max_problem_variables: int = 0
+    max_problem_constraints: int = 0
+
+
+def _update_stats(stats: SolverStats, multigame: MultiGame, depth: int) -> None:
+    stats.recursive_calls += 1
+    stats.max_recursion_depth = max(stats.max_recursion_depth, depth)
+    stats.max_outer_vars = max(stats.max_outer_vars, len(multigame.outer_vars))
+    stats.max_subgames = max(stats.max_subgames, len(multigame.subgames))
+    for subgame in multigame.subgames:
+        if subgame.problem is None:
+            stats.max_problem_constraints = max(stats.max_problem_constraints, len(subgame.constraints))
+            continue
+        stats.max_problem_variables = max(stats.max_problem_variables, len(subgame.problem.variables))
+        stats.max_problem_constraints = max(stats.max_problem_constraints, len(subgame.problem.constraints))
+
+
 def _refine_from_counter(
     abstraction: MultiGame,
     subgame: Subgame,
@@ -442,14 +471,22 @@ def equips(
     timeout_s: float,
     start_time: float,
     refinement_state: Optional[_RefinementState] = None,
+    stats: Optional[SolverStats] = None,
+    depth: int = 0,
 ) -> object:
     if refinement_state is None:
         refinement_state = _RefinementState()
+    if stats is None:
+        stats = SolverStats()
+
+    _update_stats(stats, multigame, depth)
 
     if timeout_s - (time.time() - start_time) <= 0:
         return _TIMEOUT
 
     if all(subgame.is_quantifier_free() for subgame in multigame.subgames):
+        stats.quantifier_free_calls += 1
+        stats.wins1_calls += 1
         return _wins1(multigame, time_limit_s=timeout_s - (time.time() - start_time))
 
     abstraction = MultiGame(
@@ -460,13 +497,21 @@ def equips(
     )
 
     for _ in range(10000):
+        stats.abstraction_iterations += 1
         iteration_remaining = timeout_s - (time.time() - start_time)
         if iteration_remaining <= 0:
             return _TIMEOUT
         if not abstraction.subgames and multigame.outer_quantifier == "E":
             tau_full = _existential_relaxation_move(multigame, time_limit_s=iteration_remaining)
         else:
-            tau_full = equips(abstraction, timeout_s, start_time, refinement_state)
+            tau_full = equips(
+                abstraction,
+                timeout_s,
+                start_time,
+                refinement_state,
+                stats,
+                depth + 1,
+            )
         if tau_full is _TIMEOUT:
             return _TIMEOUT
         if tau_full is None:
@@ -476,6 +521,7 @@ def equips(
         found_counter = None
         found_subgame = None
         for subgame in multigame.subgames:
+            stats.counterexample_checks += 1
             if subgame.problem is None:
                 continue
             reduced = subgame.problem.substitute(tau)
@@ -485,7 +531,13 @@ def equips(
                     found_subgame = subgame
                     break
                 continue
-            counter = solve_qip(reduced, max(0.1, timeout_s - (time.time() - start_time)))
+            stats.nested_solves += 1
+            counter = _solve_qip_internal(
+                reduced,
+                max(0.1, timeout_s - (time.time() - start_time)),
+                stats,
+                depth + 1,
+            )
             if counter["status"] == "TIMEOUT":
                 return _TIMEOUT
             if counter["status"] == "SAT":
@@ -497,13 +549,19 @@ def equips(
             return tau
 
         abstraction = _refine_from_counter(abstraction, found_subgame, found_counter, refinement_state)
+        stats.refinements += 1
         if time.time() - start_time > timeout_s:
             return None
 
     return None
 
 
-def solve_qip(problem: QIPProblem, timeout_s: float = 30.0) -> dict:
+def _solve_qip_internal(
+    problem: QIPProblem,
+    timeout_s: float,
+    stats: SolverStats,
+    depth: int,
+) -> dict:
     start = time.time()
     if not problem.variables:
         feasible = _is_constraint_system_feasible(problem.constraints, problem.universal_constraints)
@@ -514,7 +572,7 @@ def solve_qip(problem: QIPProblem, timeout_s: float = 30.0) -> dict:
         }
 
     multigame = _problem_to_multigame(problem)
-    assignment = equips(multigame, timeout_s, start)
+    assignment = equips(multigame, timeout_s, start, stats=stats, depth=depth)
     if assignment is _TIMEOUT:
         return {
             "status": "TIMEOUT",
@@ -526,6 +584,13 @@ def solve_qip(problem: QIPProblem, timeout_s: float = 30.0) -> dict:
         "assignment": assignment,
         "runtime": time.time() - start,
     }
+
+
+def solve_qip(problem: QIPProblem, timeout_s: float = 30.0) -> dict:
+    stats = SolverStats()
+    result = _solve_qip_internal(problem, timeout_s, stats, depth=0)
+    result["stats"] = asdict(stats)
+    return result
 
 
 def solve_qip_optimization(problem: QIPProblem, timeout_s: float = 60.0) -> dict:

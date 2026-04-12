@@ -39,6 +39,7 @@ The workspace currently sits at `method_runs`. The solver core implements the pa
 - Larger performance validation remains deferred to compute, which is the correct place to assess the scored `n=100` and `n=200` settings.
 - The evaluator now rejects undersized scored batches, so a 5-instance smoke test can no longer masquerade as a valid reproduction result.
 - The latest compute submission (`29e3264f-ca9`) produced no solver records before the worker node died; persisted logs contain only the environment banner and no benchmark lines.
+- The follow-up CPU submission (`a2635080-650`) finally persisted solver output: `n=100` instances `0..2` all hit the full 30s timeout before the node died, so the bottleneck is solver performance rather than missing checkpointing.
 
 ## Paper Reference Comparison
 
@@ -58,6 +59,7 @@ The workspace currently sits at `method_runs`. The solver core implements the pa
 - Run the repaired solver on compute and regenerate `scoring/scores.json`.
 - Reassess whether the resulting QRandomParity scores support `core_claim`.
 - Extend beyond the minimum if time remains: more QRandomParity sizes, stronger baseline coverage, MCN if benchmark data can be acquired.
+- Determine whether the remaining gap is fixable inside the current Python/HiGHS implementation or whether the official code path must be ported more directly.
 
 ## Current Status
 
@@ -72,6 +74,7 @@ The workspace currently sits at `method_runs`. The solver core implements the pa
 - **Paper-vs-reproduction solver backend**: paper uses Gurobi 12.0; current reproduction uses HiGHS. This affects performance comparisons.
 - **MCN benchmark data**: not yet acquired.
 - **Missing full-size scored run**: the workspace still lacks a persisted scored benchmark artifact for the declared QRandomParity targets, which blocks `core_claim`.
+- **Official code dependency**: the released upstream EQuIPS code depends on Gurobi plus a valid license, and no `GUROBI_HOME`, Gurobi library, or license file is present in this workspace or system search paths.
 
 ## Deviations from Paper
 1. **IP Solver**: Paper uses Gurobi 12.0. We use HiGHS (open-source).
@@ -97,3 +100,9 @@ The workspace currently sits at `method_runs`. The solver core implements the pa
 - Reviewed the completed CPU job `29e3264f-ca9` and confirmed that the worker node died before the first benchmark instance finished; `jobs/29e3264f-ca9/stderr.log` reports `Worker node died while job was running`.
 - Because the run produced no partial JSON or scores, the harness was changed to checkpoint each solved instance directly into `tmp/results/equips_n100_results.json` and to resume from that file on subsequent submissions.
 - Narrowed the next scored submission to the minimum valid benchmark target, `qrandomparity_n100` with 100 instances, so the workspace can establish an auditable baseline before attempting the harder `n=200` setting.
+
+### [2026-04-12 08:30] Timeout Diagnosis Pivot
+
+- Reviewed the completed CPU job `a2635080-650` and confirmed that the new checkpointed harness worked: `tmp/results/equips_n100_results.json` contains three persisted `n=100` records before the node died.
+- All three persisted records timed out at the full 30s per-instance limit, which shifts the bottleneck from job robustness to solver performance.
+- Audited the upstream C++ release and confirmed that it relies on Gurobi plus a valid license, neither of which is available in the current environment; the next compute turn therefore targets an instrumented diagnostic run of the local solver rather than a blind scored rerun.

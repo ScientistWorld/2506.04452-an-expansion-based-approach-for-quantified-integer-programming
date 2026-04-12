@@ -18,6 +18,8 @@ The workspace contains a plausible implementation of the paper's EQuIPS-style so
 - Updated `scripts/run.sh` to tee compute-side output into `logs/run.log` and to pass an explicit results path through `scripts/method.sh` and `scripts/evaluate.sh`.
 - After the completed job showed a dead worker node with no persisted solver records, updated `method/run_qrandomparity.py` and `scripts/method.sh` so benchmark runs checkpoint each instance directly to disk and resume cleanly on resubmission.
 - Narrowed the next scored attempt to the minimum full benchmark target, `qrandomparity_n100`, so the workspace can establish one auditable reproduced baseline before expanding back to `n=200`.
+- After the next job persisted three timed-out `n=100` instances, instrumented the local solver to record recursion depth, refinement count, abstraction iterations, nested sub-solves, and abstraction size so the next run diagnoses the performance failure directly.
+- Audited the upstream release and confirmed that the official code path is blocked here by its hard Gurobi-and-license dependency, so the remaining work must happen in the local open-source implementation.
 - Updated `PROGRESS.md` and `MILESTONES.md` to document that the benchmark artifacts are still missing and that another CPU submission is required.
 - Rewrote `scoring/DIRECTION.md` to keep the research direction method-safe for from-scratch agents while still constraining the benchmark task.
 - Corrected `scoring/TARGETS.md` so it no longer claims that the missing score entries already exist, and aligned `scoring/EXPERIMENTS.md` with the currently targeted reproduced baseline.

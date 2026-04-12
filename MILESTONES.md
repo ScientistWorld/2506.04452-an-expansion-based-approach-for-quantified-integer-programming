@@ -56,3 +56,8 @@
 - Reviewed the completed CPU job `29e3264f-ca9`; the worker node died before the benchmark emitted any instance-level output, so it did not advance the reproduction milestone.
 - Hardened the benchmark harness so `method/run_qrandomparity.py` now writes results incrementally and can resume from an existing JSON file after interruption.
 - Narrowed the next scored submission to the minimum valid target `qrandomparity_n100` (100 instances) to establish a first auditable reproduced baseline before retrying the harder `n=200` setting.
+
+### [2026-04-12 08:30] - method_runs
+- Reviewed the completed CPU job `a2635080-650`; it persisted three `qrandomparity_n100` records before the worker node died, and all three hit the full 30s per-instance timeout.
+- This is real progress in diagnosis because it proves the current bottleneck is solver performance, not just missing checkpointing or missing logs.
+- Added solver instrumentation and switched the next submission to a short diagnostic matrix that records recursion, refinement, and abstraction-growth statistics instead of attempting another full scored batch immediately.

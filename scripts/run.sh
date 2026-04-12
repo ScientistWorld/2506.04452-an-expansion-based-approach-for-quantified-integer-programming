@@ -1,10 +1,10 @@
 #!/bin/bash
-# CPU benchmark job for the EQuIPS reproduction.
+# CPU diagnostic job for the EQuIPS reproduction.
 #
 # Goals:
-# 1. Run the repaired EQuIPS solver on the minimum full scored QRandomParity experiment.
-# 2. Write tmp/results/equips_n100_results.json incrementally so partial progress survives node loss.
-# 3. Convert results into scoring/scores.json.
+# 1. Run the instrumented EQuIPS solver on a small diagnostic matrix.
+# 2. Persist per-instance recursion/refinement stats for timeout analysis.
+# 3. Print a compact summary that will guide the next implementation step.
 
 set -e
 
@@ -21,24 +21,46 @@ fi
 echo "=== EQuIPS Validation Run ==="
 echo "Python: $(python3 --version)"
 
-RESULTS_FILE="/home/user/tmp/results/equips_n100_results.json"
-if [ "${EQUIPS_RESET_RESULTS:-0}" = "1" ]; then
-    rm -f "$RESULTS_FILE"
-fi
+RESULTS_FILE="/home/user/tmp/results/equips_diagnostic.json"
+rm -f "$RESULTS_FILE"
 
-export EQUIPS_N_VALUES="100"
-export EQUIPS_TIMEOUT_SECS="30.0"
+export EQUIPS_N_VALUES="5 20 50 100"
+export EQUIPS_NUM_INSTANCES="1"
+export EQUIPS_TIMEOUT_SECS="10.0"
+export EQUIPS_INSTANCE_START="0"
 export EQUIPS_SEED="42"
-export EQUIPS_RESUME="1"
+export EQUIPS_RESUME="0"
 
-for INSTANCE_START in 0 20 40 60 80; do
-    export EQUIPS_INSTANCE_START="$INSTANCE_START"
-    export EQUIPS_NUM_INSTANCES="20"
-    echo "--- Running chunk starting at instance $INSTANCE_START ---"
-    bash /home/user/scripts/method.sh "$RESULTS_FILE"
-done
+bash /home/user/scripts/method.sh "$RESULTS_FILE"
 
-bash /home/user/scripts/evaluate.sh "$RESULTS_FILE"
+python3 - <<'PY'
+import json
+from pathlib import Path
+
+path = Path("/home/user/tmp/results/equips_diagnostic.json")
+payload = json.loads(path.read_text())
+print("=== Diagnostic Summary ===")
+for record in payload.get("results", []):
+    stats = record.get("stats") or {}
+    print(
+        "n={n} status={status} runtime={runtime:.3f}s calls={calls} nested={nested} "
+        "iters={iters} refs={refs} depth={depth} outer={outer} subgames={subgames} "
+        "max_vars={max_vars} max_cons={max_cons}".format(
+            n=record["n"],
+            status=record["status"],
+            runtime=record["runtime_s"],
+            calls=stats.get("recursive_calls", 0),
+            nested=stats.get("nested_solves", 0),
+            iters=stats.get("abstraction_iterations", 0),
+            refs=stats.get("refinements", 0),
+            depth=stats.get("max_recursion_depth", 0),
+            outer=stats.get("max_outer_vars", 0),
+            subgames=stats.get("max_subgames", 0),
+            max_vars=stats.get("max_problem_variables", 0),
+            max_cons=stats.get("max_problem_constraints", 0),
+        )
+    )
+PY
 
 echo "=== DONE ==="
-echo "Results written to $RESULTS_FILE and /home/user/scoring/scores.json"
+echo "Diagnostic results written to $RESULTS_FILE"
