@@ -51,3 +51,8 @@
 - Final verification found that the workspace still lacks the auditable artifacts needed to justify `core_claim`: there is no persisted benchmark result file in `tmp/results/`, no `logs/run.log`, and `scoring/scores.json` is empty.
 - Kept the milestone at `method_runs` and prepared another CPU submission rather than incorrectly signaling done.
 - Updated `scripts/run.sh` so the next compute-side run will write a persistent run log and use an explicit results path for both method execution and evaluation.
+
+### [2026-04-12 08:05] - method_runs
+- Reviewed the completed CPU job `29e3264f-ca9`; the worker node died before the benchmark emitted any instance-level output, so it did not advance the reproduction milestone.
+- Hardened the benchmark harness so `method/run_qrandomparity.py` now writes results incrementally and can resume from an existing JSON file after interruption.
+- Narrowed the next scored submission to the minimum valid target `qrandomparity_n100` (100 instances) to establish a first auditable reproduced baseline before retrying the harder `n=200` setting.

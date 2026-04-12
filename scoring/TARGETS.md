@@ -12,19 +12,13 @@ bash scripts/evaluate.sh /path/to/results.json
 
 The evaluator writes `scoring/scores.json`.
 
-## Primary Targets
+## Active Scored Target
 
 ### `qrandomparity_n100`
-- What it tests: whether a solver improves turnaround time on the easier of the two scored QRandomParity settings.
+- What it tests: whether a solver improves turnaround time on the reproduced large-instance QRandomParity setting.
 - Primary metric: `median_runtime_s`
 - Direction: lower is better
 - Evaluation: produce a results JSON containing the full 100 scored runs for `n=100`, then call `bash scripts/evaluate.sh /path/to/results.json`
-
-### `qrandomparity_n200`
-- What it tests: whether a solver maintains or improves efficiency on the harder scored QRandomParity setting.
-- Primary metric: `median_runtime_s`
-- Direction: lower is better
-- Evaluation: produce a results JSON containing the full 100 scored runs for `n=200`, then call `bash scripts/evaluate.sh /path/to/results.json`
 
 ## Constraint Targets
 
@@ -34,14 +28,13 @@ The evaluator writes `scoring/scores.json`.
 - Direction: higher is better
 - Evaluation: computed automatically by `bash scripts/evaluate.sh /path/to/results.json`
 
-### `qrandomparity_n200`
-- What it tests: the harder `n=200` setting should not be "improved" by timing out or declining to solve instances.
-- Constraint metric: `instances_solved`
-- Direction: higher is better
-- Evaluation: computed automatically by `bash scripts/evaluate.sh /path/to/results.json`
-
 ## Ablation Targets
 
 No ablation experiment is currently scored in `scoring/scores.json`.
 Future agents should add an ablation target here only after adding the matching
 experiment entry to both `scoring/reference.json` and `scoring/scores.json`.
+
+## Unreproduced Reference Context
+
+`scoring/reference.json` also includes `qrandomparity_n200` from the paper for future expansion.
+It is not part of the current reproduced baseline until a scored run for that setting is written to `scoring/scores.json`.

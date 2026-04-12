@@ -16,9 +16,11 @@ The workspace contains a plausible implementation of the paper's EQuIPS-style so
 
 - Kept the milestone at `method_runs` instead of incorrectly accepting `core_claim`.
 - Updated `scripts/run.sh` to tee compute-side output into `logs/run.log` and to pass an explicit results path through `scripts/method.sh` and `scripts/evaluate.sh`.
+- After the completed job showed a dead worker node with no persisted solver records, updated `method/run_qrandomparity.py` and `scripts/method.sh` so benchmark runs checkpoint each instance directly to disk and resume cleanly on resubmission.
+- Narrowed the next scored attempt to the minimum full benchmark target, `qrandomparity_n100`, so the workspace can establish one auditable reproduced baseline before expanding back to `n=200`.
 - Updated `PROGRESS.md` and `MILESTONES.md` to document that the benchmark artifacts are still missing and that another CPU submission is required.
 - Rewrote `scoring/DIRECTION.md` to keep the research direction method-safe for from-scratch agents while still constraining the benchmark task.
-- Corrected `scoring/TARGETS.md` so it no longer claims that the missing score entries already exist.
+- Corrected `scoring/TARGETS.md` so it no longer claims that the missing score entries already exist, and aligned `scoring/EXPERIMENTS.md` with the currently targeted reproduced baseline.
 - Left `action.yaml` in `submit` mode for a CPU run so the missing score artifact can be produced.
 
 ## Final Judgment

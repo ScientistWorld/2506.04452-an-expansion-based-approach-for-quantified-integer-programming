@@ -38,6 +38,7 @@ The workspace currently sits at `method_runs`. The solver core implements the pa
 - Local correctness smoke tests using the packaged HiGHS wheels in `tmp/pylibs` match exact enumeration on QRandomParity `n=4..6`: all tested instances are `UNSAT`.
 - Larger performance validation remains deferred to compute, which is the correct place to assess the scored `n=100` and `n=200` settings.
 - The evaluator now rejects undersized scored batches, so a 5-instance smoke test can no longer masquerade as a valid reproduction result.
+- The latest compute submission (`29e3264f-ca9`) produced no solver records before the worker node died; persisted logs contain only the environment banner and no benchmark lines.
 
 ## Paper Reference Comparison
 
@@ -90,3 +91,9 @@ The workspace currently sits at `method_runs`. The solver core implements the pa
 - Verified that the scored benchmark outputs are still missing from the workspace: `tmp/results/` has no result JSON, `logs/run.log` does not exist, and `scoring/scores.json` is still empty.
 - Because the reproduction numbers are not yet backed by auditable on-disk artifacts, the highest defensible milestone remains `method_runs`.
 - Updated `scripts/run.sh` to persist a compute-side run log and to pass an explicit results path through the method and evaluation scripts.
+
+### [2026-04-12 08:05] Dead-Node Benchmark Follow-Up
+
+- Reviewed the completed CPU job `29e3264f-ca9` and confirmed that the worker node died before the first benchmark instance finished; `jobs/29e3264f-ca9/stderr.log` reports `Worker node died while job was running`.
+- Because the run produced no partial JSON or scores, the harness was changed to checkpoint each solved instance directly into `tmp/results/equips_n100_results.json` and to resume from that file on subsequent submissions.
+- Narrowed the next scored submission to the minimum valid benchmark target, `qrandomparity_n100` with 100 instances, so the workspace can establish an auditable baseline before attempting the harder `n=200` setting.

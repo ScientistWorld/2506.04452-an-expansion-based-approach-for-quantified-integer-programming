@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: false
 milestone: method_runs
-notes: "Verification found that the claimed core_claim is not yet backed by on-disk score artifacts; rerun the full scored CPU benchmark (n=100 and n=200, 100 instances each) and persist tmp/results/equips_results.json, logs/run.log, and scoring/scores.json."
+notes: "Job 29e3264f-ca9 died before producing any solver records. Resubmit a resumable CPU benchmark for the minimum valid scored target qrandomparity_n100 (100 instances, 30s timeout), writing incremental checkpoints to tmp/results/equips_n100_results.json and regenerating scoring/scores.json if the batch completes."

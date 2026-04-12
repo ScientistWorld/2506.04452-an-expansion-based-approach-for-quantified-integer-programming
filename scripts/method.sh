@@ -25,14 +25,25 @@ PY
 OUTPUT_PATH="${1:-/home/user/tmp/results/equips_results.json}"
 N_VALUES="${EQUIPS_N_VALUES:-100 200}"
 NUM_INSTANCES="${EQUIPS_NUM_INSTANCES:-10}"
+INSTANCE_START="${EQUIPS_INSTANCE_START:-0}"
 TIMEOUT_SECS="${EQUIPS_TIMEOUT_SECS:-120.0}"
 SEED="${EQUIPS_SEED:-42}"
+RESUME_FLAG="${EQUIPS_RESUME:-1}"
 
 mkdir -p "$(dirname "$OUTPUT_PATH")"
 
-python3 method/run_qrandomparity.py \
-    --n-values ${N_VALUES} \
-    --num-instances "${NUM_INSTANCES}" \
-    --timeout "${TIMEOUT_SECS}" \
-    --seed "${SEED}" \
+METHOD_ARGS=(
+    --n-values ${N_VALUES}
+    --num-instances "${NUM_INSTANCES}"
+    --instance-start "${INSTANCE_START}"
+    --timeout "${TIMEOUT_SECS}"
+    --seed "${SEED}"
     --output "$OUTPUT_PATH"
+)
+
+if [ "$RESUME_FLAG" = "1" ]; then
+    METHOD_ARGS+=(--resume)
+fi
+
+python3 method/run_qrandomparity.py \
+    "${METHOD_ARGS[@]}"

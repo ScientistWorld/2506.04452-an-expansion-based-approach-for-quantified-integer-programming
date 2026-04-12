@@ -48,12 +48,7 @@ def group_metrics(records: list[dict], timeout_s: float) -> dict[int, dict]:
 
 
 def build_scores(result_blobs: list[dict]) -> dict:
-    scores = {
-        "experiments": {
-            "qrandomparity_n100": {"results": {}},
-            "qrandomparity_n200": {"results": {}},
-        }
-    }
+    scores = {"experiments": {}}
 
     for blob in result_blobs:
         solver_name = blob["solver"]
@@ -63,6 +58,7 @@ def build_scores(result_blobs: list[dict]) -> dict:
             if n not in metrics:
                 continue
             experiment = f"qrandomparity_n{n}"
+            scores["experiments"].setdefault(experiment, {"results": {}})
             scores["experiments"][experiment]["results"][solver_name] = {
                 "median_runtime_s": metrics[n]["median_runtime_s"],
                 "instances_solved": metrics[n]["instances_solved"],
