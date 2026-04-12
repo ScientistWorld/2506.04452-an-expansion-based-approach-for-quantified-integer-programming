@@ -13,6 +13,11 @@
 
 set -e
 
-# Install highspy (HiGHS Python bindings) — open-source IP/MIP solver
-# HiGHS is the IP solver backend used by EQuIPS
-uv pip install --system highspy numpy
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+WHEEL_DIR="${SCRIPT_DIR}/wheels"
+
+# Install vendored cp311 wheels to avoid long setup-time network resolution
+# or source builds. HiGHS is the IP solver backend used by EQuIPS.
+uv pip install --system \
+    "${WHEEL_DIR}/numpy-2.2.6-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl" \
+    "${WHEEL_DIR}/highspy-1.11.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl"

@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: false
 milestone: method_runs
-notes: "Final verification resubmission: run the minimum full-size scored benchmark for repaired EQuIPS (QRandomParity n=100, 100 instances) and regenerate scoring/scores.json."
+notes: "Resubmit after fixing setup timeout by vendoring cp311 wheels for numpy/highspy; then run the minimum full-size scored benchmark for EQuIPS (QRandomParity n=100, 100 instances) and regenerate scoring/scores.json."
