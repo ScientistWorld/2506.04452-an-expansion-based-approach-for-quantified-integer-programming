@@ -1,8 +1,7 @@
 # IMPORTANT: Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends. Sleeping blocks the entire pipeline.
-action: done
+action: submit
 gpus: 0
 test: true
-milestone: method_runs
-notes: "Made procedural data generator trackable; download.sh correctly requires no external artifacts."
+notes: "Run EQuIPS on n=100 and n=200 reference batches, then write scoring/scores_train.json and scoring/scores_test.json."

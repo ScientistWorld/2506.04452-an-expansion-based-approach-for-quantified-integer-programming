@@ -6,7 +6,12 @@
       "primary_metric": "median_runtime_s",
       "metrics": {
         "median_runtime_s": {"higher_is_better": false, "coefficient": -1.0},
-        "instances_solved": {"higher_is_better": true, "coefficient": 0.5}
+        "instances_solved": {"higher_is_better": true, "coefficient": 0.5},
+        "p90_runtime_s": {
+          "higher_is_better": false,
+          "coefficient": -0.4,
+          "description": "90th percentile capped runtime over the fixed slice, treating unsolved or over-timeout instances as the timeout."
+        }
       },
       "results": {
         "equips": {"type": "proposed", "median_runtime_s": 0.06, "instances_solved": 100},
@@ -19,7 +24,12 @@
       "primary_metric": "median_runtime_s",
       "metrics": {
         "median_runtime_s": {"higher_is_better": false, "coefficient": -1.0},
-        "instances_solved": {"higher_is_better": true, "coefficient": 0.5}
+        "instances_solved": {"higher_is_better": true, "coefficient": 0.5},
+        "p90_runtime_s": {
+          "higher_is_better": false,
+          "coefficient": -0.4,
+          "description": "90th percentile capped runtime over the fixed slice, treating unsolved or over-timeout instances as the timeout."
+        }
       },
       "results": {
         "equips": {"type": "proposed", "median_runtime_s": 0.18, "instances_solved": 100},

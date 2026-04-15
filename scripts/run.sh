@@ -1,9 +1,8 @@
 #!/bin/bash
-# CPU benchmark job for the scaled core-claim reproduction.
+# CPU job for the designer train/test split.
 #
-# This submission runs the paper's EQuIPS algorithm and a search-style exact
-# baseline on the same QRandomParity batch, then writes scoring/scores.json.
-# Result JSON files are preserved across retries so interrupted jobs can resume.
+# This runs the existing EQuIPS method on the two reference QRandomParity
+# experiments and then evaluates the public train slice and held-out test slice.
 
 set -e
 
@@ -17,14 +16,13 @@ if [ -d "/dev/shm/pylibs" ]; then
     export PYTHONPATH="/dev/shm/pylibs:$PYTHONPATH"
 fi
 
-echo "=== Scaled EQuIPS Benchmark ==="
+echo "=== Designer Train/Test Evaluation ==="
 echo "Python: $(python3 --version)"
 
-METHOD_RESULTS="/home/user/tmp/results/equips_results.json"
-BASELINE_RESULTS="/home/user/tmp/results/search_baseline_results.json"
-rm -f /home/user/scoring/scores.json
+RESULTS="/home/user/tmp/results/equips_reference_split_results.json"
+rm -f /home/user/scoring/scores_train.json /home/user/scoring/scores_test.json
 
-export EQUIPS_N_VALUES="10"
+export EQUIPS_N_VALUES="100 200"
 export EQUIPS_NUM_INSTANCES="100"
 export EQUIPS_TIMEOUT_SECS="5.0"
 export EQUIPS_INSTANCE_START="0"
@@ -32,28 +30,24 @@ export EQUIPS_SEED="42"
 export EQUIPS_RESUME="1"
 export EQUIPS_MIP_BACKEND="auto"
 
-export BASELINE_N_VALUES="10"
-export BASELINE_NUM_INSTANCES="100"
-export BASELINE_TIMEOUT_SECS="5.0"
-export BASELINE_INSTANCE_START="0"
-export BASELINE_SEED="42"
-export BASELINE_RESUME="1"
-
-bash /home/user/scripts/method.sh "$METHOD_RESULTS"
-bash /home/user/scripts/baseline.sh "$BASELINE_RESULTS"
-bash /home/user/scripts/evaluate.sh "$METHOD_RESULTS" "$BASELINE_RESULTS"
+bash /home/user/scripts/method.sh "$RESULTS"
+bash /home/user/scripts/evaluate_train.sh "$RESULTS"
+bash /home/user/scripts/evaluate_test.sh "$RESULTS"
 
 python3 - <<'PY'
 import json
 from pathlib import Path
 
-scores = json.loads(Path("/home/user/scoring/scores.json").read_text())
-print("=== Score Summary ===")
-for exp_name, exp in scores.get("experiments", {}).items():
-    print(exp_name)
-    for method_name, metrics in exp.get("results", {}).items():
-        print(
-            f"  {method_name}: solved={metrics['instances_solved']} "
-            f"median_runtime_s={metrics['median_runtime_s']}"
-        )
+for name in ("scores_train.json", "scores_test.json"):
+    path = Path("/home/user/scoring") / name
+    print(f"=== {name} ===")
+    scores = json.loads(path.read_text())
+    for exp_name, exp in scores.get("experiments", {}).items():
+        print(exp_name)
+        for method_name, metrics in exp.get("results", {}).items():
+            print(
+                f"  {method_name}: solved={metrics['instances_solved']} "
+                f"median={metrics['median_runtime_s']} "
+                f"p90={metrics['p90_runtime_s']}"
+            )
 PY
