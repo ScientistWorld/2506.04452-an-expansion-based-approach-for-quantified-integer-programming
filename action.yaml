@@ -1,7 +1,7 @@
 # IMPORTANT: Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends. Sleeping blocks the entire pipeline.
-action: submit
+action: done
 gpus: 0
 test: true
-notes: "Run EQuIPS on n=100 and n=200 reference batches, then write scoring/scores_train.json and scoring/scores_test.json."
+notes: "Reference n=100/n=200 split; 2 experiments x 3 metrics in train and test; existing EQuIPS scores match exactly across slices with 0 solved and 5.0s capped runtime."

@@ -194,3 +194,7 @@ core.[0-9]*
 
 # Auto-added by swarm
 data/
+!data/
+!data/.gitkeep
+!data/__init__.py
+!data/qrandomparity.py
