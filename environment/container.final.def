@@ -33,14 +33,12 @@ From: python:3.11-slim
 
 
 
-    # --- Frozen environment (3 packages) ---
-    # Sources: 0 both, 0 overlay-only, 3 setup-only
+    # --- Frozen environment (1 packages) ---
+    # Sources: 0 both, 0 overlay-only, 1 setup-only
     pip install --break-system-packages uv 2>/dev/null || pip install uv 2>/dev/null || true
     export UV_SYSTEM_PYTHON=1 UV_BREAK_SYSTEM_PACKAGES=1
     uv pip install --system \
-        'pwd' \  # setup
-        'script_dir' \  # setup
-        'wheel_dir'  # setup
+        'ortools'
 
 %environment
     export HOME=/home/user
