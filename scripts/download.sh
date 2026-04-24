@@ -8,8 +8,11 @@
 # datasets, pretrained models, or paper-specific artifacts to fetch here.
 # Python dependencies are installed via environment/setup.sh, not this script.
 
-set -e
+set -euo pipefail
 
-cd /home/user
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT_DIR"
+
+mkdir -p data/downloads
 
 echo "No downloads required. QRandomParity instances are generated procedurally."
