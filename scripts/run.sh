@@ -1,8 +1,9 @@
 #!/bin/bash
 # CPU job for the designer train/test split.
 #
-# This runs the existing EQuIPS method on the two reference QRandomParity
-# experiments and then evaluates the public train slice and held-out test slice.
+# This runs the current EQuIPS method and the exact baseline on the active
+# scored QRandomParity benchmark (`n=10`, 100 fixed instances), then evaluates
+# the public train slice and held-out test slice.
 
 set -e
 
@@ -19,20 +20,30 @@ fi
 echo "=== Designer Train/Test Evaluation ==="
 echo "Python: $(python3 --version)"
 
-RESULTS="/home/user/tmp/results/equips_reference_split_results.json"
+METHOD_RESULTS="/home/user/tmp/results/equips_qrandomparity_n10.json"
+BASELINE_RESULTS="/home/user/tmp/results/search_enumeration_qrandomparity_n10.json"
 rm -f /home/user/scoring/scores_train.json /home/user/scoring/scores_test.json
+find /home/user/tmp/results -type f -name '*.json' -delete
 
-export EQUIPS_N_VALUES="100 200"
+export EQUIPS_N_VALUES="10"
 export EQUIPS_NUM_INSTANCES="100"
 export EQUIPS_TIMEOUT_SECS="5.0"
 export EQUIPS_INSTANCE_START="0"
 export EQUIPS_SEED="42"
-export EQUIPS_RESUME="1"
+export EQUIPS_RESUME="0"
 export EQUIPS_MIP_BACKEND="auto"
 
-bash /home/user/scripts/method.sh "$RESULTS"
-bash /home/user/scripts/evaluate_train.sh "$RESULTS"
-bash /home/user/scripts/evaluate_test.sh "$RESULTS"
+export BASELINE_N_VALUES="10"
+export BASELINE_NUM_INSTANCES="100"
+export BASELINE_TIMEOUT_SECS="5.0"
+export BASELINE_INSTANCE_START="0"
+export BASELINE_SEED="42"
+export BASELINE_RESUME="0"
+
+bash /home/user/scripts/method.sh "$METHOD_RESULTS"
+bash /home/user/scripts/baseline.sh "$BASELINE_RESULTS"
+bash /home/user/scripts/evaluate_train.sh
+bash /home/user/scripts/evaluate_test.sh
 
 python3 - <<'PY'
 import json
@@ -48,6 +59,7 @@ for name in ("scores_train.json", "scores_test.json"):
             print(
                 f"  {method_name}: solved={metrics['instances_solved']} "
                 f"median={metrics['median_runtime_s']} "
+                f"mean={metrics['mean_runtime_s']} "
                 f"p90={metrics['p90_runtime_s']}"
             )
 PY

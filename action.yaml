@@ -1,7 +1,7 @@
 # IMPORTANT: Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends. Sleeping blocks the entire pipeline.
-action: done
+action: submit
 gpus: 0
-test: true
-notes: "Reference n=100/n=200 split; 2 experiments x 3 metrics in train and test; existing EQuIPS scores match exactly across slices with 0 solved and 5.0s capped runtime."
+test: false
+notes: "Run train/test evaluation on the active qrandomparity_n10 target; score both EQuIPS and search_enumeration via auto-discovered results; populate scoring/scores_{train,test}.json."

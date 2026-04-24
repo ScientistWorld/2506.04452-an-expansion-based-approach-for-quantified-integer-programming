@@ -3,7 +3,7 @@ Train-slice evaluator for QRandomParity solver result files.
 
 This module is intentionally self-contained and method-agnostic. It reads the
 same raw result JSON files as scripts/evaluate.sh, filters to the public train
-instance IDs for the existing reference experiments, and writes
+instance IDs for the active scored `qrandomparity_n10` experiment, and writes
 scoring/scores_train.json.
 """
 
@@ -15,19 +15,12 @@ from pathlib import Path
 
 
 SLICE_INSTANCE_IDS = {
-    100: {
-        2, 4, 9, 10, 11, 12, 15, 16, 17, 18,
-        19, 20, 21, 23, 24, 27, 30, 32, 33, 37,
-        38, 44, 47, 48, 49, 51, 55, 60, 61, 63,
-        64, 65, 66, 69, 73, 75, 77, 78, 79, 84,
-        86, 88, 89, 90, 91, 92, 93, 94, 96, 97,
-    },
-    200: {
-        2, 4, 9, 10, 11, 12, 15, 16, 17, 18,
-        19, 20, 21, 23, 24, 27, 30, 32, 33, 37,
-        38, 44, 47, 48, 49, 51, 55, 60, 61, 63,
-        64, 65, 66, 69, 73, 75, 77, 78, 79, 84,
-        86, 88, 89, 90, 91, 92, 93, 94, 96, 97,
+    10: {
+        2, 3, 5, 8, 9, 10, 13, 14, 16, 20,
+        22, 25, 27, 28, 29, 31, 32, 34, 37, 41,
+        44, 45, 46, 48, 49, 50, 51, 52, 53, 54,
+        57, 58, 59, 61, 62, 63, 67, 68, 76, 79,
+        81, 85, 86, 87, 88, 91, 92, 96, 98, 99,
     },
 }
 

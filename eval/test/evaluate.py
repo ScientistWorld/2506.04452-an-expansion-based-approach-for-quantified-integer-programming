@@ -3,7 +3,7 @@ Held-out test-slice evaluator for QRandomParity solver result files.
 
 This module is intentionally self-contained and method-agnostic. It reads the
 same raw result JSON files as scripts/evaluate.sh, filters to the held-out test
-instance IDs for the existing reference experiments, and writes
+instance IDs for the active scored `qrandomparity_n10` experiment, and writes
 scoring/scores_test.json.
 """
 
@@ -15,19 +15,12 @@ from pathlib import Path
 
 
 SLICE_INSTANCE_IDS = {
-    100: {
-        0, 1, 3, 5, 6, 7, 8, 13, 14, 22,
-        25, 26, 28, 29, 31, 34, 35, 36, 39, 40,
-        41, 42, 43, 45, 46, 50, 52, 53, 54, 56,
-        57, 58, 59, 62, 67, 68, 70, 71, 72, 74,
-        76, 80, 81, 82, 83, 85, 87, 95, 98, 99,
-    },
-    200: {
-        0, 1, 3, 5, 6, 7, 8, 13, 14, 22,
-        25, 26, 28, 29, 31, 34, 35, 36, 39, 40,
-        41, 42, 43, 45, 46, 50, 52, 53, 54, 56,
-        57, 58, 59, 62, 67, 68, 70, 71, 72, 74,
-        76, 80, 81, 82, 83, 85, 87, 95, 98, 99,
+    10: {
+        0, 1, 4, 6, 7, 11, 12, 15, 17, 18,
+        19, 21, 23, 24, 26, 30, 33, 35, 36, 38,
+        39, 40, 42, 43, 47, 55, 56, 60, 64, 65,
+        66, 69, 70, 71, 72, 73, 74, 75, 77, 78,
+        80, 82, 83, 84, 89, 90, 93, 94, 95, 97,
     },
 }
 
