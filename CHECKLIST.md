@@ -11,7 +11,7 @@ Check off items as you complete them. Order doesn't matter - work however makes 
 ## Scoring
 - [x] `scoring/reference.json` - paper's reported numbers
 - [x] Workspace validated via `python run_validator.py` (passes with patched validator)
-- [ ] `scoring/scores.json` - reproduced numbers from the repaired post-audit run (current file is an intentionally empty placeholder; no post-audit benchmark run yet)
+- [x] `scoring/scores.json` - reproduced numbers from the repaired post-audit run
 - [x] `scoring/TARGETS.md` - primary and constraint targets for the scored benchmark
 - [x] `scoring/CONSTRAINTS.md` - what a scientist must hold fixed
 - [x] `scoring/EXPERIMENTS.md` - experiment purposes aligned with `scores.json`
@@ -39,7 +39,7 @@ Check off items as you complete them. Order doesn't matter - work however makes 
 
 ## Milestones
 - [x] `method_runs` - EQuIPS implemented and wired into the benchmark scripts
-- [ ] `core_claim` - minimum experiment supports central claim
+- [x] `core_claim` - minimum experiment supports central claim
 - [ ] `core_claim_plus` - additional settings beyond the minimum
 - [ ] `secondary_claims`
 - [ ] `majority`

@@ -2,5 +2,6 @@
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends. Sleeping blocks the entire pipeline.
 action: done
+milestone: core_claim
 gpus: 0
-notes: "Reference-free qrandomparity_n10 split; 4 train metrics and 4 test metrics for equips/search_enumeration; equips is faster on both slices with a small train->test gap (median 0.247814->0.257841, p90 0.46106->0.510841, solved 50->49); caveat: one equips test instance reported TIMEOUT despite sub-timeout runtime in method output."
+notes: "core_claim on scaled qrandomparity_n10: persisted raw outputs regenerated scoring/scores.json plus train/test split scores; equips beats search_enumeration on the same 100-instance batch (median 0.247816 vs 0.690747, solved 99 vs 100); caveat: one equips instance was emitted as TIMEOUT despite sub-timeout runtime in the raw method output."

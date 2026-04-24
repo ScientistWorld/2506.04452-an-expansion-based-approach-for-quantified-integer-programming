@@ -22,7 +22,7 @@ echo "Python: $(python3 --version)"
 
 METHOD_RESULTS="/home/user/tmp/results/equips_qrandomparity_n10.json"
 BASELINE_RESULTS="/home/user/tmp/results/search_enumeration_qrandomparity_n10.json"
-rm -f /home/user/scoring/scores_train.json /home/user/scoring/scores_test.json
+rm -f /home/user/scoring/scores.json /home/user/scoring/scores_train.json /home/user/scoring/scores_test.json
 find /home/user/tmp/results -type f -name '*.json' -delete
 
 export EQUIPS_N_VALUES="10"
@@ -42,6 +42,7 @@ export BASELINE_RESUME="0"
 
 bash /home/user/scripts/method.sh "$METHOD_RESULTS"
 bash /home/user/scripts/baseline.sh "$BASELINE_RESULTS"
+bash /home/user/scripts/evaluate.sh
 bash /home/user/scripts/evaluate_train.sh
 bash /home/user/scripts/evaluate_test.sh
 
@@ -49,7 +50,7 @@ python3 - <<'PY'
 import json
 from pathlib import Path
 
-for name in ("scores_train.json", "scores_test.json"):
+for name in ("scores.json", "scores_train.json", "scores_test.json"):
     path = Path("/home/user/scoring") / name
     print(f"=== {name} ===")
     scores = json.loads(path.read_text())

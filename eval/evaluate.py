@@ -12,9 +12,30 @@ import json
 from pathlib import Path
 
 
+SOLVED_STATUSES = {"SAT", "UNSAT"}
+
+
 def load_results(path: Path) -> dict:
     with path.open() as handle:
         return json.load(handle)
+
+
+def median(values: list[float], fallback: float) -> float:
+    if not values:
+        return fallback
+    ordered = sorted(values)
+    middle = len(ordered) // 2
+    if len(ordered) % 2 == 1:
+        return ordered[middle]
+    return (ordered[middle - 1] + ordered[middle]) / 2.0
+
+
+def nearest_rank_percentile(values: list[float], percentile: float, fallback: float) -> float:
+    if not values:
+        return fallback
+    ordered = sorted(values)
+    rank = max(1, int(len(ordered) * percentile + 0.999999))
+    return ordered[min(rank - 1, len(ordered) - 1)]
 
 
 def group_metrics(records: list[dict], expected_count: int | None, timeout_s: float) -> dict[int, dict]:
@@ -28,19 +49,23 @@ def group_metrics(records: list[dict], expected_count: int | None, timeout_s: fl
             raise ValueError(
                 f"Expected {expected_count} instances for n={n}, but found {len(items)} in the results file."
             )
-        solved = [item for item in items if item["status"] in {"SAT", "UNSAT"} and float(item["runtime_s"]) <= timeout_s]
-        runtimes = sorted(float(item["runtime_s"]) for item in solved)
-        median = None
-        if runtimes:
-            middle = len(runtimes) // 2
-            if len(runtimes) % 2 == 1:
-                median = runtimes[middle]
-            else:
-                median = (runtimes[middle - 1] + runtimes[middle]) / 2.0
+        solved = [
+            item for item in items
+            if item["status"] in SOLVED_STATUSES and float(item["runtime_s"]) <= timeout_s
+        ]
+        solved_runtimes = [float(item["runtime_s"]) for item in solved]
+        capped_runtimes = [
+            min(float(item.get("runtime_s", timeout_s)), timeout_s)
+            if item["status"] in SOLVED_STATUSES else timeout_s
+            for item in items
+        ]
+        mean_runtime = sum(solved_runtimes) / len(solved_runtimes) if solved_runtimes else timeout_s
         metrics[n] = {
             "instances_solved": len(solved),
             "total_instances": len(items),
-            "median_runtime_s": round(median, 6) if median is not None else timeout_s,
+            "median_runtime_s": round(median(solved_runtimes, timeout_s), 6),
+            "mean_runtime_s": round(mean_runtime, 6),
+            "p90_runtime_s": round(nearest_rank_percentile(capped_runtimes, 0.90, timeout_s), 6),
         }
     return metrics
 
@@ -59,6 +84,8 @@ def build_scores(result_blobs: list[dict]) -> dict:
             scores["experiments"][experiment]["results"][solver_name] = {
                 "median_runtime_s": n_metrics["median_runtime_s"],
                 "instances_solved": n_metrics["instances_solved"],
+                "mean_runtime_s": n_metrics["mean_runtime_s"],
+                "p90_runtime_s": n_metrics["p90_runtime_s"],
             }
     return scores
 

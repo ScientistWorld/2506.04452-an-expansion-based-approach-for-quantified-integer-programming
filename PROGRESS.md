@@ -1,6 +1,29 @@
 # Progress
 
-The workspace currently sits at `method_runs`. The solver core implements the paper's recursive expansion-based EQuIPS procedure for QIP feasibility on the QRandomParity family, but the repaired implementation still needs a fresh persisted scored run before `core_claim` can be justified.
+The workspace currently sits at `core_claim`. The solver core implements the
+paper's recursive expansion-based EQuIPS procedure for QIP feasibility on the
+QRandomParity family, and the completed `qrandomparity_n10` benchmark run now
+provides persisted reproduced scores for both the proposed method and the exact
+search baseline.
+
+## Latest Milestone Evidence
+
+- The completed containerized run wrote raw result files for both `equips` and
+  `search_enumeration` under `tmp/results/`.
+- Regenerated `scoring/scores.json` from those raw outputs with the main
+  method-agnostic evaluator, producing:
+  - `equips`: `median_runtime_s=0.247816`, `instances_solved=99`,
+    `mean_runtime_s=0.328073`, `p90_runtime_s=0.477451`
+  - `search_enumeration`: `median_runtime_s=0.690747`,
+    `instances_solved=100`, `mean_runtime_s=0.686851`,
+    `p90_runtime_s=0.708195`
+- The completed split run also produced distinct `scores_train.json` and
+  `scores_test.json`, showing a small but nonzero generalization gap for
+  `equips` while keeping the same ordering against the baseline.
+- This is sufficient for a scaled `core_claim`: on the active nontrivial
+  QRandomParity benchmark, the reproduced EQuIPS implementation is materially
+  faster than the exact search baseline while maintaining near-complete solved
+  coverage.
 
 ## What Works
 

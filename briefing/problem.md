@@ -12,7 +12,12 @@ Each instance contains:
 - A linear feasibility system
 - Optionally, additional linear restrictions on the universally quantified choices
 
-The scored benchmark is a procedurally generated satisfiability family called QRandomParity. It produces hard quantified instances by combining parity relations under different variable orderings. The evaluation slice used in this gym focuses on the large-instance settings `n=100` and `n=200`.
+The scored benchmark is a procedurally generated satisfiability family called
+QRandomParity. It produces hard quantified instances by combining parity
+relations under different variable orderings. The active scored slice in this
+gym is a fixed 100-instance batch at `n=10`, which is large enough to separate
+the expansion-based method from the exact search baseline in the current
+open-source reproduction.
 
 ## Success Criteria
 

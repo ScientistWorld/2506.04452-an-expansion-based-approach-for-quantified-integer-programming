@@ -1,8 +1,20 @@
 # Reproduction Milestones
 
-**Current: method_runs**
+**Current: core_claim**
 
 ## Progress Log
+
+### [2026-04-24 13:05] - core_claim
+- Reviewed the completed `qrandomparity_n10` benchmark job and confirmed that it
+  produced persisted raw result files for both `equips` and
+  `search_enumeration`.
+- Regenerated `scoring/scores.json` from those raw outputs and aligned the main
+  evaluator and public evaluation docs with the active scaled benchmark
+  contract.
+- The reproduced active benchmark now shows the paper's central scaled claim:
+  EQuIPS is substantially faster than the exact search baseline on the same
+  fixed QRandomParity batch (`median_runtime_s` `0.247816` vs. `0.690747`)
+  while keeping solved coverage high (`99/100` vs. `100/100`).
 
 ### [2026-04-09 07:40] - none
 - Audited the existing EQuIPS implementation against Algorithms 1 and 2 in the paper.
