@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Quick test of EQuIPS solver on small QRandomParity instances."""
 
+import os
 import sys
 import time
 sys.path.insert(0, '/home/user')
 
 from data.qrandomparity import generate_qrandomparity
-from method.equips import solve_qip
+from method.equips import solve_qip, solve_qip_optimization
 
 
 def test_basic():
@@ -58,7 +59,38 @@ def test_qrandomparity():
             print(f"  seed={seed}: {result['status']} ({elapsed:.3f}s)")
 
 
+def test_optimization():
+    """Test decision-to-optimization reduction for both min and max senses."""
+    print("\n=== Optimization Tests ===")
+
+    from data.qrandomparity import QIPProblem, Variable, Constraint
+
+    maximize_problem = QIPProblem(
+        variables=[Variable('x', 0, 3, 'E')],
+        constraints=[],
+        objective={'x': 1},
+        objective_sense='max',
+    )
+    maximize_result = solve_qip_optimization(maximize_problem, timeout_s=5)
+    print(f"  Max result: {maximize_result}")
+    assert maximize_result['status'] == 'SAT', f"Expected SAT, got {maximize_result['status']}"
+    assert maximize_result['optimal_value'] == 3, maximize_result
+
+    minimize_problem = QIPProblem(
+        variables=[Variable('x', 0, 3, 'E')],
+        constraints=[Constraint({'x': -1}, -1)],
+        objective={'x': 1},
+        objective_sense='min',
+    )
+    minimize_result = solve_qip_optimization(minimize_problem, timeout_s=5)
+    print(f"  Min result: {minimize_result}")
+    assert minimize_result['status'] == 'SAT', f"Expected SAT, got {minimize_result['status']}"
+    assert minimize_result['optimal_value'] == 1, minimize_result
+
+
 if __name__ == '__main__':
     test_basic()
-    test_qrandomparity()
+    test_optimization()
+    if os.environ.get("EQUIPS_TEST_MODE", "full") != "quick":
+        test_qrandomparity()
     print("\n=== All tests passed ===")

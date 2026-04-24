@@ -33,6 +33,22 @@ search-style exact baseline on a fixed 100-instance batch.
   - Time-budget propagation now reaches the underlying HiGHS calls, and solver timeouts are reported as `TIMEOUT` instead of being mislabeled as `UNSAT`.
   - Empty existential abstractions now use the paper's stronger existential-IP relaxation heuristic from Appendix A.1 / Table 4 instead of a trivial domain-only move.
   - `wins1` now supports a hybrid backend mode: existential feasibility stays on HiGHS, while universal violation checks use OR-Tools CP-SAT when available.
+  - Optimization reduction now respects objective sense: minimization adds
+    `c^T x <= z`, while maximization correctly adds `c^T x >= z` through the
+    equivalent `-c^T x <= -z` encoding instead of reusing the minimization
+    branch.
+  - Optimization recursion now propagates real `TIMEOUT` states instead of
+    collapsing every non-`SAT` subcall into the infeasible side of the binary
+    search.
+- **Paper sample instance support**
+  - Added `data/qlp.py`, a minimal parser for the official EQuIPS `.qlp`
+    benchmark format used by the released sample instances.
+  - Added `method/run_qlp_instance.py` so the packaged environment can execute
+    feasibility and optimization examples from the upstream release without
+    depending on the QRandomParity generator.
+  - `scripts/download.sh` now fetches the official EQuIPS repository into
+    `data/downloads/EQuIPS` so those sample instances are reproducible on a
+    fresh clone.
 - **QRandomParity substitution** in `data/qrandomparity.py`
   - Substitution now keeps constant residual constraints and universal constraints, which is necessary for correct terminal checks.
   - The terminal benchmark encoding for Constraint (4c) now matches the paper: `-u - t_n >= -1` is encoded as `u + t_n <= 1`.
@@ -93,7 +109,9 @@ search-style exact baseline on a fixed 100-instance batch.
 
 - The workspace has a defensible scaled `core_claim` with persisted raw result files and aggregated scores on disk.
 - The active scored target is `qrandomparity_n10`; paper-scale `n=100` and `n=200` remain reference context in `scoring/reference.json`.
-- The next submitted CPU rerun is a consistency check after the false-timeout fix, not a recovery step for missing core artifacts.
+- The next submitted CPU job validates the repaired optimization wrapper and
+  new `.qlp` parser against the official `MiniLotSizing.qlp` and
+  `MiniMCN.qlp` examples inside the packaged container.
 
 ## Issues
 - **HiGHS availability on login node**: `highspy` is not installed in the host Python, so dynamic execution should be validated on compute through the packaged environment rather than assumed from local shell tests.

@@ -145,6 +145,10 @@ class QIPProblem:
     def with_objective_bound(self, bound: int) -> 'QIPProblem':
         if self.objective is None:
             return self
+        if self.objective_sense == "max":
+            return self.with_constraint_added(
+                Constraint({name: -coeff for name, coeff in self.objective.items()}, -bound)
+            )
         return self.with_constraint_added(Constraint(dict(self.objective), bound))
 
 

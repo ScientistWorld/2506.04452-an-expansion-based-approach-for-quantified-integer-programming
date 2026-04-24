@@ -4,6 +4,17 @@
 
 ## Progress Log
 
+### [2026-04-24 13:05] - core_claim
+- Fixed the optimization-side objective-bound reduction so maximization no
+  longer reuses the minimization encoding, which was preventing a faithful
+  implementation of the paper's Appendix A optimization path.
+- Added a minimal parser and runner for the official EQuIPS `.qlp` sample
+  instances and wired the upstream repository into `scripts/download.sh` as a
+  real idempotent fetch.
+- Prepared a CPU validation job that runs the repaired optimization tests and
+  the paper-provided `MiniLotSizing.qlp` / `MiniMCN.qlp` examples inside the
+  containerized environment.
+
 ### [2026-04-24 13:02] - core_claim
 - Final verification confirmed that the workspace remains at a defensible
   scaled `core_claim`: the persisted `qrandomparity_n10` scores are real,

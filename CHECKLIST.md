@@ -36,6 +36,7 @@ Check off items as you complete them. Order doesn't matter - work however makes 
 
 ## Data
 - [x] Dataset: QRandomParity generated procedurally (no external data needed)
+- [x] Official upstream EQuIPS sample `.qlp` instances wired through `scripts/download.sh`
 
 ## Milestones
 - [x] `method_runs` - EQuIPS implemented and wired into the benchmark scripts

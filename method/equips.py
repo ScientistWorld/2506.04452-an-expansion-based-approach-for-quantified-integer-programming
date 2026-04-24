@@ -789,6 +789,13 @@ def solve_qip_optimization(problem: QIPProblem, timeout_s: float = 60.0) -> dict
                 hi = mid - 1
             else:
                 lo = mid + 1
+        elif result["status"] == "TIMEOUT":
+            return {
+                "status": "TIMEOUT",
+                "assignment": best_assignment,
+                "optimal_value": best_value,
+                "runtime": time.time() - start,
+            }
         else:
             if problem.objective_sense == "min":
                 lo = mid + 1
@@ -796,7 +803,7 @@ def solve_qip_optimization(problem: QIPProblem, timeout_s: float = 60.0) -> dict
                 hi = mid - 1
 
     return {
-        "status": "SAT" if best_assignment is not None else "UNSAT",
+        "status": "SAT" if best_assignment is not None else "TIMEOUT" if time.time() - start >= timeout_s else "UNSAT",
         "assignment": best_assignment,
         "optimal_value": best_value,
         "runtime": time.time() - start,
