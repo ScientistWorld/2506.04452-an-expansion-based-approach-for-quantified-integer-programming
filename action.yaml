@@ -5,4 +5,4 @@ action: done
 milestone: core_claim
 gpus: 0
 test: false
-notes: "Final verification passed: cleaned gym docs and scoring weights, confirmed standalone evaluation scripts work, and preserved the workspace at a scaled core_claim."
+notes: "Final verification passed: the workspace is gym-ready at core_claim with clean method/eval separation, reusable evaluation scripts, portable downloads, and a documented scaled-target limitation."

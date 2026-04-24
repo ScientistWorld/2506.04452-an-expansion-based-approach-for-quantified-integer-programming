@@ -4,6 +4,17 @@
 
 ## Progress Log
 
+### [2026-04-24 13:08] - core_claim
+- Final gym verification rechecked the packaging without rerunning heavy
+  experiments: `validate.py` passed, all three evaluation entrypoints ran
+  standalone from stored result files, and the train/test split stayed
+  synchronized and non-degenerate.
+- Verified that `scripts/download.sh` remains portable and `shared/`-free, with
+  a real upstream fetch target for the official EQuIPS sample instances.
+- Kept the milestone at `core_claim`: the workspace is ready for gym use, with
+  the explicit limitation that the scored target is the scaled `qrandomparity_n10`
+  slice rather than the paper-scale settings.
+
 ### [2026-04-24 13:05] - core_claim
 - Fixed the optimization-side objective-bound reduction so maximization no
   longer reuses the minimization encoding, which was preventing a faithful
