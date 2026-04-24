@@ -4,6 +4,27 @@
 
 ## Progress Log
 
+### [2026-04-24 13:22] - core_claim
+- Fixed a likely false-timeout path in the HiGHS-backed EQuIPS solver by
+  preferring decisive model statuses over raw run-status warnings and by
+  preserving timeout exhaustion as `TIMEOUT` during recursive refinement.
+- Revalidated the workspace with `python3 validate.py --compare`; all scoring
+  and structure checks now pass with the updated `reference.json`.
+- Prepared a CPU rerun of the active `qrandomparity_n10` benchmark to verify
+  that the single fast timeout disappears and that regenerated scores remain
+  consistent with the persisted core-claim evidence.
+
+### [2026-04-24 12:49] - core_claim
+- Revalidated the persisted `qrandomparity_n10` raw result files and confirmed
+  that `scoring/scores.json` is derived from a real 100-instance batch for both
+  `equips` and `search_enumeration`.
+- Repaired `scoring/reference.json` so it now contains actual paper Table 1
+  reference numbers (`qrandomparity_n100` and `qrandomparity_n200`) instead of
+  placeholder scaled-target values.
+- Finalized the scaled-core-claim packaging: active scored target remains
+  `qrandomparity_n10`, while paper-scale settings are documented as reference
+  context only.
+
 ### [2026-04-24 13:05] - core_claim
 - Reviewed the completed `qrandomparity_n10` benchmark job and confirmed that it
   produced persisted raw result files for both `equips` and

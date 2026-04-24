@@ -9,10 +9,12 @@ from data.qrandomparity import (
     QIPProblem, Variable, Constraint, UniversalConstraint,
     Subgame, MultiGame, generate_qrandomparity
 )
+from method.equips import solve_qip
 
 # Re-export the solver solve function
-# (solver is in method/equips.py, imported via __import__ in eval)
+# (solver is in method/equips.py)
 __all__ = [
+    'solve_qip',
     'QIPProblem', 'Variable', 'Constraint', 'UniversalConstraint',
     'Subgame', 'MultiGame', 'generate_qrandomparity',
 ]

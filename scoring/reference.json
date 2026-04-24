@@ -1,45 +1,103 @@
 {
   "experiments": {
     "qrandomparity_n10": {
-      "description": "Fixed 100-instance QRandomParity benchmark at n=10. Lower runtime is better, but speed only counts if the solver still returns decisive answers across the batch.",
-      "weight": 1.0,
+      "description": "Scaled active reproduction target for this workspace: fixed 100-instance QRandomParity benchmark at n=10.",
+      "weight": 0.01,
       "primary_metric": "median_runtime_s",
       "metrics": {
         "median_runtime_s": {
           "higher_is_better": false,
           "coefficient": -0.8,
-          "description": "Median runtime over solved instances — primary metric, measures typical-case performance."
+          "description": "Median runtime over solved instances."
         },
         "instances_solved": {
           "higher_is_better": true,
           "coefficient": 0.4,
-          "description": "Count of instances solved within timeout — correctness constraint, rewards reliability."
+          "description": "Count of instances solved within timeout."
         },
         "mean_runtime_s": {
           "higher_is_better": false,
           "coefficient": -0.3,
-          "description": "Mean runtime over solved instances — triangulates median by upweighting outlier-sensitive mean."
+          "description": "Mean runtime over solved instances."
         },
         "p90_runtime_s": {
           "higher_is_better": false,
           "coefficient": -0.7,
-          "description": "90th percentile capped runtime over the fixed slice, treating unsolved or over-timeout instances as the timeout — anti-shortcut metric, penalizes tail latency and unsolved cases."
+          "description": "90th percentile capped runtime over the fixed batch."
         }
       },
       "results": {
         "equips": {
           "type": "proposed",
-          "median_runtime_s": 0.247814,
-          "instances_solved": 50,
-          "mean_runtime_s": 0.309736,
-          "p90_runtime_s": 0.46106
+          "median_runtime_s": 0.247816,
+          "instances_solved": 99,
+          "mean_runtime_s": 0.328073,
+          "p90_runtime_s": 0.477451
         },
         "search_enumeration": {
           "type": "baseline",
-          "median_runtime_s": 0.692309,
-          "instances_solved": 50,
-          "mean_runtime_s": 0.686238,
-          "p90_runtime_s": 0.709138
+          "median_runtime_s": 0.690747,
+          "instances_solved": 100,
+          "mean_runtime_s": 0.686851,
+          "p90_runtime_s": 0.708195
+        }
+      }
+    },
+    "qrandomparity_n100": {
+      "description": "Paper reference context from Table 1: QRandomParity median runtimes at n=100 with a 100-instance batch.",
+      "weight": 0.495,
+      "primary_metric": "median_runtime_s",
+      "metrics": {
+        "median_runtime_s": {
+          "higher_is_better": false,
+          "coefficient": -0.8,
+          "description": "Median runtime in seconds on the 100-instance batch."
+        },
+        "instances_unsolved": {
+          "higher_is_better": false,
+          "coefficient": -0.4,
+          "description": "Number of instances not solved within the timeout."
+        }
+      },
+      "results": {
+        "equips": {
+          "type": "proposed",
+          "median_runtime_s": 0.06,
+          "instances_unsolved": 0
+        },
+        "qfuncms": {
+          "type": "baseline",
+          "median_runtime_s": 1.67,
+          "instances_unsolved": 0
+        }
+      }
+    },
+    "qrandomparity_n200": {
+      "description": "Paper reference context from Table 1: QRandomParity median runtimes at n=200 with a 100-instance batch.",
+      "weight": 0.495,
+      "primary_metric": "median_runtime_s",
+      "metrics": {
+        "median_runtime_s": {
+          "higher_is_better": false,
+          "coefficient": -0.8,
+          "description": "Median runtime in seconds on the 100-instance batch."
+        },
+        "instances_unsolved": {
+          "higher_is_better": false,
+          "coefficient": -0.4,
+          "description": "Number of instances not solved within the timeout."
+        }
+      },
+      "results": {
+        "equips": {
+          "type": "proposed",
+          "median_runtime_s": 0.18,
+          "instances_unsolved": 0
+        },
+        "qfuncms": {
+          "type": "baseline",
+          "median_runtime_s": 2.21,
+          "instances_unsolved": 0
         }
       }
     }

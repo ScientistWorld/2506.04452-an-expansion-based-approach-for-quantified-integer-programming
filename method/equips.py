@@ -298,8 +298,6 @@ def _solve_ip_feasible(
     _add_universal_constraints(highs, names, universal_constraints)
     run_status = highs.run()
     model_status = highs.getModelStatus()
-    if run_status != hp.HighsStatus.kOk:
-        return _TIMEOUT
     if model_status in (
         hp.HighsModelStatus.kOptimal,
         hp.HighsModelStatus.kSolutionLimit,
@@ -308,6 +306,8 @@ def _solve_ip_feasible(
         return _extract_solution(highs, names)
     if model_status == hp.HighsModelStatus.kInfeasible:
         return None
+    if run_status != hp.HighsStatus.kOk:
+        return _TIMEOUT
     return _TIMEOUT
 
 
@@ -422,11 +422,11 @@ def _solve_ip_violate_all(
 
     run_status = highs.run()
     model_status = highs.getModelStatus()
-    if run_status != hp.HighsStatus.kOk:
-        return _TIMEOUT
     if model_status == hp.HighsModelStatus.kInfeasible:
         return None
     if model_status not in (hp.HighsModelStatus.kOptimal, hp.HighsModelStatus.kSolutionLimit):
+        if run_status != hp.HighsStatus.kOk:
+            return _TIMEOUT
         return _TIMEOUT
 
     solution = highs.getSolution()
@@ -717,7 +717,7 @@ def equips(
         abstraction = _refine_from_counter(abstraction, found_subgame, found_counter, refinement_state)
         stats.refinements += 1
         if time.time() - start_time > timeout_s:
-            return None
+            return _TIMEOUT
 
     return None
 
