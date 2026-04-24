@@ -10,7 +10,7 @@ Check off items as you complete them. Order doesn't matter - work however makes 
 
 ## Scoring
 - [x] `scoring/reference.json` - paper's reported numbers
-- [x] Workspace validated via `python run_validator.py` (passes with patched validator)
+- [x] Workspace validated via `python validate.py` (passes with patched validator)
 - [x] `scoring/scores.json` - reproduced numbers from the repaired post-audit run
 - [x] `scoring/TARGETS.md` - primary and constraint targets for the scored benchmark
 - [x] `scoring/CONSTRAINTS.md` - what a scientist must hold fixed

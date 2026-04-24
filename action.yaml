@@ -4,4 +4,5 @@
 action: done
 milestone: core_claim
 gpus: 0
-notes: "Audited fresh-clone packaging: verified no external artifacts are required, cleaned scripts/download.sh, and tracked data/downloads/.gitkeep for reproducible setup."
+test: false
+notes: "Final verification passed: cleaned gym docs and scoring weights, confirmed standalone evaluation scripts work, and preserved the workspace at a scaled core_claim."

@@ -4,6 +4,19 @@
 
 ## Progress Log
 
+### [2026-04-24 13:02] - core_claim
+- Final verification confirmed that the workspace remains at a defensible
+  scaled `core_claim`: the persisted `qrandomparity_n10` scores are real,
+  method/eval separation is clean, and the standalone evaluation scripts run
+  successfully against the stored result files.
+- Tightened the gym packaging by removing stray root-level core dumps,
+  rewriting scientist-facing scoring docs to avoid paper-method leakage, and
+  reweighting `scoring/reference.json` so the active scored target carries the
+  dominant weight instead of the reference-only paper-context experiments.
+- Wrote `VERIFICATION.md` and closed the workspace for gym use with the key
+  limitation that the scored target is a scaled `n=10` replacement rather than
+  the paper's larger QRandomParity settings.
+
 ### [2026-04-24 13:22] - core_claim
 - Fixed a likely false-timeout path in the HiGHS-backed EQuIPS solver by
   preferring decisive model statuses over raw run-status warnings and by

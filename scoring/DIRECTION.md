@@ -6,7 +6,7 @@ quantified-integer satisfiability solving on the QRandomParity family.
 ## In Scope
 
 - Improving runtime on `qrandomparity_n10` without reducing solved coverage.
-- Strengthening the implementation of the same EQuIPS-style expansion approach.
+- Developing stronger quantified-integer solvers for the same benchmark family.
 - Adding larger QRandomParity settings as new experiments while keeping the
   existing scored target comparable.
 - Improving the search-style baseline or adding additional exact baselines under

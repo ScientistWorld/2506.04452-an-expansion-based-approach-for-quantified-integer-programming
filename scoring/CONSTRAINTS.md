@@ -25,7 +25,7 @@ improvement over this workspace.
 
 ## Comparison Discipline
 
-- Compare EQuIPS and the search baseline on the same generated batch.
+- Compare the candidate solver and the search baseline on the same generated batch.
 - Do not simplify the parity encoding, shorten the quantifier prefix, or reduce
   the universal interaction while keeping the same experiment name.
 - If you add a larger or smaller benchmark, record it under a new experiment

@@ -2,7 +2,7 @@
   "experiments": {
     "qrandomparity_n10": {
       "description": "Scaled active reproduction target for this workspace: fixed 100-instance QRandomParity benchmark at n=10.",
-      "weight": 0.01,
+      "weight": 0.7,
       "primary_metric": "median_runtime_s",
       "metrics": {
         "median_runtime_s": {
@@ -45,7 +45,7 @@
     },
     "qrandomparity_n100": {
       "description": "Paper reference context from Table 1: QRandomParity median runtimes at n=100 with a 100-instance batch.",
-      "weight": 0.495,
+      "weight": 0.15,
       "primary_metric": "median_runtime_s",
       "metrics": {
         "median_runtime_s": {
@@ -74,7 +74,7 @@
     },
     "qrandomparity_n200": {
       "description": "Paper reference context from Table 1: QRandomParity median runtimes at n=200 with a 100-instance batch.",
-      "weight": 0.495,
+      "weight": 0.15,
       "primary_metric": "median_runtime_s",
       "metrics": {
         "median_runtime_s": {

@@ -10,7 +10,7 @@ bash scripts/reproduce.sh
 ## Active Scored Target
 
 ### `qrandomparity_n10`
-- What it tests: a scaled but nontrivial QRandomParity slice where the paper's EQuIPS algorithm can be compared directly against a search-style exact baseline.
+- What it tests: a scaled but nontrivial QRandomParity slice where a candidate solver can be compared directly against a search-style exact baseline.
 - Primary metric: `median_runtime_s`
 - Direction: lower is better
 - Evaluation: run both `scripts/method.sh` and `scripts/baseline.sh` on the same 100-instance `n=10` batch, then call `bash scripts/evaluate.sh <method_results> <baseline_results>`
