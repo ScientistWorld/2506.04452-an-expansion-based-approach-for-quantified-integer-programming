@@ -5,12 +5,13 @@
       "weight": 0.5,
       "primary_metric": "median_runtime_s",
       "metrics": {
-        "median_runtime_s": {"higher_is_better": false, "coefficient": -1.0},
-        "instances_solved": {"higher_is_better": true, "coefficient": 0.5},
+        "median_runtime_s": {"higher_is_better": false, "coefficient": -0.8, "description": "Median runtime over solved instances — primary metric, measures typical-case performance."},
+        "instances_solved": {"higher_is_better": true, "coefficient": 0.4, "description": "Count of instances solved within timeout — correctness constraint, rewards reliability."},
+        "mean_runtime_s": {"higher_is_better": false, "coefficient": -0.3, "description": "Mean runtime over solved instances — triangulates median by upweighting outlier-sensitive mean."},
         "p90_runtime_s": {
           "higher_is_better": false,
-          "coefficient": -0.4,
-          "description": "90th percentile capped runtime over the fixed slice, treating unsolved or over-timeout instances as the timeout."
+          "coefficient": -0.7,
+          "description": "90th percentile capped runtime over the fixed slice, treating unsolved or over-timeout instances as the timeout — anti-shortcut metric, penalizes tail latency and unsolvable cases."
         }
       },
       "results": {
@@ -23,12 +24,13 @@
       "weight": 0.5,
       "primary_metric": "median_runtime_s",
       "metrics": {
-        "median_runtime_s": {"higher_is_better": false, "coefficient": -1.0},
-        "instances_solved": {"higher_is_better": true, "coefficient": 0.5},
+        "median_runtime_s": {"higher_is_better": false, "coefficient": -0.8, "description": "Median runtime over solved instances — primary metric, measures typical-case performance."},
+        "instances_solved": {"higher_is_better": true, "coefficient": 0.4, "description": "Count of instances solved within timeout — correctness constraint, rewards reliability."},
+        "mean_runtime_s": {"higher_is_better": false, "coefficient": -0.3, "description": "Mean runtime over solved instances — triangulates median by upweighting outlier-sensitive mean."},
         "p90_runtime_s": {
           "higher_is_better": false,
-          "coefficient": -0.4,
-          "description": "90th percentile capped runtime over the fixed slice, treating unsolved or over-timeout instances as the timeout."
+          "coefficient": -0.7,
+          "description": "90th percentile capped runtime over the fixed slice, treating unsolved or over-timeout instances as the timeout — anti-shortcut metric, penalizes tail latency and unsolvable cases."
         }
       },
       "results": {

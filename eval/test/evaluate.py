@@ -87,9 +87,11 @@ def slice_metrics(records: list[dict], n: int, timeout_s: float) -> dict:
         if item["status"] in SOLVED_STATUSES else timeout_s
         for item in items
     ]
+    mean_runtime = sum(solved_runtimes) / len(solved_runtimes) if solved_runtimes else timeout_s
     return {
         "median_runtime_s": round(median(solved_runtimes, timeout_s), 6),
         "instances_solved": len(solved),
+        "mean_runtime_s": round(mean_runtime, 6),
         "p90_runtime_s": round(nearest_rank_percentile(capped_runtimes, 0.90, timeout_s), 6),
     }
 
