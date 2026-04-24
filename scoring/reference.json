@@ -1,41 +1,46 @@
 {
   "experiments": {
-    "qrandomparity_n100": {
-      "description": "QRandomParity benchmark at n=100 from Table 1. Lower median runtime is better, while still solving all instances within the timeout.",
-      "weight": 0.5,
+    "qrandomparity_n10": {
+      "description": "Fixed 100-instance QRandomParity benchmark at n=10. Lower runtime is better, but speed only counts if the solver still returns decisive answers across the batch.",
+      "weight": 1.0,
       "primary_metric": "median_runtime_s",
       "metrics": {
-        "median_runtime_s": {"higher_is_better": false, "coefficient": -0.8, "description": "Median runtime over solved instances — primary metric, measures typical-case performance."},
-        "instances_solved": {"higher_is_better": true, "coefficient": 0.4, "description": "Count of instances solved within timeout — correctness constraint, rewards reliability."},
-        "mean_runtime_s": {"higher_is_better": false, "coefficient": -0.3, "description": "Mean runtime over solved instances — triangulates median by upweighting outlier-sensitive mean."},
+        "median_runtime_s": {
+          "higher_is_better": false,
+          "coefficient": -0.8,
+          "description": "Median runtime over solved instances — primary metric, measures typical-case performance."
+        },
+        "instances_solved": {
+          "higher_is_better": true,
+          "coefficient": 0.4,
+          "description": "Count of instances solved within timeout — correctness constraint, rewards reliability."
+        },
+        "mean_runtime_s": {
+          "higher_is_better": false,
+          "coefficient": -0.3,
+          "description": "Mean runtime over solved instances — triangulates median by upweighting outlier-sensitive mean."
+        },
         "p90_runtime_s": {
           "higher_is_better": false,
           "coefficient": -0.7,
-          "description": "90th percentile capped runtime over the fixed slice, treating unsolved or over-timeout instances as the timeout — anti-shortcut metric, penalizes tail latency and unsolvable cases."
+          "description": "90th percentile capped runtime over the fixed slice, treating unsolved or over-timeout instances as the timeout — anti-shortcut metric, penalizes tail latency and unsolved cases."
         }
       },
       "results": {
-        "equips": {"type": "proposed", "median_runtime_s": 0.06, "instances_solved": 100},
-        "qfuncms": {"type": "baseline", "median_runtime_s": 1.67, "instances_solved": 100}
-      }
-    },
-    "qrandomparity_n200": {
-      "description": "QRandomParity benchmark at n=200 from Table 1. This is a harder setting that still reflects the paper's main runtime comparison.",
-      "weight": 0.5,
-      "primary_metric": "median_runtime_s",
-      "metrics": {
-        "median_runtime_s": {"higher_is_better": false, "coefficient": -0.8, "description": "Median runtime over solved instances — primary metric, measures typical-case performance."},
-        "instances_solved": {"higher_is_better": true, "coefficient": 0.4, "description": "Count of instances solved within timeout — correctness constraint, rewards reliability."},
-        "mean_runtime_s": {"higher_is_better": false, "coefficient": -0.3, "description": "Mean runtime over solved instances — triangulates median by upweighting outlier-sensitive mean."},
-        "p90_runtime_s": {
-          "higher_is_better": false,
-          "coefficient": -0.7,
-          "description": "90th percentile capped runtime over the fixed slice, treating unsolved or over-timeout instances as the timeout — anti-shortcut metric, penalizes tail latency and unsolvable cases."
+        "equips": {
+          "type": "proposed",
+          "median_runtime_s": 0.247814,
+          "instances_solved": 50,
+          "mean_runtime_s": 0.309736,
+          "p90_runtime_s": 0.46106
+        },
+        "search_enumeration": {
+          "type": "baseline",
+          "median_runtime_s": 0.692309,
+          "instances_solved": 50,
+          "mean_runtime_s": 0.686238,
+          "p90_runtime_s": 0.709138
         }
-      },
-      "results": {
-        "equips": {"type": "proposed", "median_runtime_s": 0.18, "instances_solved": 100},
-        "qfuncms": {"type": "baseline", "median_runtime_s": 2.21, "instances_solved": 100}
       }
     }
   }

@@ -1,7 +1,6 @@
 # IMPORTANT: Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends. Sleeping blocks the entire pipeline.
-action: submit
+action: done
 gpus: 0
-test: false
-notes: "Run train/test evaluation on the active qrandomparity_n10 target; score both EQuIPS and search_enumeration via auto-discovered results; populate scoring/scores_{train,test}.json."
+notes: "Reference-free qrandomparity_n10 split; 4 train metrics and 4 test metrics for equips/search_enumeration; equips is faster on both slices with a small train->test gap (median 0.247814->0.257841, p90 0.46106->0.510841, solved 50->49); caveat: one equips test instance reported TIMEOUT despite sub-timeout runtime in method output."
