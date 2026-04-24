@@ -4,4 +4,4 @@
 action: done
 milestone: core_claim
 gpus: 0
-notes: "core_claim on scaled qrandomparity_n10: persisted raw outputs regenerated scoring/scores.json plus train/test split scores; equips beats search_enumeration on the same 100-instance batch (median 0.247816 vs 0.690747, solved 99 vs 100); caveat: one equips instance was emitted as TIMEOUT despite sub-timeout runtime in the raw method output."
+notes: "Audited fresh-clone packaging: verified no external artifacts are required, cleaned scripts/download.sh, and tracked data/downloads/.gitkeep for reproducible setup."
