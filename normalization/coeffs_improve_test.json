@@ -1,0 +1,138 @@
+{
+  "paper_id": "2506.04452",
+  "phase": "test",
+  "cohort": [
+    "claude-opus-4-8-xhigh",
+    "claude-opus-xhigh",
+    "gpt-5.5-xhigh",
+    "glm-5-xhigh",
+    "minimax-xhigh",
+    "grok-4.3-xhigh",
+    "gemini-3-pro-preview",
+    "gemini-3.1-flash-lite-preview",
+    "kimi-k2.6-thinking",
+    "mimo-pro-xhigh",
+    "deepseek-v4-pro-xhigh"
+  ],
+  "models_present": [
+    "claude-opus-4-8-xhigh",
+    "claude-opus-xhigh",
+    "deepseek-v4-pro-xhigh",
+    "glm-5-xhigh",
+    "gpt-5.5-xhigh",
+    "kimi-k2.6-thinking",
+    "mimo-pro-xhigh",
+    "minimax-xhigh"
+  ],
+  "n_models": 8,
+  "n_cells": 4,
+  "last_updated": "2026-06-26T10:53:51.267694+00:00",
+  "excluded": false,
+  "typical_spread": 0.11648996869324882,
+  "paper_baseline": 2.6115871341787535,
+  "cohort_raw": {
+    "claude-opus-4-8-xhigh": 3.055256492150675,
+    "claude-opus-xhigh": 3.132359134009622,
+    "deepseek-v4-pro-xhigh": 1.381418725839369,
+    "glm-5-xhigh": 3.078560750285738,
+    "gpt-5.5-xhigh": 0.858011811294157,
+    "kimi-k2.6-thinking": 3.235116364488502,
+    "mimo-pro-xhigh": 3.082222764452829,
+    "minimax-xhigh": 3.069751030909137
+  },
+  "cells": [
+    {
+      "experiment": "qrandomparity_n10",
+      "method": "equips",
+      "metric": "median_runtime_s",
+      "source": 0.257841,
+      "higher_is_better": false,
+      "coefficient": 1.4222252684642858,
+      "prior_weight": 0.5599999999999999,
+      "spread": 0.08881284415143936,
+      "normalizer": 0.08881284415143936,
+      "effective_weight": 0.3298744575015245,
+      "cohort_imp": {
+        "claude-opus-4-8-xhigh": 0.234668,
+        "claude-opus-xhigh": 0.24515399999999998,
+        "gpt-5.5-xhigh": 0.053713999999999984,
+        "glm-5-xhigh": 0.238314,
+        "minimax-xhigh": 0.236871,
+        "kimi-k2.6-thinking": 0.257833,
+        "mimo-pro-xhigh": 0.238719,
+        "deepseek-v4-pro-xhigh": 0.04775599999999999
+      }
+    },
+    {
+      "experiment": "qrandomparity_n10",
+      "method": "equips",
+      "metric": "instances_solved",
+      "source": 49.0,
+      "higher_is_better": true,
+      "coefficient": 0.23984480249794812,
+      "prior_weight": 0.27999999999999997,
+      "spread": 0.3535533905932738,
+      "normalizer": 0.3535533905932738,
+      "effective_weight": 0.22145721730747917,
+      "cohort_imp": {
+        "claude-opus-4-8-xhigh": 1.0,
+        "claude-opus-xhigh": 1.0,
+        "gpt-5.5-xhigh": 0.0,
+        "glm-5-xhigh": 1.0,
+        "minimax-xhigh": 1.0,
+        "kimi-k2.6-thinking": 1.0,
+        "mimo-pro-xhigh": 1.0,
+        "deepseek-v4-pro-xhigh": 1.0
+      }
+    },
+    {
+      "experiment": "qrandomparity_n10",
+      "method": "equips",
+      "metric": "mean_runtime_s",
+      "source": 0.346785,
+      "higher_is_better": false,
+      "coefficient": 0.5111637169584569,
+      "prior_weight": 0.21,
+      "spread": 0.09407348093217573,
+      "normalizer": 0.09407348093217573,
+      "effective_weight": 0.12558326041331844,
+      "cohort_imp": {
+        "claude-opus-4-8-xhigh": 0.321112,
+        "claude-opus-xhigh": 0.331643,
+        "gpt-5.5-xhigh": 0.136333,
+        "glm-5-xhigh": 0.322844,
+        "minimax-xhigh": 0.322157,
+        "kimi-k2.6-thinking": 0.346777,
+        "mimo-pro-xhigh": 0.324936,
+        "deepseek-v4-pro-xhigh": 0.115983
+      }
+    },
+    {
+      "experiment": "qrandomparity_n10",
+      "method": "equips",
+      "metric": "p90_runtime_s",
+      "source": 0.510841,
+      "higher_is_better": false,
+      "coefficient": 0.8906148444236057,
+      "prior_weight": 0.48999999999999994,
+      "spread": 0.1389064564543219,
+      "normalizer": 0.1389064564543219,
+      "effective_weight": 0.3230850647776779,
+      "cohort_imp": {
+        "claude-opus-4-8-xhigh": 0.485225,
+        "claude-opus-xhigh": 0.495585,
+        "gpt-5.5-xhigh": 0.204868,
+        "glm-5-xhigh": 0.488428,
+        "minimax-xhigh": 0.48733899999999997,
+        "kimi-k2.6-thinking": 0.510831,
+        "mimo-pro-xhigh": 0.488155,
+        "deepseek-v4-pro-xhigh": 0.181792
+      }
+    }
+  ],
+  "mode": "improve",
+  "pruned_cells": [],
+  "locked": true,
+  "locked_at": "2026-06-29T19:52:53.489125+00:00",
+  "locked_n_models": 8
+}

@@ -1,0 +1,138 @@
+{
+  "paper_id": "2506.04452",
+  "phase": "train",
+  "cohort": [
+    "claude-opus-4-8-xhigh",
+    "claude-opus-xhigh",
+    "gpt-5.5-xhigh",
+    "glm-5-xhigh",
+    "minimax-xhigh",
+    "grok-4.3-xhigh",
+    "gemini-3-pro-preview",
+    "gemini-3.1-flash-lite-preview",
+    "kimi-k2.6-thinking",
+    "mimo-pro-xhigh",
+    "deepseek-v4-pro-xhigh"
+  ],
+  "models_present": [
+    "claude-opus-4-8-xhigh",
+    "claude-opus-xhigh",
+    "deepseek-v4-pro-xhigh",
+    "glm-5-xhigh",
+    "gpt-5.5-xhigh",
+    "kimi-k2.6-thinking",
+    "mimo-pro-xhigh",
+    "minimax-xhigh"
+  ],
+  "n_models": 8,
+  "n_cells": 4,
+  "last_updated": "2026-06-26T10:53:51.145084+00:00",
+  "excluded": false,
+  "typical_spread": 0.09091452971325399,
+  "paper_baseline": 1.9557974551467412,
+  "cohort_raw": {
+    "claude-opus-4-8-xhigh": 1.1439064736634876,
+    "claude-opus-xhigh": 1.2170421588651288,
+    "deepseek-v4-pro-xhigh": 0.9014103040638315,
+    "glm-5-xhigh": 1.3410526524151627,
+    "gpt-5.5-xhigh": 2.9559130004687475,
+    "kimi-k2.6-thinking": 2.917736879085548,
+    "mimo-pro-xhigh": 2.212531740802389,
+    "minimax-xhigh": 2.9567864318096353
+  },
+  "cells": [
+    {
+      "experiment": "qrandomparity_n10",
+      "method": "equips",
+      "metric": "median_runtime_s",
+      "source": 0.247814,
+      "higher_is_better": false,
+      "coefficient": 2.1954454544067925,
+      "prior_weight": 0.5599999999999999,
+      "spread": 0.09091452971325399,
+      "normalizer": 0.09091452971325399,
+      "effective_weight": 0.3903730472675127,
+      "cohort_imp": {
+        "claude-opus-4-8-xhigh": 0.06357499999999999,
+        "claude-opus-xhigh": 0.070383,
+        "gpt-5.5-xhigh": 0.24765700000000002,
+        "glm-5-xhigh": 0.090281,
+        "minimax-xhigh": 0.24775,
+        "kimi-k2.6-thinking": 0.243726,
+        "mimo-pro-xhigh": 0.16510000000000002,
+        "deepseek-v4-pro-xhigh": 0.03811300000000001
+      }
+    },
+    {
+      "experiment": "qrandomparity_n10",
+      "method": "equips",
+      "metric": "instances_solved",
+      "source": 50.0,
+      "higher_is_better": true,
+      "coefficient": 0.5488613636016981,
+      "prior_weight": 0.27999999999999997,
+      "spread": 0.0,
+      "normalizer": 0.09091452971325399,
+      "effective_weight": 0.09759326181687818,
+      "cohort_imp": {
+        "claude-opus-4-8-xhigh": 0.0,
+        "claude-opus-xhigh": 0.0,
+        "gpt-5.5-xhigh": 0.0,
+        "glm-5-xhigh": 0.0,
+        "minimax-xhigh": 0.0,
+        "kimi-k2.6-thinking": 0.0,
+        "mimo-pro-xhigh": 0.0,
+        "deepseek-v4-pro-xhigh": 0.0
+      }
+    },
+    {
+      "experiment": "qrandomparity_n10",
+      "method": "equips",
+      "metric": "mean_runtime_s",
+      "source": 0.309736,
+      "higher_is_better": false,
+      "coefficient": 0.8343603784140502,
+      "prior_weight": 0.21,
+      "spread": 0.08930887077750772,
+      "normalizer": 0.08930887077750772,
+      "effective_weight": 0.1457377791853517,
+      "cohort_imp": {
+        "claude-opus-4-8-xhigh": 0.129142,
+        "claude-opus-xhigh": 0.13726200000000002,
+        "gpt-5.5-xhigh": 0.309574,
+        "glm-5-xhigh": 0.149735,
+        "minimax-xhigh": 0.309669,
+        "kimi-k2.6-thinking": 0.304278,
+        "mimo-pro-xhigh": 0.225893,
+        "deepseek-v4-pro-xhigh": 0.10324
+      }
+    },
+    {
+      "experiment": "qrandomparity_n10",
+      "method": "equips",
+      "metric": "p90_runtime_s",
+      "source": 0.46106,
+      "higher_is_better": false,
+      "coefficient": 1.5391049181186118,
+      "prior_weight": 0.48999999999999994,
+      "spread": 0.12168581883070845,
+      "normalizer": 0.12168581883070845,
+      "effective_weight": 0.3662959117302574,
+      "cohort_imp": {
+        "claude-opus-4-8-xhigh": 0.219318,
+        "claude-opus-xhigh": 0.22950100000000004,
+        "gpt-5.5-xhigh": 0.460882,
+        "glm-5-xhigh": 0.235553,
+        "minimax-xhigh": 0.460988,
+        "kimi-k2.6-thinking": 0.45667800000000003,
+        "mimo-pro-xhigh": 0.377053,
+        "deepseek-v4-pro-xhigh": 0.18912100000000004
+      }
+    }
+  ],
+  "mode": "innovate",
+  "pruned_cells": [],
+  "locked": true,
+  "locked_at": "2026-06-29T19:52:53.384287+00:00",
+  "locked_n_models": 8
+}

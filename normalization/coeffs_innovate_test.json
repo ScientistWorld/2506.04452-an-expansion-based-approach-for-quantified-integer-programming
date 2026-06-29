@@ -1,0 +1,138 @@
+{
+  "paper_id": "2506.04452",
+  "phase": "test",
+  "cohort": [
+    "claude-opus-4-8-xhigh",
+    "claude-opus-xhigh",
+    "gpt-5.5-xhigh",
+    "glm-5-xhigh",
+    "minimax-xhigh",
+    "grok-4.3-xhigh",
+    "gemini-3-pro-preview",
+    "gemini-3.1-flash-lite-preview",
+    "kimi-k2.6-thinking",
+    "mimo-pro-xhigh",
+    "deepseek-v4-pro-xhigh"
+  ],
+  "models_present": [
+    "claude-opus-4-8-xhigh",
+    "claude-opus-xhigh",
+    "deepseek-v4-pro-xhigh",
+    "glm-5-xhigh",
+    "gpt-5.5-xhigh",
+    "kimi-k2.6-thinking",
+    "mimo-pro-xhigh",
+    "minimax-xhigh"
+  ],
+  "n_models": 8,
+  "n_cells": 4,
+  "last_updated": "2026-06-26T10:53:51.185745+00:00",
+  "excluded": false,
+  "typical_spread": 0.0943835325705708,
+  "paper_baseline": 3.152261736306494,
+  "cohort_raw": {
+    "claude-opus-4-8-xhigh": 2.3762370221430418,
+    "claude-opus-xhigh": 2.3504688267354643,
+    "deepseek-v4-pro-xhigh": 2.1705548437398674,
+    "glm-5-xhigh": 2.4726718935121275,
+    "gpt-5.5-xhigh": 4.152025474590296,
+    "kimi-k2.6-thinking": 4.117634665833783,
+    "mimo-pro-xhigh": 3.4236007884840993,
+    "minimax-xhigh": 4.154900375413274
+  },
+  "cells": [
+    {
+      "experiment": "qrandomparity_n10",
+      "method": "equips",
+      "metric": "median_runtime_s",
+      "source": 0.257841,
+      "higher_is_better": false,
+      "coefficient": 1.382380421995682,
+      "prior_weight": 0.5599999999999999,
+      "spread": 0.08842380222218772,
+      "normalizer": 0.08842380222218772,
+      "effective_weight": 0.3853177631363185,
+      "cohort_imp": {
+        "claude-opus-4-8-xhigh": 0.081123,
+        "claude-opus-xhigh": 0.084616,
+        "gpt-5.5-xhigh": 0.25768599999999997,
+        "glm-5-xhigh": 0.087144,
+        "minimax-xhigh": 0.257776,
+        "kimi-k2.6-thinking": 0.253706,
+        "mimo-pro-xhigh": 0.175027,
+        "deepseek-v4-pro-xhigh": 0.06273399999999998
+      }
+    },
+    {
+      "experiment": "qrandomparity_n10",
+      "method": "equips",
+      "metric": "instances_solved",
+      "source": 49.0,
+      "higher_is_better": true,
+      "coefficient": 0.3291380747348628,
+      "prior_weight": 0.27999999999999997,
+      "spread": 0.0,
+      "normalizer": 0.0943835325705708,
+      "effective_weight": 0.09792568604321987,
+      "cohort_imp": {
+        "claude-opus-4-8-xhigh": 1.0,
+        "claude-opus-xhigh": 1.0,
+        "gpt-5.5-xhigh": 1.0,
+        "glm-5-xhigh": 1.0,
+        "minimax-xhigh": 1.0,
+        "kimi-k2.6-thinking": 1.0,
+        "mimo-pro-xhigh": 1.0,
+        "deepseek-v4-pro-xhigh": 1.0
+      }
+    },
+    {
+      "experiment": "qrandomparity_n10",
+      "method": "equips",
+      "metric": "mean_runtime_s",
+      "source": 0.346785,
+      "higher_is_better": false,
+      "coefficient": 0.49370711210229423,
+      "prior_weight": 0.21,
+      "spread": 0.0943835325705708,
+      "normalizer": 0.0943835325705708,
+      "effective_weight": 0.14688852906482983,
+      "cohort_imp": {
+        "claude-opus-4-8-xhigh": 0.158497,
+        "claude-opus-xhigh": 0.15657000000000001,
+        "gpt-5.5-xhigh": 0.345324,
+        "glm-5-xhigh": 0.17389100000000002,
+        "minimax-xhigh": 0.346718,
+        "kimi-k2.6-thinking": 0.341938,
+        "mimo-pro-xhigh": 0.263635,
+        "deepseek-v4-pro-xhigh": 0.13534500000000002
+      }
+    },
+    {
+      "experiment": "qrandomparity_n10",
+      "method": "equips",
+      "metric": "p90_runtime_s",
+      "source": 0.510841,
+      "higher_is_better": false,
+      "coefficient": 0.90336491350028,
+      "prior_weight": 0.48999999999999994,
+      "spread": 0.12988568690610766,
+      "normalizer": 0.12988568690610766,
+      "effective_weight": 0.36986802175563177,
+      "cohort_imp": {
+        "claude-opus-4-8-xhigh": 0.25934999999999997,
+        "claude-opus-xhigh": 0.24600899999999998,
+        "gpt-5.5-xhigh": 0.510658,
+        "glm-5-xhigh": 0.275588,
+        "minimax-xhigh": 0.510768,
+        "kimi-k2.6-thinking": 0.506522,
+        "mimo-pro-xhigh": 0.42599299999999996,
+        "deepseek-v4-pro-xhigh": 0.227914
+      }
+    }
+  ],
+  "mode": "innovate",
+  "pruned_cells": [],
+  "locked": true,
+  "locked_at": "2026-06-29T19:52:53.384287+00:00",
+  "locked_n_models": 8
+}
