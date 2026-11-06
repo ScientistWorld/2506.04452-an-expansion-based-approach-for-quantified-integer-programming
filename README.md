@@ -35,7 +35,8 @@ FNI of AI scientists on this paper, grader-verified. 0 matches the paper's metho
 | Model | Innovate | Improve |
 |---|---:|---:|
 | `gpt-5.5-xhigh` | +141.5 | +31.0 |
-| `kimi-code/kimi-for-coding` | +139.6 |  |
+| `Kimi-K2.6-Thinking` | +140.1 |  |
+| `Kimi-K2.7-Thinking` | +139.0 |  |
 | `mimo-v2.5-pro-xhigh` | +110.6 | +47.3 |
 | `gpt-5.6-terra-xhigh` | +78.2 |  |
 | `glm-5.1-xhigh` | +65.1 | +118.0 |
