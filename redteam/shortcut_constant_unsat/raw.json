@@ -1,0 +1,911 @@
+{
+  "benchmark": "qrandomparity",
+  "solver": "equips",
+  "timeout_s": 5.0,
+  "n_values": [
+    10
+  ],
+  "num_instances": 100,
+  "results": [
+    {
+      "n": 10,
+      "instance_id": 0,
+      "seed": 10042,
+      "status": "UNSAT",
+      "runtime_s": 1.1999945854768157e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 1,
+      "seed": 10043,
+      "status": "UNSAT",
+      "runtime_s": 8.500064723193645e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 2,
+      "seed": 10044,
+      "status": "UNSAT",
+      "runtime_s": 6.399932317435741e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 3,
+      "seed": 10045,
+      "status": "UNSAT",
+      "runtime_s": 6.299960659816861e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 4,
+      "seed": 10046,
+      "status": "UNSAT",
+      "runtime_s": 5.00003807246685e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 5,
+      "seed": 10047,
+      "status": "UNSAT",
+      "runtime_s": 5.90007402934134e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 6,
+      "seed": 10048,
+      "status": "UNSAT",
+      "runtime_s": 5.699985194951296e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 7,
+      "seed": 10049,
+      "status": "UNSAT",
+      "runtime_s": 7.700000423938036e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 8,
+      "seed": 10050,
+      "status": "UNSAT",
+      "runtime_s": 6.600021151825786e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 9,
+      "seed": 10051,
+      "status": "UNSAT",
+      "runtime_s": 6.299960659816861e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 10,
+      "seed": 10052,
+      "status": "UNSAT",
+      "runtime_s": 6.400077836588025e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 11,
+      "seed": 10053,
+      "status": "UNSAT",
+      "runtime_s": 5.499896360561252e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 12,
+      "seed": 10054,
+      "status": "UNSAT",
+      "runtime_s": 5.600013537332416e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 13,
+      "seed": 10055,
+      "status": "UNSAT",
+      "runtime_s": 4.699977580457926e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 14,
+      "seed": 10056,
+      "status": "UNSAT",
+      "runtime_s": 6.699992809444666e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 15,
+      "seed": 10057,
+      "status": "UNSAT",
+      "runtime_s": 7.100024959072471e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 16,
+      "seed": 10058,
+      "status": "UNSAT",
+      "runtime_s": 8.100032573565841e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 17,
+      "seed": 10059,
+      "status": "UNSAT",
+      "runtime_s": 9.999930625781417e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 18,
+      "seed": 10060,
+      "status": "UNSAT",
+      "runtime_s": 5.90007402934134e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 19,
+      "seed": 10061,
+      "status": "UNSAT",
+      "runtime_s": 5.600013537332416e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 20,
+      "seed": 10062,
+      "status": "UNSAT",
+      "runtime_s": 5.899928510189056e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 21,
+      "seed": 10063,
+      "status": "UNSAT",
+      "runtime_s": 6.199989002197981e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 22,
+      "seed": 10064,
+      "status": "UNSAT",
+      "runtime_s": 6.199989002197981e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 23,
+      "seed": 10065,
+      "status": "UNSAT",
+      "runtime_s": 7.400085451081395e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 24,
+      "seed": 10066,
+      "status": "UNSAT",
+      "runtime_s": 6.600021151825786e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 25,
+      "seed": 10067,
+      "status": "UNSAT",
+      "runtime_s": 9.400100680068135e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 26,
+      "seed": 10068,
+      "status": "UNSAT",
+      "runtime_s": 6.799964467063546e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 27,
+      "seed": 10069,
+      "status": "UNSAT",
+      "runtime_s": 5.600013537332416e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 28,
+      "seed": 10070,
+      "status": "UNSAT",
+      "runtime_s": 7.999915396794677e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 29,
+      "seed": 10071,
+      "status": "UNSAT",
+      "runtime_s": 5.300098564475775e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 30,
+      "seed": 10072,
+      "status": "UNSAT",
+      "runtime_s": 6.00004568696022e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 31,
+      "seed": 10073,
+      "status": "UNSAT",
+      "runtime_s": 7.799972081556916e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 32,
+      "seed": 10074,
+      "status": "UNSAT",
+      "runtime_s": 6.100017344579101e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 33,
+      "seed": 10075,
+      "status": "UNSAT",
+      "runtime_s": 6.799964467063546e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 34,
+      "seed": 10076,
+      "status": "UNSAT",
+      "runtime_s": 5.299953045323491e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 35,
+      "seed": 10077,
+      "status": "UNSAT",
+      "runtime_s": 4.699977580457926e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 36,
+      "seed": 10078,
+      "status": "UNSAT",
+      "runtime_s": 5.100009730085731e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 37,
+      "seed": 10079,
+      "status": "UNSAT",
+      "runtime_s": 6.00004568696022e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 38,
+      "seed": 10080,
+      "status": "UNSAT",
+      "runtime_s": 1.3300013961270452e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 39,
+      "seed": 10081,
+      "status": "UNSAT",
+      "runtime_s": 1.2999953469261527e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 40,
+      "seed": 10082,
+      "status": "UNSAT",
+      "runtime_s": 9.700015652924776e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 41,
+      "seed": 10083,
+      "status": "UNSAT",
+      "runtime_s": 7.700000423938036e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 42,
+      "seed": 10084,
+      "status": "UNSAT",
+      "runtime_s": 7.199996616691351e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 43,
+      "seed": 10085,
+      "status": "UNSAT",
+      "runtime_s": 6.199989002197981e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 44,
+      "seed": 10086,
+      "status": "UNSAT",
+      "runtime_s": 5.90007402934134e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 45,
+      "seed": 10087,
+      "status": "UNSAT",
+      "runtime_s": 7.199996616691351e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 46,
+      "seed": 10088,
+      "status": "UNSAT",
+      "runtime_s": 5.799956852570176e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 47,
+      "seed": 10089,
+      "status": "UNSAT",
+      "runtime_s": 7.400085451081395e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 48,
+      "seed": 10090,
+      "status": "UNSAT",
+      "runtime_s": 5.999900167807937e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 49,
+      "seed": 10091,
+      "status": "UNSAT",
+      "runtime_s": 5.299953045323491e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 50,
+      "seed": 10092,
+      "status": "UNSAT",
+      "runtime_s": 6.400077836588025e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 51,
+      "seed": 10093,
+      "status": "UNSAT",
+      "runtime_s": 6.199989002197981e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 52,
+      "seed": 10094,
+      "status": "UNSAT",
+      "runtime_s": 7.00005330145359e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 53,
+      "seed": 10095,
+      "status": "UNSAT",
+      "runtime_s": 9.80013282969594e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 54,
+      "seed": 10096,
+      "status": "UNSAT",
+      "runtime_s": 4.899920895695686e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 55,
+      "seed": 10097,
+      "status": "UNSAT",
+      "runtime_s": 5.600013537332416e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 56,
+      "seed": 10098,
+      "status": "UNSAT",
+      "runtime_s": 4.999892553314567e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 57,
+      "seed": 10099,
+      "status": "UNSAT",
+      "runtime_s": 6.100017344579101e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 58,
+      "seed": 10100,
+      "status": "UNSAT",
+      "runtime_s": 5.399924702942371e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 59,
+      "seed": 10101,
+      "status": "UNSAT",
+      "runtime_s": 7.400085451081395e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 60,
+      "seed": 10102,
+      "status": "UNSAT",
+      "runtime_s": 5.600013537332416e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 61,
+      "seed": 10103,
+      "status": "UNSAT",
+      "runtime_s": 5.999900167807937e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 62,
+      "seed": 10104,
+      "status": "UNSAT",
+      "runtime_s": 5.500041879713535e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 63,
+      "seed": 10105,
+      "status": "UNSAT",
+      "runtime_s": 5.200126906856894e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 64,
+      "seed": 10106,
+      "status": "UNSAT",
+      "runtime_s": 6.100017344579101e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 65,
+      "seed": 10107,
+      "status": "UNSAT",
+      "runtime_s": 6.100017344579101e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 66,
+      "seed": 10108,
+      "status": "UNSAT",
+      "runtime_s": 5.00003807246685e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 67,
+      "seed": 10109,
+      "status": "UNSAT",
+      "runtime_s": 5.899928510189056e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 68,
+      "seed": 10110,
+      "status": "UNSAT",
+      "runtime_s": 5.100009730085731e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 69,
+      "seed": 10111,
+      "status": "UNSAT",
+      "runtime_s": 6.199989002197981e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 70,
+      "seed": 10112,
+      "status": "UNSAT",
+      "runtime_s": 6.00004568696022e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 71,
+      "seed": 10113,
+      "status": "UNSAT",
+      "runtime_s": 8.200004231184721e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 72,
+      "seed": 10114,
+      "status": "UNSAT",
+      "runtime_s": 5.600013537332416e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 73,
+      "seed": 10115,
+      "status": "UNSAT",
+      "runtime_s": 9.300129022449255e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 74,
+      "seed": 10116,
+      "status": "UNSAT",
+      "runtime_s": 8.00006091594696e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 75,
+      "seed": 10117,
+      "status": "UNSAT",
+      "runtime_s": 7.199996616691351e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 76,
+      "seed": 10118,
+      "status": "UNSAT",
+      "runtime_s": 8.899951353669167e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 77,
+      "seed": 10119,
+      "status": "UNSAT",
+      "runtime_s": 9.199866326525807e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 78,
+      "seed": 10120,
+      "status": "UNSAT",
+      "runtime_s": 8.90009687282145e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 79,
+      "seed": 10121,
+      "status": "UNSAT",
+      "runtime_s": 6.899936124682426e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 80,
+      "seed": 10122,
+      "status": "UNSAT",
+      "runtime_s": 7.700000423938036e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 81,
+      "seed": 10123,
+      "status": "UNSAT",
+      "runtime_s": 8.500064723193645e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 82,
+      "seed": 10124,
+      "status": "UNSAT",
+      "runtime_s": 1.1699885362759233e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 83,
+      "seed": 10125,
+      "status": "UNSAT",
+      "runtime_s": 1.110005541704595e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 84,
+      "seed": 10126,
+      "status": "UNSAT",
+      "runtime_s": 6.100017344579101e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 85,
+      "seed": 10127,
+      "status": "UNSAT",
+      "runtime_s": 6.199989002197981e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 86,
+      "seed": 10128,
+      "status": "UNSAT",
+      "runtime_s": 5.899928510189056e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 87,
+      "seed": 10129,
+      "status": "UNSAT",
+      "runtime_s": 8.499919204041362e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 88,
+      "seed": 10130,
+      "status": "UNSAT",
+      "runtime_s": 6.799964467063546e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 89,
+      "seed": 10131,
+      "status": "UNSAT",
+      "runtime_s": 6.299960659816861e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 90,
+      "seed": 10132,
+      "status": "UNSAT",
+      "runtime_s": 6.500049494206905e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 91,
+      "seed": 10133,
+      "status": "UNSAT",
+      "runtime_s": 6.799964467063546e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 92,
+      "seed": 10134,
+      "status": "UNSAT",
+      "runtime_s": 6.799964467063546e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 93,
+      "seed": 10135,
+      "status": "UNSAT",
+      "runtime_s": 6.699992809444666e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 94,
+      "seed": 10136,
+      "status": "UNSAT",
+      "runtime_s": 5.599868018180132e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 95,
+      "seed": 10137,
+      "status": "UNSAT",
+      "runtime_s": 5.100009730085731e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 96,
+      "seed": 10138,
+      "status": "UNSAT",
+      "runtime_s": 5.600013537332416e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 97,
+      "seed": 10139,
+      "status": "UNSAT",
+      "runtime_s": 5.699985194951296e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 98,
+      "seed": 10140,
+      "status": "UNSAT",
+      "runtime_s": 8.100032573565841e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 99,
+      "seed": 10141,
+      "status": "UNSAT",
+      "runtime_s": 8.799979696050286e-07,
+      "assignment_found": false,
+      "stats": null
+    }
+  ]
+}

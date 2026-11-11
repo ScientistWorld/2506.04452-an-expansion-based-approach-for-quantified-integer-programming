@@ -1,0 +1,807 @@
+{
+  "solver": "equips",
+  "timeout_s": 0.0,
+  "num_instances": 100,
+  "results": [
+    {
+      "n": 10,
+      "instance_id": 0,
+      "seed": 10042,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 1,
+      "seed": 10043,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 2,
+      "seed": 10044,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 3,
+      "seed": 10045,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 4,
+      "seed": 10046,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 5,
+      "seed": 10047,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 6,
+      "seed": 10048,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 7,
+      "seed": 10049,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 8,
+      "seed": 10050,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 9,
+      "seed": 10051,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 10,
+      "seed": 10052,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 11,
+      "seed": 10053,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 12,
+      "seed": 10054,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 13,
+      "seed": 10055,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 14,
+      "seed": 10056,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 15,
+      "seed": 10057,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 16,
+      "seed": 10058,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 17,
+      "seed": 10059,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 18,
+      "seed": 10060,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 19,
+      "seed": 10061,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 20,
+      "seed": 10062,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 21,
+      "seed": 10063,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 22,
+      "seed": 10064,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 23,
+      "seed": 10065,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 24,
+      "seed": 10066,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 25,
+      "seed": 10067,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 26,
+      "seed": 10068,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 27,
+      "seed": 10069,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 28,
+      "seed": 10070,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 29,
+      "seed": 10071,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 30,
+      "seed": 10072,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 31,
+      "seed": 10073,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 32,
+      "seed": 10074,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 33,
+      "seed": 10075,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 34,
+      "seed": 10076,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 35,
+      "seed": 10077,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 36,
+      "seed": 10078,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 37,
+      "seed": 10079,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 38,
+      "seed": 10080,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 39,
+      "seed": 10081,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 40,
+      "seed": 10082,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 41,
+      "seed": 10083,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 42,
+      "seed": 10084,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 43,
+      "seed": 10085,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 44,
+      "seed": 10086,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 45,
+      "seed": 10087,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 46,
+      "seed": 10088,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 47,
+      "seed": 10089,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 48,
+      "seed": 10090,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 49,
+      "seed": 10091,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 50,
+      "seed": 10092,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 51,
+      "seed": 10093,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 52,
+      "seed": 10094,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 53,
+      "seed": 10095,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 54,
+      "seed": 10096,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 55,
+      "seed": 10097,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 56,
+      "seed": 10098,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 57,
+      "seed": 10099,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 58,
+      "seed": 10100,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 59,
+      "seed": 10101,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 60,
+      "seed": 10102,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 61,
+      "seed": 10103,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 62,
+      "seed": 10104,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 63,
+      "seed": 10105,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 64,
+      "seed": 10106,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 65,
+      "seed": 10107,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 66,
+      "seed": 10108,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 67,
+      "seed": 10109,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 68,
+      "seed": 10110,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 69,
+      "seed": 10111,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 70,
+      "seed": 10112,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 71,
+      "seed": 10113,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 72,
+      "seed": 10114,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 73,
+      "seed": 10115,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 74,
+      "seed": 10116,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 75,
+      "seed": 10117,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 76,
+      "seed": 10118,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 77,
+      "seed": 10119,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 78,
+      "seed": 10120,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 79,
+      "seed": 10121,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 80,
+      "seed": 10122,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 81,
+      "seed": 10123,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 82,
+      "seed": 10124,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 83,
+      "seed": 10125,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 84,
+      "seed": 10126,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 85,
+      "seed": 10127,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 86,
+      "seed": 10128,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 87,
+      "seed": 10129,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 88,
+      "seed": 10130,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 89,
+      "seed": 10131,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 90,
+      "seed": 10132,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 91,
+      "seed": 10133,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 92,
+      "seed": 10134,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 93,
+      "seed": 10135,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 94,
+      "seed": 10136,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 95,
+      "seed": 10137,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 96,
+      "seed": 10138,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 97,
+      "seed": 10139,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 98,
+      "seed": 10140,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    },
+    {
+      "n": 10,
+      "instance_id": 99,
+      "seed": 10141,
+      "status": "TIMEOUT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    }
+  ]
+}

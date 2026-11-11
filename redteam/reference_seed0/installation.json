@@ -1,0 +1,7 @@
+{
+  "case": "reference_seed0",
+  "files": [
+    "/home/user/outputs/redteam_active/00_reference_seed0.json"
+  ],
+  "contract": "no evaluator edits, no environment hooks, only persistent JSON output files"
+}

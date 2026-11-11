@@ -1,0 +1,14 @@
+{
+  "experiments": {
+    "qrandomparity_n10": {
+      "results": {
+        "equips": {
+          "median_runtime_s": 0.310838,
+          "instances_solved": 50,
+          "mean_runtime_s": 0.35703,
+          "p90_runtime_s": 0.573225
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,911 @@
+{
+  "benchmark": "qrandomparity",
+  "solver": "equips",
+  "timeout_s": 5.0,
+  "n_values": [
+    10
+  ],
+  "num_instances": 100,
+  "results": [
+    {
+      "n": 10,
+      "instance_id": 0,
+      "seed": 10042,
+      "status": "SAT",
+      "runtime_s": 1.3099925126880407e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 1,
+      "seed": 10043,
+      "status": "SAT",
+      "runtime_s": 2.629996743053198e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 2,
+      "seed": 10044,
+      "status": "SAT",
+      "runtime_s": 8.499919204041362e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 3,
+      "seed": 10045,
+      "status": "SAT",
+      "runtime_s": 8.80012521520257e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 4,
+      "seed": 10046,
+      "status": "SAT",
+      "runtime_s": 1.4899997040629387e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 5,
+      "seed": 10047,
+      "status": "SAT",
+      "runtime_s": 1.0600051609799266e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 6,
+      "seed": 10048,
+      "status": "SAT",
+      "runtime_s": 8.399947546422482e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 7,
+      "seed": 10049,
+      "status": "SAT",
+      "runtime_s": 7.799972081556916e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 8,
+      "seed": 10050,
+      "status": "SAT",
+      "runtime_s": 7.700000423938036e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 9,
+      "seed": 10051,
+      "status": "SAT",
+      "runtime_s": 8.500064723193645e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 10,
+      "seed": 10052,
+      "status": "SAT",
+      "runtime_s": 9.600043995305896e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 11,
+      "seed": 10053,
+      "status": "SAT",
+      "runtime_s": 8.600036380812526e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 12,
+      "seed": 10054,
+      "status": "SAT",
+      "runtime_s": 7.599883247166872e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 13,
+      "seed": 10055,
+      "status": "SAT",
+      "runtime_s": 5.999900167807937e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 14,
+      "seed": 10056,
+      "status": "SAT",
+      "runtime_s": 6.500049494206905e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 15,
+      "seed": 10057,
+      "status": "SAT",
+      "runtime_s": 5.699985194951296e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 16,
+      "seed": 10058,
+      "status": "SAT",
+      "runtime_s": 5.400070222094655e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 17,
+      "seed": 10059,
+      "status": "SAT",
+      "runtime_s": 6.699992809444666e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 18,
+      "seed": 10060,
+      "status": "SAT",
+      "runtime_s": 6.099871825426817e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 19,
+      "seed": 10061,
+      "status": "SAT",
+      "runtime_s": 5.600013537332416e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 20,
+      "seed": 10062,
+      "status": "SAT",
+      "runtime_s": 1.1200027074664831e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 21,
+      "seed": 10063,
+      "status": "SAT",
+      "runtime_s": 1.6499980119988322e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 22,
+      "seed": 10064,
+      "status": "SAT",
+      "runtime_s": 1.190011971630156e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 23,
+      "seed": 10065,
+      "status": "SAT",
+      "runtime_s": 8.599890861660242e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 24,
+      "seed": 10066,
+      "status": "SAT",
+      "runtime_s": 1.0200019460171461e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 25,
+      "seed": 10067,
+      "status": "SAT",
+      "runtime_s": 7.100024959072471e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 26,
+      "seed": 10068,
+      "status": "SAT",
+      "runtime_s": 6.600021151825786e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 27,
+      "seed": 10069,
+      "status": "SAT",
+      "runtime_s": 9.999930625781417e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 28,
+      "seed": 10070,
+      "status": "SAT",
+      "runtime_s": 1.2899981811642647e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 29,
+      "seed": 10071,
+      "status": "SAT",
+      "runtime_s": 1.2699892977252603e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 30,
+      "seed": 10072,
+      "status": "SAT",
+      "runtime_s": 1.2700038496404886e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 31,
+      "seed": 10073,
+      "status": "SAT",
+      "runtime_s": 1.2399978004395962e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 32,
+      "seed": 10074,
+      "status": "SAT",
+      "runtime_s": 1.2300006346777081e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 33,
+      "seed": 10075,
+      "status": "SAT",
+      "runtime_s": 1.3499957276508212e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 34,
+      "seed": 10076,
+      "status": "SAT",
+      "runtime_s": 1.2700038496404886e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 35,
+      "seed": 10077,
+      "status": "SAT",
+      "runtime_s": 1.6099947970360518e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 36,
+      "seed": 10078,
+      "status": "SAT",
+      "runtime_s": 1.00000761449337e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 37,
+      "seed": 10079,
+      "status": "SAT",
+      "runtime_s": 1.2200034689158201e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 38,
+      "seed": 10080,
+      "status": "SAT",
+      "runtime_s": 1.200009137392044e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 39,
+      "seed": 10081,
+      "status": "SAT",
+      "runtime_s": 1.1299998732283711e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 40,
+      "seed": 10082,
+      "status": "SAT",
+      "runtime_s": 1.0410003596916795e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 41,
+      "seed": 10083,
+      "status": "SAT",
+      "runtime_s": 7.00005330145359e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 42,
+      "seed": 10084,
+      "status": "SAT",
+      "runtime_s": 1.3700046110898256e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 43,
+      "seed": 10085,
+      "status": "SAT",
+      "runtime_s": 1.0799994925037026e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 44,
+      "seed": 10086,
+      "status": "SAT",
+      "runtime_s": 1.4300021575763822e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 45,
+      "seed": 10087,
+      "status": "SAT",
+      "runtime_s": 1.7800048226490617e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 46,
+      "seed": 10088,
+      "status": "SAT",
+      "runtime_s": 1.8999999156221747e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 47,
+      "seed": 10089,
+      "status": "SAT",
+      "runtime_s": 1.3600074453279376e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 48,
+      "seed": 10090,
+      "status": "SAT",
+      "runtime_s": 1.6199919627979398e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 49,
+      "seed": 10091,
+      "status": "SAT",
+      "runtime_s": 2.2799940779805183e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 50,
+      "seed": 10092,
+      "status": "SAT",
+      "runtime_s": 9.300129022449255e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 51,
+      "seed": 10093,
+      "status": "SAT",
+      "runtime_s": 1.2699892977252603e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 52,
+      "seed": 10094,
+      "status": "SAT",
+      "runtime_s": 1.210006303153932e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 53,
+      "seed": 10095,
+      "status": "SAT",
+      "runtime_s": 1.4699908206239343e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 54,
+      "seed": 10096,
+      "status": "SAT",
+      "runtime_s": 1.210006303153932e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 55,
+      "seed": 10097,
+      "status": "SAT",
+      "runtime_s": 1.3299868442118168e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 56,
+      "seed": 10098,
+      "status": "SAT",
+      "runtime_s": 1.0600051609799266e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 57,
+      "seed": 10099,
+      "status": "SAT",
+      "runtime_s": 1.0299991117790341e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 58,
+      "seed": 10100,
+      "status": "SAT",
+      "runtime_s": 1.300009898841381e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 59,
+      "seed": 10101,
+      "status": "SAT",
+      "runtime_s": 1.7200072761625051e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 60,
+      "seed": 10102,
+      "status": "SAT",
+      "runtime_s": 1.6999983927235007e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 61,
+      "seed": 10103,
+      "status": "SAT",
+      "runtime_s": 1.1299998732283711e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 62,
+      "seed": 10104,
+      "status": "SAT",
+      "runtime_s": 1.6099947970360518e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 63,
+      "seed": 10105,
+      "status": "SAT",
+      "runtime_s": 1.1999945854768157e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 64,
+      "seed": 10106,
+      "status": "SAT",
+      "runtime_s": 1.1599913705140352e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 65,
+      "seed": 10107,
+      "status": "SAT",
+      "runtime_s": 1.3499957276508212e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 66,
+      "seed": 10108,
+      "status": "SAT",
+      "runtime_s": 1.4200049918144941e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 67,
+      "seed": 10109,
+      "status": "SAT",
+      "runtime_s": 1.6999983927235007e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 68,
+      "seed": 10110,
+      "status": "SAT",
+      "runtime_s": 1.4099932741373777e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 69,
+      "seed": 10111,
+      "status": "SAT",
+      "runtime_s": 2.1900050342082977e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 70,
+      "seed": 10112,
+      "status": "SAT",
+      "runtime_s": 1.1099909897893667e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 71,
+      "seed": 10113,
+      "status": "SAT",
+      "runtime_s": 1.3699900591745973e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 72,
+      "seed": 10114,
+      "status": "SAT",
+      "runtime_s": 2.0099978428333998e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 73,
+      "seed": 10115,
+      "status": "SAT",
+      "runtime_s": 1.2999953469261527e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 74,
+      "seed": 10116,
+      "status": "SAT",
+      "runtime_s": 1.3300013961270452e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 75,
+      "seed": 10117,
+      "status": "SAT",
+      "runtime_s": 1.5900004655122757e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 76,
+      "seed": 10118,
+      "status": "SAT",
+      "runtime_s": 1.1599913705140352e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 77,
+      "seed": 10119,
+      "status": "SAT",
+      "runtime_s": 1.1700030881911516e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 78,
+      "seed": 10120,
+      "status": "SAT",
+      "runtime_s": 1.4399993233382702e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 79,
+      "seed": 10121,
+      "status": "SAT",
+      "runtime_s": 1.8900027498602867e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 80,
+      "seed": 10122,
+      "status": "SAT",
+      "runtime_s": 2.020009560510516e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 81,
+      "seed": 10123,
+      "status": "SAT",
+      "runtime_s": 9.200011845678091e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 82,
+      "seed": 10124,
+      "status": "SAT",
+      "runtime_s": 9.200011845678091e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 83,
+      "seed": 10125,
+      "status": "SAT",
+      "runtime_s": 7.999915396794677e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 84,
+      "seed": 10126,
+      "status": "SAT",
+      "runtime_s": 7.8001176007092e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 85,
+      "seed": 10127,
+      "status": "SAT",
+      "runtime_s": 1.0799994925037026e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 86,
+      "seed": 10128,
+      "status": "SAT",
+      "runtime_s": 1.3300013961270452e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 87,
+      "seed": 10129,
+      "status": "SAT",
+      "runtime_s": 1.7300044419243932e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 88,
+      "seed": 10130,
+      "status": "SAT",
+      "runtime_s": 1.6499980119988322e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 89,
+      "seed": 10131,
+      "status": "SAT",
+      "runtime_s": 1.7699931049719453e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 90,
+      "seed": 10132,
+      "status": "SAT",
+      "runtime_s": 1.2199889170005918e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 91,
+      "seed": 10133,
+      "status": "SAT",
+      "runtime_s": 1.3999961083754897e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 92,
+      "seed": 10134,
+      "status": "SAT",
+      "runtime_s": 1.2599921319633722e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 93,
+      "seed": 10135,
+      "status": "SAT",
+      "runtime_s": 9.999930625781417e-07,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 94,
+      "seed": 10136,
+      "status": "SAT",
+      "runtime_s": 1.0099902283400297e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 95,
+      "seed": 10137,
+      "status": "SAT",
+      "runtime_s": 1.0700023267418146e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 96,
+      "seed": 10138,
+      "status": "SAT",
+      "runtime_s": 1.1299998732283711e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 97,
+      "seed": 10139,
+      "status": "SAT",
+      "runtime_s": 1.2699892977252603e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 98,
+      "seed": 10140,
+      "status": "SAT",
+      "runtime_s": 1.3600074453279376e-06,
+      "assignment_found": false,
+      "stats": null
+    },
+    {
+      "n": 10,
+      "instance_id": 99,
+      "seed": 10141,
+      "status": "SAT",
+      "runtime_s": 8.799979696050286e-07,
+      "assignment_found": false,
+      "stats": null
+    }
+  ]
+}

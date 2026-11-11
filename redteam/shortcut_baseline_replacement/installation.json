@@ -1,0 +1,8 @@
+{
+  "case": "shortcut_baseline_replacement",
+  "files": [
+    "/home/user/outputs/redteam_active/00_shortcut_baseline_replacement.json",
+    "/home/user/outputs/redteam_active/01_shortcut_baseline_replacement.json"
+  ],
+  "contract": "no evaluator edits, no environment hooks, only persistent JSON output files"
+}

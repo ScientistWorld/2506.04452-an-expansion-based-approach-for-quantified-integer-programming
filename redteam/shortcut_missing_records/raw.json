@@ -1,0 +1,15 @@
+{
+  "solver": "equips",
+  "timeout_s": 5.0,
+  "num_instances": 100,
+  "results": [
+    {
+      "n": 10,
+      "instance_id": 0,
+      "seed": 10042,
+      "status": "UNSAT",
+      "runtime_s": 0.0,
+      "assignment_found": false
+    }
+  ]
+}

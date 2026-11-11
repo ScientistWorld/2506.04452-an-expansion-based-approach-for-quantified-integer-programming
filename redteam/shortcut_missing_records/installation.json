@@ -1,0 +1,8 @@
+{
+  "case": "shortcut_missing_records",
+  "files": [
+    "/home/user/outputs/redteam_active/00_shortcut_missing_records.json",
+    "/home/user/outputs/redteam_active/01_shortcut_missing_records.json"
+  ],
+  "contract": "no evaluator edits, no environment hooks, only persistent JSON output files"
+}

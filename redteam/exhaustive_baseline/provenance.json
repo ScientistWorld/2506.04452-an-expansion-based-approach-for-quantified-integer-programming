@@ -1,0 +1,7 @@
+{
+  "data_seed": 42,
+  "seed_schedule": "42+1000*n+instance_id",
+  "solver_budget_s": 5.0,
+  "reported_timeout_s": 5.0,
+  "timing": "perf_counter around actual solve, generation excluded as in reference"
+}

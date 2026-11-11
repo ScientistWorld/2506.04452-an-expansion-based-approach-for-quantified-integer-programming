@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/home/user/eval/test/evaluate.py", line 136, in <module>
+    main()
+  File "/home/user/eval/test/evaluate.py", line 125, in main
+    scores = build_scores(blobs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/home/user/eval/test/evaluate.py", line 103, in build_scores
+    metrics = slice_metrics(records, n=n, timeout_s=timeout_s)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/eval/test/evaluate.py", line 70, in slice_metrics
+    raise ValueError(f"Missing {len(missing)} test records for n={n}: {preview}{suffix}")
+ValueError: Missing 49 test records for n=10: 1, 4, 6, 7, 11, 12, 15, 17, 18, 19...

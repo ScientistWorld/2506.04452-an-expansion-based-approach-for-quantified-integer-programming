@@ -1,0 +1,7 @@
+{
+  "case": "shortcut_cache_replay",
+  "files": [
+    "/home/user/outputs/redteam_active/00_shortcut_cache_replay.json"
+  ],
+  "contract": "no evaluator edits, no environment hooks, only persistent JSON output files"
+}

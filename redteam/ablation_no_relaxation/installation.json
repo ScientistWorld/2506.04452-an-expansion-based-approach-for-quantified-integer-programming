@@ -1,0 +1,7 @@
+{
+  "case": "ablation_no_relaxation",
+  "files": [
+    "/home/user/outputs/redteam_active/00_ablation_no_relaxation.json"
+  ],
+  "contract": "no evaluator edits, no environment hooks, only persistent JSON output files"
+}

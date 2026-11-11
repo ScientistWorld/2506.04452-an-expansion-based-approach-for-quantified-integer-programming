@@ -1,0 +1,8 @@
+{
+  "case": "shortcut_empty_results",
+  "files": [
+    "/home/user/outputs/redteam_active/00_shortcut_empty_results.json",
+    "/home/user/outputs/redteam_active/01_shortcut_empty_results.json"
+  ],
+  "contract": "no evaluator edits, no environment hooks, only persistent JSON output files"
+}

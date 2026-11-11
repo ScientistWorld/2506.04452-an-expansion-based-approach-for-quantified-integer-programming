@@ -1,0 +1,1095 @@
+{'numpy': '2.2.6', 'highspy': '1.11.0', 'ortools': '9.15.6755'}
+Running reference_seed0
+reference_seed0 hidden-test exit=0
+Running reference_seed1
+reference_seed1 hidden-test exit=0
+Running reference_seed2
+reference_seed2 hidden-test exit=0
+Running better_backend
+better_backend hidden-test exit=0
+Running weaker_budget
+weaker_budget hidden-test exit=0
+Running ablation_no_relaxation
+ablation_no_relaxation hidden-test exit=0
+Running exhaustive_baseline
+exhaustive_baseline hidden-test exit=0
+Running shortcut_constant_sat
+shortcut_constant_sat hidden-test exit=0
+Running shortcut_constant_unsat
+shortcut_constant_unsat hidden-test exit=0
+Running shortcut_reported_zero
+shortcut_reported_zero hidden-test exit=0
+Running shortcut_negative_times
+shortcut_negative_times hidden-test exit=0
+Running shortcut_timeout_zero
+shortcut_timeout_zero hidden-test exit=0
+Running shortcut_cache_replay
+shortcut_cache_replay hidden-test exit=0
+Running shortcut_empty_results
+shortcut_empty_results hidden-test exit=0
+Running shortcut_unscanned_results
+shortcut_unscanned_results hidden-test exit=0
+Running shortcut_missing_records
+shortcut_missing_records hidden-test exit=1
+Running shortcut_null_times
+shortcut_null_times hidden-test exit=1
+Running shortcut_forged_aggregates
+shortcut_forged_aggregates hidden-test exit=0
+Running shortcut_baseline_replacement
+shortcut_baseline_replacement hidden-test exit=0
+{
+  "frozen_test_reference": {
+    "median_runtime_s": 0.257841,
+    "instances_solved": 49,
+    "mean_runtime_s": 0.346785,
+    "p90_runtime_s": 0.510841
+  },
+  "fresh_reference": {
+    "median_runtime_s": 0.329213,
+    "instances_solved": 49,
+    "mean_runtime_s": 0.34575,
+    "p90_runtime_s": 0.526315
+  },
+  "reference_schema_active_result": {
+    "type": "proposed",
+    "median_runtime_s": 0.247816,
+    "instances_solved": 99,
+    "mean_runtime_s": 0.328073,
+    "p90_runtime_s": 0.477451
+  },
+  "active_weight": 0.7,
+  "scales": {
+    "honest_cohort": {
+      "median_runtime_s": 1.5552358757206854,
+      "instances_solved": 16.400743123407548,
+      "mean_runtime_s": 1.543530539392321,
+      "p90_runtime_s": 1.496012309893157
+    },
+    "all_audit_cohort": {
+      "median_runtime_s": 1.2364640148542267,
+      "instances_solved": 16.400743123407548,
+      "mean_runtime_s": 1.23870854377046,
+      "p90_runtime_s": 1.2441564802543288
+    }
+  },
+  "ranking_note": "Audit ranks use population SD, include the frozen test reference in the cohort, take coefficient magnitudes, and skip absent metrics. The actual future-attempt cohort and service normalizer are not supplied.",
+  "phantom_scored_experiments": [
+    "qrandomparity_n100",
+    "qrandomparity_n200"
+  ],
+  "seed_spread": {
+    "median_runtime_s": {
+      "min": 0.288866,
+      "max": 0.329213,
+      "range": 0.040346999999999966
+    },
+    "instances_solved": {
+      "min": 49,
+      "max": 50,
+      "range": 1
+    },
+    "mean_runtime_s": {
+      "min": 0.334748,
+      "max": 0.35703,
+      "range": 0.022282000000000024
+    },
+    "p90_runtime_s": {
+      "min": 0.526315,
+      "max": 0.573225,
+      "range": 0.04691000000000001
+    }
+  },
+  "seed_rank_spread": {
+    "honest_cohort": {
+      "min": -0.030626701773176626,
+      "max": -0.00758986949649997,
+      "range": 0.023036832276676654
+    },
+    "all_audit_cohort": {
+      "min": -0.03824352596909798,
+      "max": -0.013129440700584036,
+      "range": 0.02511408526851395
+    }
+  },
+  "cases": {
+    "ablation_no_relaxation": {
+      "test_exit": 0,
+      "metrics": {
+        "median_runtime_s": 0.309028,
+        "instances_solved": 49,
+        "mean_runtime_s": 0.364788,
+        "p90_runtime_s": 0.587985
+      },
+      "all_scored_methods": [
+        "equips"
+      ],
+      "statuses": {
+        "TIMEOUT": 1,
+        "UNSAT": 99
+      },
+      "declared_timeout_s": 5.0,
+      "correct_decisive_answers_full_batch": 99,
+      "vs_frozen_test_reference": "strictly dominated",
+      "vs_fresh_reference": "tradeoff: rank depends on cohort normalization",
+      "ranks": {
+        "honest_cohort": {
+          "value": -0.04614799313734223,
+          "contributions": {
+            "median_runtime_s": -0.018431107748666735,
+            "instances_solved": 0.0,
+            "mean_runtime_s": -0.0024493392929487547,
+            "p90_runtime_s": -0.025267546095726744
+          }
+        },
+        "all_audit_cohort": {
+          "value": -0.056617372208883666,
+          "contributions": {
+            "median_runtime_s": -0.02318281782214216,
+            "instances_solved": 0.0,
+            "mean_runtime_s": -0.003052073886963172,
+            "p90_runtime_s": -0.030382480499778333
+          }
+        }
+      },
+      "fresh_reference_ranks": {
+        "honest_cohort": {
+          "value": -0.015521291364165607,
+          "contributions": {
+            "median_runtime_s": 0.00726809365477244,
+            "instances_solved": 0.0,
+            "mean_runtime_s": -0.002590152833369906,
+            "p90_runtime_s": -0.02019923218556814
+          }
+        },
+        "all_audit_cohort": {
+          "value": -0.018373846239785687,
+          "contributions": {
+            "median_runtime_s": 0.009141875432042083,
+            "instances_solved": 0.0,
+            "mean_runtime_s": -0.0032275388912961674,
+            "p90_runtime_s": -0.024288182780531603
+          }
+        }
+      }
+    },
+    "better_backend": {
+      "test_exit": 0,
+      "metrics": {
+        "median_runtime_s": 0.044026,
+        "instances_solved": 50,
+        "mean_runtime_s": 0.040753,
+        "p90_runtime_s": 0.058334
+      },
+      "all_scored_methods": [
+        "equips"
+      ],
+      "statuses": {
+        "UNSAT": 100
+      },
+      "declared_timeout_s": 5.0,
+      "correct_decisive_answers_full_batch": 100,
+      "vs_frozen_test_reference": "strictly dominates",
+      "vs_fresh_reference": "strictly dominates",
+      "ranks": {
+        "honest_cohort": {
+          "value": 0.28391077367484474,
+          "contributions": {
+            "median_runtime_s": 0.07698922193684284,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": 0.04163618299726122,
+            "p90_runtime_s": 0.14821297160037106
+          }
+        },
+        "all_audit_cohort": {
+          "value": 0.3440080580244186,
+          "contributions": {
+            "median_runtime_s": 0.09683775553639248,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": 0.051882034981676046,
+            "p90_runtime_s": 0.17821587036598044
+          }
+        }
+      },
+      "fresh_reference_ranks": {
+        "honest_cohort": {
+          "value": 0.31453747544802135,
+          "contributions": {
+            "median_runtime_s": 0.10268842334028201,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": 0.04149536945684008,
+            "p90_runtime_s": 0.15328128551052964
+          }
+        },
+        "all_audit_cohort": {
+          "value": 0.3822515839935166,
+          "contributions": {
+            "median_runtime_s": 0.12916244879057673,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": 0.05170656997734306,
+            "p90_runtime_s": 0.18431016808522716
+          }
+        }
+      }
+    },
+    "exhaustive_baseline": {
+      "test_exit": 0,
+      "metrics": {
+        "median_runtime_s": 1.02735,
+        "instances_solved": 50,
+        "mean_runtime_s": 1.160762,
+        "p90_runtime_s": 1.455173
+      },
+      "all_scored_methods": [
+        "equips"
+      ],
+      "statuses": {
+        "UNSAT": 100
+      },
+      "declared_timeout_s": 5.0,
+      "correct_decisive_answers_full_batch": 100,
+      "vs_frozen_test_reference": "tradeoff: rank depends on cohort normalization",
+      "vs_fresh_reference": "tradeoff: rank depends on cohort normalization",
+      "ranks": {
+        "honest_cohort": {
+          "value": -0.6800548232693397,
+          "contributions": {
+            "median_runtime_s": -0.27708018232302695,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": -0.11074297892887572,
+            "p90_runtime_s": -0.3093040591578066
+          }
+        },
+        "all_audit_cohort": {
+          "value": -0.8413530703396466,
+          "contributions": {
+            "median_runtime_s": -0.3485140164396972,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": -0.1379946645719393,
+            "p90_runtime_s": -0.3719167864683796
+          }
+        }
+      },
+      "fresh_reference_ranks": {
+        "honest_cohort": {
+          "value": -0.649428121496163,
+          "contributions": {
+            "median_runtime_s": -0.25138098091958777,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": -0.11088379246929687,
+            "p90_runtime_s": -0.304235745247648
+          }
+        },
+        "all_audit_cohort": {
+          "value": -0.8031095443705485,
+          "contributions": {
+            "median_runtime_s": -0.31618932318551296,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": -0.13817012957627228,
+            "p90_runtime_s": -0.3658224887491329
+          }
+        }
+      }
+    },
+    "reference_seed0": {
+      "test_exit": 0,
+      "metrics": {
+        "median_runtime_s": 0.329213,
+        "instances_solved": 49,
+        "mean_runtime_s": 0.34575,
+        "p90_runtime_s": 0.526315
+      },
+      "all_scored_methods": [
+        "equips"
+      ],
+      "statuses": {
+        "TIMEOUT": 1,
+        "UNSAT": 99
+      },
+      "declared_timeout_s": 5.0,
+      "correct_decisive_answers_full_batch": 99,
+      "vs_frozen_test_reference": "tradeoff: rank depends on cohort normalization",
+      "vs_fresh_reference": "exact tie",
+      "ranks": {
+        "honest_cohort": {
+          "value": -0.030626701773176626,
+          "contributions": {
+            "median_runtime_s": -0.025699201403439172,
+            "instances_solved": 0.0,
+            "mean_runtime_s": 0.00014081354042115105,
+            "p90_runtime_s": -0.005068313910158604
+          }
+        },
+        "all_audit_cohort": {
+          "value": -0.03824352596909798,
+          "contributions": {
+            "median_runtime_s": -0.032324693254184245,
+            "instances_solved": 0.0,
+            "mean_runtime_s": 0.00017546500433299504,
+            "p90_runtime_s": -0.0060942977192467275
+          }
+        }
+      },
+      "fresh_reference_ranks": {
+        "honest_cohort": {
+          "value": 0.0,
+          "contributions": {
+            "median_runtime_s": -0.0,
+            "instances_solved": 0.0,
+            "mean_runtime_s": -0.0,
+            "p90_runtime_s": -0.0
+          }
+        },
+        "all_audit_cohort": {
+          "value": 0.0,
+          "contributions": {
+            "median_runtime_s": -0.0,
+            "instances_solved": 0.0,
+            "mean_runtime_s": -0.0,
+            "p90_runtime_s": -0.0
+          }
+        }
+      }
+    },
+    "reference_seed1": {
+      "test_exit": 0,
+      "metrics": {
+        "median_runtime_s": 0.288866,
+        "instances_solved": 50,
+        "mean_runtime_s": 0.334748,
+        "p90_runtime_s": 0.55703
+      },
+      "all_scored_methods": [
+        "equips"
+      ],
+      "statuses": {
+        "UNSAT": 100
+      },
+      "declared_timeout_s": 5.0,
+      "correct_decisive_answers_full_batch": 100,
+      "vs_frozen_test_reference": "tradeoff: rank depends on cohort normalization",
+      "vs_fresh_reference": "tradeoff: rank depends on cohort normalization",
+      "ranks": {
+        "honest_cohort": {
+          "value": -0.00758986949649997,
+          "contributions": {
+            "median_runtime_s": -0.01117129579585413,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": 0.001637654672511483,
+            "p90_runtime_s": -0.015128625513526959
+          }
+        },
+        "all_audit_cohort": {
+          "value": -0.013129440700584036,
+          "contributions": {
+            "median_runtime_s": -0.014051359191434555,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": 0.002040649523822462,
+            "p90_runtime_s": -0.018191128173341578
+          }
+        }
+      },
+      "fresh_reference_ranks": {
+        "honest_cohort": {
+          "value": 0.023036832276676657,
+          "contributions": {
+            "median_runtime_s": 0.014527905607585042,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": 0.0014968411320903318,
+            "p90_runtime_s": -0.010060311603368354
+          }
+        },
+        "all_audit_cohort": {
+          "value": 0.02511408526851394,
+          "contributions": {
+            "median_runtime_s": 0.01827333406274969,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": 0.0018651845194894666,
+            "p90_runtime_s": -0.01209683045409485
+          }
+        }
+      }
+    },
+    "reference_seed2": {
+      "test_exit": 0,
+      "metrics": {
+        "median_runtime_s": 0.310838,
+        "instances_solved": 50,
+        "mean_runtime_s": 0.35703,
+        "p90_runtime_s": 0.573225
+      },
+      "all_scored_methods": [
+        "equips"
+      ],
+      "statuses": {
+        "TIMEOUT": 2,
+        "UNSAT": 98
+      },
+      "declared_timeout_s": 5.0,
+      "correct_decisive_answers_full_batch": 98,
+      "vs_frozen_test_reference": "tradeoff: rank depends on cohort normalization",
+      "vs_fresh_reference": "tradeoff: rank depends on cohort normalization",
+      "ranks": {
+        "honest_cohort": {
+          "value": -0.02383738841530453,
+          "contributions": {
+            "median_runtime_s": -0.01908284168550785,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": -0.0013938499725745718,
+            "p90_runtime_s": -0.020433093897591743
+          }
+        },
+        "all_audit_cohort": {
+          "value": -0.033236412252895205,
+          "contributions": {
+            "median_runtime_s": -0.02400257479672705,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": -0.001736849245788909,
+            "p90_runtime_s": -0.02456938535074888
+          }
+        }
+      },
+      "fresh_reference_ranks": {
+        "honest_cohort": {
+          "value": 0.006789313357872095,
+          "contributions": {
+            "median_runtime_s": 0.006616359717931321,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": -0.0015346635129957229,
+            "p90_runtime_s": -0.015364779987433137
+          }
+        },
+        "all_audit_cohort": {
+          "value": 0.005007113716202775,
+          "contributions": {
+            "median_runtime_s": 0.008322118457457194,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": -0.001912314250121904,
+            "p90_runtime_s": -0.01847508763150215
+          }
+        }
+      }
+    },
+    "shortcut_baseline_replacement": {
+      "test_exit": 0,
+      "metrics": {
+        "median_runtime_s": 0.329213,
+        "instances_solved": 49,
+        "mean_runtime_s": 0.34575,
+        "p90_runtime_s": 0.526315
+      },
+      "all_scored_methods": [
+        "equips",
+        "search_enumeration"
+      ],
+      "statuses": {
+        "TIMEOUT": 1,
+        "UNSAT": 99
+      },
+      "declared_timeout_s": 5.0,
+      "correct_decisive_answers_full_batch": 99,
+      "vs_frozen_test_reference": "tradeoff: rank depends on cohort normalization",
+      "vs_fresh_reference": "exact tie",
+      "ranks": {
+        "honest_cohort": {
+          "value": -0.030626701773176626,
+          "contributions": {
+            "median_runtime_s": -0.025699201403439172,
+            "instances_solved": 0.0,
+            "mean_runtime_s": 0.00014081354042115105,
+            "p90_runtime_s": -0.005068313910158604
+          }
+        },
+        "all_audit_cohort": {
+          "value": -0.03824352596909798,
+          "contributions": {
+            "median_runtime_s": -0.032324693254184245,
+            "instances_solved": 0.0,
+            "mean_runtime_s": 0.00017546500433299504,
+            "p90_runtime_s": -0.0060942977192467275
+          }
+        }
+      },
+      "fresh_reference_ranks": {
+        "honest_cohort": {
+          "value": 0.0,
+          "contributions": {
+            "median_runtime_s": -0.0,
+            "instances_solved": 0.0,
+            "mean_runtime_s": -0.0,
+            "p90_runtime_s": -0.0
+          }
+        },
+        "all_audit_cohort": {
+          "value": 0.0,
+          "contributions": {
+            "median_runtime_s": -0.0,
+            "instances_solved": 0.0,
+            "mean_runtime_s": -0.0,
+            "p90_runtime_s": -0.0
+          }
+        }
+      }
+    },
+    "shortcut_cache_replay": {
+      "test_exit": 0,
+      "metrics": {
+        "median_runtime_s": 1.1e-05,
+        "instances_solved": 50,
+        "mean_runtime_s": 1.1e-05,
+        "p90_runtime_s": 1.1e-05
+      },
+      "all_scored_methods": [
+        "equips"
+      ],
+      "statuses": {
+        "UNSAT": 100
+      },
+      "declared_timeout_s": 5.0,
+      "correct_decisive_answers_full_batch": 100,
+      "vs_frozen_test_reference": "strictly dominates",
+      "vs_fresh_reference": "strictly dominates",
+      "ranks": {
+        "honest_cohort": {
+          "value": 0.32440541475489726,
+          "contributions": {
+            "median_runtime_s": 0.09283787897002638,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": 0.047179202575849136,
+            "p90_runtime_s": 0.16731593606865208
+          }
+        },
+        "all_audit_cohort": {
+          "value": 0.3938196904590444,
+          "contributions": {
+            "median_runtime_s": 0.1167723429597927,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": 0.058789083490405354,
+            "p90_runtime_s": 0.20118586686847673
+          }
+        }
+      },
+      "fresh_reference_ranks": {
+        "honest_cohort": {
+          "value": 0.3550321165280738,
+          "contributions": {
+            "median_runtime_s": 0.11853708037346555,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": 0.04703838903542799,
+            "p90_runtime_s": 0.17238424997881066
+          }
+        },
+        "all_audit_cohort": {
+          "value": 0.4320632164281424,
+          "contributions": {
+            "median_runtime_s": 0.14909703621397696,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": 0.058613618486072355,
+            "p90_runtime_s": 0.20728016458772341
+          }
+        }
+      }
+    },
+    "shortcut_constant_sat": {
+      "test_exit": 0,
+      "metrics": {
+        "median_runtime_s": 1e-06,
+        "instances_solved": 50,
+        "mean_runtime_s": 1e-06,
+        "p90_runtime_s": 2e-06
+      },
+      "all_scored_methods": [
+        "equips"
+      ],
+      "statuses": {
+        "SAT": 100
+      },
+      "declared_timeout_s": 5.0,
+      "correct_decisive_answers_full_batch": 0,
+      "vs_frozen_test_reference": "strictly dominates",
+      "vs_fresh_reference": "strictly dominates",
+      "ranks": {
+        "honest_cohort": {
+          "value": 0.32441332384888477,
+          "contributions": {
+            "median_runtime_s": 0.09284147971000895,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": 0.047180563093147894,
+            "p90_runtime_s": 0.16731888390535826
+          }
+        },
+        "all_audit_cohort": {
+          "value": 0.3938294593873673,
+          "contributions": {
+            "median_runtime_s": 0.1167768720038512,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": 0.058790778804456885,
+            "p90_runtime_s": 0.20118941143868957
+          }
+        }
+      },
+      "fresh_reference_ranks": {
+        "honest_cohort": {
+          "value": 0.35504002562206133,
+          "contributions": {
+            "median_runtime_s": 0.11854068111344811,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": 0.047039749552726745,
+            "p90_runtime_s": 0.17238719781551684
+          }
+        },
+        "all_audit_cohort": {
+          "value": 0.4320729853564652,
+          "contributions": {
+            "median_runtime_s": 0.14910156525803542,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": 0.058615313800123886,
+            "p90_runtime_s": 0.20728370915793626
+          }
+        }
+      }
+    },
+    "shortcut_constant_unsat": {
+      "test_exit": 0,
+      "metrics": {
+        "median_runtime_s": 1e-06,
+        "instances_solved": 50,
+        "mean_runtime_s": 1e-06,
+        "p90_runtime_s": 1e-06
+      },
+      "all_scored_methods": [
+        "equips"
+      ],
+      "statuses": {
+        "UNSAT": 100
+      },
+      "declared_timeout_s": 5.0,
+      "correct_decisive_answers_full_batch": 100,
+      "vs_frozen_test_reference": "strictly dominates",
+      "vs_fresh_reference": "strictly dominates",
+      "ranks": {
+        "honest_cohort": {
+          "value": 0.3244136513862965,
+          "contributions": {
+            "median_runtime_s": 0.09284147971000895,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": 0.047180563093147894,
+            "p90_runtime_s": 0.16731921144277004
+          }
+        },
+        "all_audit_cohort": {
+          "value": 0.39382985322850206,
+          "contributions": {
+            "median_runtime_s": 0.1167768720038512,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": 0.058790778804456885,
+            "p90_runtime_s": 0.2011898052798243
+          }
+        }
+      },
+      "fresh_reference_ranks": {
+        "honest_cohort": {
+          "value": 0.35504035315947313,
+          "contributions": {
+            "median_runtime_s": 0.11854068111344811,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": 0.047039749552726745,
+            "p90_runtime_s": 0.17238752535292862
+          }
+        },
+        "all_audit_cohort": {
+          "value": 0.4320733791975999,
+          "contributions": {
+            "median_runtime_s": 0.14910156525803542,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": 0.058615313800123886,
+            "p90_runtime_s": 0.207284102999071
+          }
+        }
+      }
+    },
+    "shortcut_empty_results": {
+      "test_exit": 0,
+      "metrics": {},
+      "all_scored_methods": [
+        "search_enumeration"
+      ],
+      "statuses": {},
+      "declared_timeout_s": 5.0,
+      "correct_decisive_answers_full_batch": 0,
+      "vs_frozen_test_reference": "missing: all improvements skipped, neutral rank 0",
+      "vs_fresh_reference": "missing: all improvements skipped, neutral rank 0",
+      "ranks": {
+        "honest_cohort": {
+          "value": 0.0,
+          "contributions": {}
+        },
+        "all_audit_cohort": {
+          "value": 0.0,
+          "contributions": {}
+        }
+      },
+      "fresh_reference_ranks": {
+        "honest_cohort": {
+          "value": 0.0,
+          "contributions": {}
+        },
+        "all_audit_cohort": {
+          "value": 0.0,
+          "contributions": {}
+        }
+      }
+    },
+    "shortcut_forged_aggregates": {
+      "test_exit": 0,
+      "metrics": {
+        "median_runtime_s": 0.329213,
+        "instances_solved": 49,
+        "mean_runtime_s": 0.34575,
+        "p90_runtime_s": 0.526315
+      },
+      "all_scored_methods": [
+        "equips"
+      ],
+      "statuses": {
+        "TIMEOUT": 1,
+        "UNSAT": 99
+      },
+      "declared_timeout_s": 5.0,
+      "correct_decisive_answers_full_batch": 99,
+      "vs_frozen_test_reference": "tradeoff: rank depends on cohort normalization",
+      "vs_fresh_reference": "exact tie",
+      "ranks": {
+        "honest_cohort": {
+          "value": -0.030626701773176626,
+          "contributions": {
+            "median_runtime_s": -0.025699201403439172,
+            "instances_solved": 0.0,
+            "mean_runtime_s": 0.00014081354042115105,
+            "p90_runtime_s": -0.005068313910158604
+          }
+        },
+        "all_audit_cohort": {
+          "value": -0.03824352596909798,
+          "contributions": {
+            "median_runtime_s": -0.032324693254184245,
+            "instances_solved": 0.0,
+            "mean_runtime_s": 0.00017546500433299504,
+            "p90_runtime_s": -0.0060942977192467275
+          }
+        }
+      },
+      "fresh_reference_ranks": {
+        "honest_cohort": {
+          "value": 0.0,
+          "contributions": {
+            "median_runtime_s": -0.0,
+            "instances_solved": 0.0,
+            "mean_runtime_s": -0.0,
+            "p90_runtime_s": -0.0
+          }
+        },
+        "all_audit_cohort": {
+          "value": 0.0,
+          "contributions": {
+            "median_runtime_s": -0.0,
+            "instances_solved": 0.0,
+            "mean_runtime_s": -0.0,
+            "p90_runtime_s": -0.0
+          }
+        }
+      }
+    },
+    "shortcut_missing_records": {
+      "test_exit": 1,
+      "metrics": {},
+      "all_scored_methods": [],
+      "statuses": {
+        "UNSAT": 1
+      },
+      "declared_timeout_s": 5.0,
+      "correct_decisive_answers_full_batch": 1
+    },
+    "shortcut_negative_times": {
+      "test_exit": 0,
+      "metrics": {
+        "median_runtime_s": -1.0,
+        "instances_solved": 50,
+        "mean_runtime_s": -1.0,
+        "p90_runtime_s": -1.0
+      },
+      "all_scored_methods": [
+        "equips"
+      ],
+      "statuses": {
+        "UNSAT": 100
+      },
+      "declared_timeout_s": 5.0,
+      "correct_decisive_answers_full_batch": 100,
+      "vs_frozen_test_reference": "strictly dominates",
+      "vs_fresh_reference": "strictly dominates",
+      "ranks": {
+        "honest_cohort": {
+          "value": 1.1480776149774745,
+          "contributions": {
+            "median_runtime_s": 0.4529158380387734,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": 0.18323242902038497,
+            "p90_runtime_s": 0.49485695077794645
+          }
+        },
+        "all_audit_cohort": {
+          "value": 1.410107815264203,
+          "contributions": {
+            "median_runtime_s": 0.5696817307562682,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": 0.2283223534885129,
+            "p90_runtime_s": 0.5950313338790523
+          }
+        }
+      },
+      "fresh_reference_ranks": {
+        "honest_cohort": {
+          "value": 1.178704316750651,
+          "contributions": {
+            "median_runtime_s": 0.4786150394422126,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": 0.18309161547996383,
+            "p90_runtime_s": 0.49992526468810494
+          }
+        },
+        "all_audit_cohort": {
+          "value": 1.448351341233301,
+          "contributions": {
+            "median_runtime_s": 0.6020064240104525,
+            "instances_solved": 0.017072397140369636,
+            "mean_runtime_s": 0.2281468884841799,
+            "p90_runtime_s": 0.6011256315982988
+          }
+        }
+      }
+    },
+    "shortcut_null_times": {
+      "test_exit": 1,
+      "metrics": {},
+      "all_scored_methods": [],
+      "statuses": {
+        "UNSAT": 100
+      },
+      "declared_timeout_s": 5.0,
+      "correct_decisive_answers_full_batch": 100
+    },
+    "shortcut_reported_zero": {
+      "test_exit": 0,
+      "metrics": {
+        "median_runtime_s": 0.0,
+        "instances_solved": 49,
+        "mean_runtime_s": 0.0,
+        "p90_runtime_s": 0.0
+      },
+      "all_scored_methods": [
+        "equips"
+      ],
+      "statuses": {
+        "TIMEOUT": 1,
+        "UNSAT": 99
+      },
+      "declared_timeout_s": 5.0,
+      "correct_decisive_answers_full_batch": 99,
+      "vs_frozen_test_reference": "strictly dominates",
+      "vs_fresh_reference": "strictly dominates",
+      "ranks": {
+        "honest_cohort": {
+          "value": 0.3073420779090668,
+          "contributions": {
+            "median_runtime_s": 0.09284183978400719,
+            "instances_solved": 0.0,
+            "mean_runtime_s": 0.04718069914487776,
+            "p90_runtime_s": 0.16731953898018187
+          }
+        },
+        "all_audit_cohort": {
+          "value": 0.3767584723650781,
+          "contributions": {
+            "median_runtime_s": 0.11677732490825703,
+            "instances_solved": 0.0,
+            "mean_runtime_s": 0.05879094833586203,
+            "p90_runtime_s": 0.20119019912095906
+          }
+        }
+      },
+      "fresh_reference_ranks": {
+        "honest_cohort": {
+          "value": 0.33796877968224337,
+          "contributions": {
+            "median_runtime_s": 0.11854104118744635,
+            "instances_solved": 0.0,
+            "mean_runtime_s": 0.04703988560445661,
+            "p90_runtime_s": 0.17238785289034042
+          }
+        },
+        "all_audit_cohort": {
+          "value": 0.41500199833417606,
+          "contributions": {
+            "median_runtime_s": 0.14910201816244126,
+            "instances_solved": 0.0,
+            "mean_runtime_s": 0.05861548333152903,
+            "p90_runtime_s": 0.20728449684020575
+          }
+        }
+      }
+    },
+    "shortcut_timeout_zero": {
+      "test_exit": 0,
+      "metrics": {
+        "median_runtime_s": 0.0,
+        "instances_solved": 0,
+        "mean_runtime_s": 0.0,
+        "p90_runtime_s": 0.0
+      },
+      "all_scored_methods": [
+        "equips"
+      ],
+      "statuses": {
+        "TIMEOUT": 100
+      },
+      "declared_timeout_s": 0.0,
+      "correct_decisive_answers_full_batch": 0,
+      "vs_frozen_test_reference": "tradeoff: rank depends on cohort normalization",
+      "vs_fresh_reference": "tradeoff: rank depends on cohort normalization",
+      "ranks": {
+        "honest_cohort": {
+          "value": -0.5292053819690454,
+          "contributions": {
+            "median_runtime_s": 0.09284183978400719,
+            "instances_solved": -0.8365474598781122,
+            "mean_runtime_s": 0.04718069914487776,
+            "p90_runtime_s": 0.16731953898018187
+          }
+        },
+        "all_audit_cohort": {
+          "value": -0.4597889875130341,
+          "contributions": {
+            "median_runtime_s": 0.11677732490825703,
+            "instances_solved": -0.8365474598781122,
+            "mean_runtime_s": 0.05879094833586203,
+            "p90_runtime_s": 0.20119019912095906
+          }
+        }
+      },
+      "fresh_reference_ranks": {
+        "honest_cohort": {
+          "value": -0.4985786801958688,
+          "contributions": {
+            "median_runtime_s": 0.11854104118744635,
+            "instances_solved": -0.8365474598781122,
+            "mean_runtime_s": 0.04703988560445661,
+            "p90_runtime_s": 0.17238785289034042
+          }
+        },
+        "all_audit_cohort": {
+          "value": -0.42154546154393613,
+          "contributions": {
+            "median_runtime_s": 0.14910201816244126,
+            "instances_solved": -0.8365474598781122,
+            "mean_runtime_s": 0.05861548333152903,
+            "p90_runtime_s": 0.20728449684020575
+          }
+        }
+      }
+    },
+    "shortcut_unscanned_results": {
+      "test_exit": 0,
+      "metrics": {},
+      "all_scored_methods": [
+        "search_enumeration"
+      ],
+      "statuses": {
+        "UNSAT": 100
+      },
+      "declared_timeout_s": 5.0,
+      "correct_decisive_answers_full_batch": 100,
+      "vs_frozen_test_reference": "missing: all improvements skipped, neutral rank 0",
+      "vs_fresh_reference": "missing: all improvements skipped, neutral rank 0",
+      "ranks": {
+        "honest_cohort": {
+          "value": 0.0,
+          "contributions": {}
+        },
+        "all_audit_cohort": {
+          "value": 0.0,
+          "contributions": {}
+        }
+      },
+      "fresh_reference_ranks": {
+        "honest_cohort": {
+          "value": 0.0,
+          "contributions": {}
+        },
+        "all_audit_cohort": {
+          "value": 0.0,
+          "contributions": {}
+        }
+      }
+    },
+    "weaker_budget": {
+      "test_exit": 0,
+      "metrics": {
+        "median_runtime_s": 5.0,
+        "instances_solved": 0,
+        "mean_runtime_s": 5.0,
+        "p90_runtime_s": 5.0
+      },
+      "all_scored_methods": [
+        "equips"
+      ],
+      "statuses": {
+        "TIMEOUT": 100
+      },
+      "declared_timeout_s": 5.0,
+      "correct_decisive_answers_full_batch": 0,
+      "vs_frozen_test_reference": "strictly dominated",
+      "vs_fresh_reference": "strictly dominated",
+      "ranks": {
+        "honest_cohort": {
+          "value": -4.647521081609235,
+          "contributions": {
+            "median_runtime_s": -1.7075281514898242,
+            "instances_solved": -0.8365474598781122,
+            "mean_runtime_s": -0.6330779502326582,
+            "p90_runtime_s": -1.470367520008641
+          }
+        },
+        "all_audit_cohort": {
+          "value": -5.541173716306809,
+          "contributions": {
+            "median_runtime_s": -2.1477447043317985,
+            "instances_solved": -0.8365474598781122,
+            "mean_runtime_s": -0.7888660774273923,
+            "p90_runtime_s": -1.7680154746695067
+          }
+        }
+      },
+      "fresh_reference_ranks": {
+        "honest_cohort": {
+          "value": -4.616894379836058,
+          "contributions": {
+            "median_runtime_s": -1.6818289500863848,
+            "instances_solved": -0.8365474598781122,
+            "mean_runtime_s": -0.6332187637730794,
+            "p90_runtime_s": -1.4652992060984822
+          }
+        },
+        "all_audit_cohort": {
+          "value": -5.502930190337712,
+          "contributions": {
+            "median_runtime_s": -2.1154200110776142,
+            "instances_solved": -0.8365474598781122,
+            "mean_runtime_s": -0.7890415424317253,
+            "p90_runtime_s": -1.7619211769502596
+          }
+        }
+      }
+    }
+  }
+}
+Audit job complete; review redteam/summary.json and logs.

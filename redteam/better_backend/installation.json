@@ -1,0 +1,7 @@
+{
+  "case": "better_backend",
+  "files": [
+    "/home/user/outputs/redteam_active/00_better_backend.json"
+  ],
+  "contract": "no evaluator edits, no environment hooks, only persistent JSON output files"
+}
