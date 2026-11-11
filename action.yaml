@@ -1,8 +1,6 @@
 # Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends.
-action: submit
-gpus: 0
-test: false
+action: done
 milestone: core_claim
-notes: "Resubmit after SLURM preemption: MCN ladder now frozen at 96 nodes (80/96 built with exact bitmask ground truth); fresh frozen reference on hidden test + train; audit cases resume from job-1 levels and run only new levels; portfolio CPU-escape probe before/after."
+notes: "Hardened hidden test: decoder and escape shortcuts fail; better variant 114/61 vs reference 79/56; MCN brute force (60) still outranks the reference (left, see HARDENING.md)."
