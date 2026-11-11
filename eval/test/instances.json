@@ -1464,5 +1464,9 @@
   "stop_reason": "no certified graph for a slot at size 80",
   "elapsed_s": 1357
  },
- "mcn_extension_v2": {}
+ "mcn_extension_v2": {
+  "frozen": true,
+  "stop_reason": "all phase-2 sizes built",
+  "elapsed_s": 0
+ }
 }
