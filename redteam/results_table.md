@@ -1,3 +1,5 @@
+Audit ranks below are relative to the frozen test reference (rank 0). They use population SD over the seven honest cases plus that reference. Raw metrics are the actual hidden-test output; the live future cohort is unknown.
+
 | Case | Exit | Median s | Solved / 50 | Mean s | p90 s | Audit rank (honest scales) |
 |---|---:|---:|---:|---:|---:|---:|
 | ablation_no_relaxation | 0 | 0.309028 | 49 | 0.364788 | 0.587985 | -0.046148 |

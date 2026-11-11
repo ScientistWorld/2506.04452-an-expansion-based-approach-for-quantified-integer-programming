@@ -7,7 +7,6 @@ Raw hidden metrics and Pareto comparisons are the authoritative observations.
 """
 from __future__ import annotations
 import json
-import math
 import statistics
 from pathlib import Path
 
@@ -30,8 +29,13 @@ for folder in sorted(ROOT.iterdir()):
         item['metrics']=results.get('equips',{})
         item['all_scored_methods']=list(results)
     raw = folder/'raw.json'
+    if folder.name == 'shortcut_unscanned_results':
+        # raw.json is the surviving baseline; summarize the omitted candidate.
+        raw = folder/'shortcut_unscanned_candidate.json'
     if raw.exists():
         payload=json.loads(raw.read_text())
+        item['candidate_raw_file']=str(raw.relative_to(ROOT))
+        item['raw_solver']=payload.get('solver')
         records=payload.get('results',[])
         item['statuses']={s:sum(r['status']==s for r in records) for s in sorted({r['status'] for r in records})}
         item['declared_timeout_s']=payload['timeout_s']
@@ -99,7 +103,8 @@ summary=dict(frozen_test_reference=target,fresh_reference=fresh,
              phantom_scored_experiments=['qrandomparity_n100','qrandomparity_n200'],
              seed_spread=spread,seed_rank_spread=rank_spreads,cases=observed)
 (ROOT/'summary.json').write_text(json.dumps(summary,indent=2,allow_nan=False)+'\n')
-lines=['| Case | Exit | Median s | Solved / 50 | Mean s | p90 s | Audit rank (honest scales) |',
+lines=['Audit ranks below are relative to the frozen test reference (rank 0). They use population SD over the seven honest cases plus that reference. Raw metrics are the actual hidden-test output; the live future cohort is unknown.', '',
+       '| Case | Exit | Median s | Solved / 50 | Mean s | p90 s | Audit rank (honest scales) |',
        '|---|---:|---:|---:|---:|---:|---:|']
 for name,item in observed.items():
     m=item['metrics']

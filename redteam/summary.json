@@ -84,6 +84,8 @@
       "all_scored_methods": [
         "equips"
       ],
+      "candidate_raw_file": "ablation_no_relaxation/raw.json",
+      "raw_solver": "equips",
       "statuses": {
         "TIMEOUT": 1,
         "UNSAT": 99
@@ -144,6 +146,8 @@
       "all_scored_methods": [
         "equips"
       ],
+      "candidate_raw_file": "better_backend/raw.json",
+      "raw_solver": "equips",
       "statuses": {
         "UNSAT": 100
       },
@@ -203,6 +207,8 @@
       "all_scored_methods": [
         "equips"
       ],
+      "candidate_raw_file": "exhaustive_baseline/raw.json",
+      "raw_solver": "equips",
       "statuses": {
         "UNSAT": 100
       },
@@ -262,6 +268,8 @@
       "all_scored_methods": [
         "equips"
       ],
+      "candidate_raw_file": "reference_seed0/raw.json",
+      "raw_solver": "equips",
       "statuses": {
         "TIMEOUT": 1,
         "UNSAT": 99
@@ -322,6 +330,8 @@
       "all_scored_methods": [
         "equips"
       ],
+      "candidate_raw_file": "reference_seed1/raw.json",
+      "raw_solver": "equips",
       "statuses": {
         "UNSAT": 100
       },
@@ -381,6 +391,8 @@
       "all_scored_methods": [
         "equips"
       ],
+      "candidate_raw_file": "reference_seed2/raw.json",
+      "raw_solver": "equips",
       "statuses": {
         "TIMEOUT": 2,
         "UNSAT": 98
@@ -442,6 +454,8 @@
         "equips",
         "search_enumeration"
       ],
+      "candidate_raw_file": "shortcut_baseline_replacement/raw.json",
+      "raw_solver": "equips",
       "statuses": {
         "TIMEOUT": 1,
         "UNSAT": 99
@@ -502,6 +516,8 @@
       "all_scored_methods": [
         "equips"
       ],
+      "candidate_raw_file": "shortcut_cache_replay/raw.json",
+      "raw_solver": "equips",
       "statuses": {
         "UNSAT": 100
       },
@@ -561,6 +577,8 @@
       "all_scored_methods": [
         "equips"
       ],
+      "candidate_raw_file": "shortcut_constant_sat/raw.json",
+      "raw_solver": "equips",
       "statuses": {
         "SAT": 100
       },
@@ -620,6 +638,8 @@
       "all_scored_methods": [
         "equips"
       ],
+      "candidate_raw_file": "shortcut_constant_unsat/raw.json",
+      "raw_solver": "equips",
       "statuses": {
         "UNSAT": 100
       },
@@ -674,6 +694,8 @@
       "all_scored_methods": [
         "search_enumeration"
       ],
+      "candidate_raw_file": "shortcut_empty_results/raw.json",
+      "raw_solver": "equips",
       "statuses": {},
       "declared_timeout_s": 5.0,
       "correct_decisive_answers_full_batch": 0,
@@ -711,6 +733,8 @@
       "all_scored_methods": [
         "equips"
       ],
+      "candidate_raw_file": "shortcut_forged_aggregates/raw.json",
+      "raw_solver": "equips",
       "statuses": {
         "TIMEOUT": 1,
         "UNSAT": 99
@@ -764,6 +788,8 @@
       "test_exit": 1,
       "metrics": {},
       "all_scored_methods": [],
+      "candidate_raw_file": "shortcut_missing_records/raw.json",
+      "raw_solver": "equips",
       "statuses": {
         "UNSAT": 1
       },
@@ -781,6 +807,8 @@
       "all_scored_methods": [
         "equips"
       ],
+      "candidate_raw_file": "shortcut_negative_times/raw.json",
+      "raw_solver": "equips",
       "statuses": {
         "UNSAT": 100
       },
@@ -833,6 +861,8 @@
       "test_exit": 1,
       "metrics": {},
       "all_scored_methods": [],
+      "candidate_raw_file": "shortcut_null_times/raw.json",
+      "raw_solver": "equips",
       "statuses": {
         "UNSAT": 100
       },
@@ -850,6 +880,8 @@
       "all_scored_methods": [
         "equips"
       ],
+      "candidate_raw_file": "shortcut_reported_zero/raw.json",
+      "raw_solver": "equips",
       "statuses": {
         "TIMEOUT": 1,
         "UNSAT": 99
@@ -910,6 +942,8 @@
       "all_scored_methods": [
         "equips"
       ],
+      "candidate_raw_file": "shortcut_timeout_zero/raw.json",
+      "raw_solver": "equips",
       "statuses": {
         "TIMEOUT": 100
       },
@@ -964,11 +998,13 @@
       "all_scored_methods": [
         "search_enumeration"
       ],
+      "candidate_raw_file": "shortcut_unscanned_results/shortcut_unscanned_candidate.json",
+      "raw_solver": "equips",
       "statuses": {
-        "UNSAT": 100
+        "ERROR": 100
       },
       "declared_timeout_s": 5.0,
-      "correct_decisive_answers_full_batch": 100,
+      "correct_decisive_answers_full_batch": 0,
       "vs_frozen_test_reference": "missing: all improvements skipped, neutral rank 0",
       "vs_fresh_reference": "missing: all improvements skipped, neutral rank 0",
       "ranks": {
@@ -1003,6 +1039,8 @@
       "all_scored_methods": [
         "equips"
       ],
+      "candidate_raw_file": "weaker_budget/raw.json",
+      "raw_solver": "equips",
       "statuses": {
         "TIMEOUT": 100
       },

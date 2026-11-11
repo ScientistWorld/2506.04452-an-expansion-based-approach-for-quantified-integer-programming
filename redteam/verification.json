@@ -1,0 +1,20 @@
+{
+  "audit_job": "d2048ec2-a3c",
+  "case_count": 19,
+  "successful_hidden_evaluations": 17,
+  "failed_probes": [
+    "shortcut_missing_records",
+    "shortcut_null_times"
+  ],
+  "source_hashes_match_initial": {
+    "scripts/evaluate_test.sh": true,
+    "eval/test/evaluate.py": true,
+    "eval/train/evaluate.py": true,
+    "data/qrandomparity.py": true,
+    "method/equips.py": true
+  },
+  "index_changes_outside_redteam_and_REDTEAM_relative_to_initial_commit": [],
+  "preexisting_unrelated_worktree_changes": "Preserved; see initial/git_status.txt",
+  "evaluation_boundary": "Separate producer and no-argument hidden-evaluator processes, persistent reports only",
+  "live_rank_limitation": "Exact future-attempt population and service normalizer unavailable; report identifies illustrative SD cohorts."
+}
