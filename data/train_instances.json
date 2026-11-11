@@ -1399,6 +1399,96 @@
        "ground_truth": "bitmask_minimax"
       }
      ]
+    },
+    {
+     "size": 48,
+     "instances": [
+      {
+       "kind": "mcn_true",
+       "seed": 23012000,
+       "answer": true,
+       "threshold": 10,
+       "optimum": 10,
+       "ground_truth": "cegar_cpsat",
+       "sha256": "44180d042d9f67c9bd3c8e2c97a83f431b6f893fe224ab265fd00d898dc7d1e6",
+       "gt_cpu_s": 0.2
+      },
+      {
+       "kind": "mcn_true",
+       "seed": 23012001,
+       "answer": true,
+       "threshold": 12,
+       "optimum": 12,
+       "ground_truth": "cegar_cpsat",
+       "sha256": "0b15a0098df54fff2b523a2152cd21c32155fe87799e44dc9e4e00a24400ff4a",
+       "gt_cpu_s": 1.3
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 23012002,
+       "answer": false,
+       "threshold": 27,
+       "optimum": 26,
+       "ground_truth": "cegar_cpsat",
+       "sha256": "688034288df4d76df95aa6542c71e30bfd73ca1b142f093dae7c202e90e9f3b1",
+       "gt_cpu_s": 1.98
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 23012003,
+       "answer": false,
+       "threshold": 11,
+       "optimum": 10,
+       "ground_truth": "cegar_cpsat",
+       "sha256": "58d5f4f745effe8f1e997d646dc40d1701b18d3aacced85762065d053f2d6bd4",
+       "gt_cpu_s": 0.15
+      }
+     ]
+    },
+    {
+     "size": 56,
+     "instances": [
+      {
+       "kind": "mcn_true",
+       "seed": 23013000,
+       "answer": true,
+       "threshold": 29,
+       "optimum": 29,
+       "ground_truth": "cegar_cpsat",
+       "sha256": "a95c83206a62abc36a6813f217810099e6bf175dafd7042de6070e3c90db94a8",
+       "gt_cpu_s": 3.36
+      },
+      {
+       "kind": "mcn_true",
+       "seed": 23013001,
+       "answer": true,
+       "threshold": 16,
+       "optimum": 16,
+       "ground_truth": "cegar_cpsat",
+       "sha256": "1cc377a2018b1ff5fe9821c3149620eabcc31d57e3f9cb234921c4327c4b1ab6",
+       "gt_cpu_s": 16.12
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 23013002,
+       "answer": false,
+       "threshold": 19,
+       "optimum": 18,
+       "ground_truth": "cegar_cpsat",
+       "sha256": "579a872eac2c5e89df759a42a9b388d1bab4ab4e3131dd8c09fc7e46215e803d",
+       "gt_cpu_s": 10.39
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 23013103,
+       "answer": false,
+       "threshold": 22,
+       "optimum": 21,
+       "ground_truth": "cegar_cpsat",
+       "sha256": "e7ed9fd440869f932f9c124b1f7d4cb0f8ac9cf7f18ea702268bc71b4931f9d7",
+       "gt_cpu_s": 11.35
+      }
+     ]
     }
    ]
   }

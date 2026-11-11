@@ -1244,9 +1244,94 @@
       }
      ],
      "digest": "b8b20b33a9ba77877f93a1aeb9627b9dec5417d41662246a0c91427f6b05c5c0"
+    },
+    {
+     "size": 48,
+     "instances": [
+      {
+       "kind": "mcn_true",
+       "seed": 14375397187956,
+       "answer": true,
+       "threshold": 16,
+       "optimum": 16,
+       "ground_truth": "cegar_cpsat",
+       "gt_cpu_s": 0.91
+      },
+      {
+       "kind": "mcn_true",
+       "seed": 2500335521365,
+       "answer": true,
+       "threshold": 29,
+       "optimum": 29,
+       "ground_truth": "cegar_cpsat",
+       "gt_cpu_s": 0.14
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 92296162326431,
+       "answer": false,
+       "threshold": 23,
+       "optimum": 22,
+       "ground_truth": "cegar_cpsat",
+       "gt_cpu_s": 5.09
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 146940503210156,
+       "answer": false,
+       "threshold": 17,
+       "optimum": 16,
+       "ground_truth": "cegar_cpsat",
+       "gt_cpu_s": 4.89
+      }
+     ],
+     "digest": "672c839b8a06d7eb2faac8d8d9bd8564c923341777613cbbedca136cb8a5ca33"
+    },
+    {
+     "size": 56,
+     "instances": [
+      {
+       "kind": "mcn_true",
+       "seed": 83444015477054,
+       "answer": true,
+       "threshold": 16,
+       "optimum": 16,
+       "ground_truth": "cegar_cpsat",
+       "gt_cpu_s": 0.46
+      },
+      {
+       "kind": "mcn_true",
+       "seed": 193175768119072,
+       "answer": true,
+       "threshold": 51,
+       "optimum": 51,
+       "ground_truth": "cegar_cpsat",
+       "gt_cpu_s": 2.41
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 180548255533788,
+       "answer": false,
+       "threshold": 47,
+       "optimum": 46,
+       "ground_truth": "cegar_cpsat",
+       "gt_cpu_s": 2.88
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 226215629810265,
+       "answer": false,
+       "threshold": 19,
+       "optimum": 18,
+       "ground_truth": "cegar_cpsat",
+       "gt_cpu_s": 19.9
+      }
+     ],
+     "digest": "5c5f3d896b229d8d88c05e06db24d5590db2bd0297e5091e3f2ec40cb663dffd"
     }
    ]
   }
  },
- "seed_secret": 9118256452245671983
+ "seed_secret": 9118256452245671983,
+ "mcn_extension": {}
 }
