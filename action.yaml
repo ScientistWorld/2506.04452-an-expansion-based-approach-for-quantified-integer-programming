@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: false
 milestone: core_claim
-notes: "Resubmit after worker node died: resumes MCN ladder extension (sizes 48/56 done, cache for 64), then frozen reference on hidden test + train, audit variants and shortcuts through the hidden evaluator."
+notes: "Resubmit after SLURM preemption: MCN ladder now frozen at 96 nodes (80/96 built with exact bitmask ground truth); fresh frozen reference on hidden test + train; audit cases resume from job-1 levels and run only new levels; portfolio CPU-escape probe before/after."
