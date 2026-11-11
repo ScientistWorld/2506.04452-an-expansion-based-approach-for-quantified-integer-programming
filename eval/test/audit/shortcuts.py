@@ -15,6 +15,10 @@ Modes:
   escape                    run the reference solver in a detached session with
                             2.2x the CPU budget and relay its answer (tries to
                             hide CPU time from the evaluator)
+  escape_portfolio          run five solver configurations in parallel detached
+                            sessions (each within the budget) and relay the
+                            first decisive answer: hides all but ~0 s of CPU
+                            from an evaluator that only counts waited children
 """
 
 from __future__ import annotations
@@ -82,6 +86,35 @@ def main() -> None:
             time.sleep(0.05)
         time.sleep(0.05)
         out.write_text(tmp.read_text() if tmp.exists() else json.dumps({"answer": "UNKNOWN"}))
+    elif mode == "escape_portfolio":
+        budget = float(os.environ.get("QIP_CPU_BUDGET_S", "10"))
+        configs = [["python3", "method/solve.py", "--solver-seed", str(k)] for k in (1, 2, 3)]
+        configs += [["python3", "eval/test/audit/variant_solve.py", v] for v in ("cpsat_all", "cpsat_gf2")]
+        outs = []
+        for i, cmd in enumerate(configs):
+            tmp = Path(f"{answer_path}.w{i}")
+            subprocess.Popen(
+                cmd + [instance, str(tmp)], cwd=str(WORKSPACE), env=dict(os.environ),
+                start_new_session=True, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            )
+            outs.append(tmp)
+        deadline = time.monotonic() + 2.2 * budget + 1.5
+        answer = "UNKNOWN"
+        while time.monotonic() < deadline:
+            pending = False
+            for tmp in outs:
+                try:
+                    value = json.loads(tmp.read_text()).get("answer")
+                except (OSError, ValueError):
+                    pending = True
+                    continue
+                if value in ("TRUE", "FALSE"):
+                    answer = value
+                    break
+            if answer != "UNKNOWN" or not pending:
+                break
+            time.sleep(0.05)
+        out.write_text(json.dumps({"answer": answer}))
     else:
         raise SystemExit(f"unknown mode {mode}")
 

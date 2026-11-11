@@ -273,10 +273,37 @@ def run_instance(command: list, text: str) -> dict:
 # --------------------------------------------------------------------------
 
 
-def evaluate_solver(name: str, command: list | None, error: str | None, ladders: dict) -> dict:
+class Checkpoint:
+    """Optional per-level progress file so an interrupted evaluation resumes
+    where it stopped (the same instances; only finished levels are reused)."""
+
+    def __init__(self, path):
+        self.path = Path(path) if path else None
+        self.data = {}
+        if self.path and self.path.exists():
+            self.data = json.loads(self.path.read_text())
+
+    def get(self, key):
+        return self.data.get(key)
+
+    def put(self, key, value) -> None:
+        if self.path:
+            self.data[key] = value
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            tmp = self.path.with_suffix(".tmp")
+            tmp.write_text(json.dumps(self.data))
+            tmp.replace(self.path)
+
+
+def evaluate_solver(name: str, command: list | None, error: str | None, ladders: dict, ckpt: Checkpoint | None = None) -> dict:
     worst = {exp: 0 for exp in EXPERIMENTS}
+    ckpt = ckpt or Checkpoint(None)
     if command is None:
         return {"name": name, "failed": True, "reason": error, "metrics": worst, "levels": {}}
+    if ckpt.get(f"{name}|failed"):
+        reason = ckpt.get(f"{name}|failed")
+        print(f"  {name}: {reason} -> run failed (resumed)", flush=True)
+        return {"name": name, "failed": True, "reason": reason, "metrics": worst, "levels": {}}
     levels_out: dict = {}
     metrics: dict = {}
     for exp in EXPERIMENTS:
@@ -286,6 +313,13 @@ def evaluate_solver(name: str, command: list | None, error: str | None, ladders:
         for size, items in ladders[exp]:
             if zero_streak >= ZERO_LEVELS_BEFORE_STOP:
                 levels_out[exp].append({"size": size, "solved": 0, "skipped": True})
+                continue
+            done = ckpt.get(f"{name}|{exp}|{size}")
+            if done is not None and done.get("of") == len(items):
+                levels_out[exp].append(done)
+                print(f"  {name}: {exp} size={size}: {done['solved']}/{len(items)} solved (resumed)", flush=True)
+                solved_total += done["solved"]
+                zero_streak = zero_streak + 1 if done["solved"] == 0 else 0
                 continue
             solved = 0
             unknown = 0
@@ -299,12 +333,13 @@ def evaluate_solver(name: str, command: list | None, error: str | None, ladders:
                 if out["answer"] != truth:
                     reason = f"wrong decision on {exp} at size {size}"
                     print(f"  {name}: {reason} -> run failed", flush=True)
+                    ckpt.put(f"{name}|failed", reason)
                     return {"name": name, "failed": True, "reason": reason, "metrics": worst, "levels": levels_out}
                 if out["cpu_s"] <= CPU_BUDGET_S and not out["killed"]:
                     solved += 1
-            levels_out[exp].append(
-                {"size": size, "solved": solved, "of": len(items), "no_answer": unknown, "cpu_s": round(cpu_total, 2)}
-            )
+            record = {"size": size, "solved": solved, "of": len(items), "no_answer": unknown, "cpu_s": round(cpu_total, 2)}
+            levels_out[exp].append(record)
+            ckpt.put(f"{name}|{exp}|{size}", record)
             print(f"  {name}: {exp} size={size}: {solved}/{len(items)} solved", flush=True)
             solved_total += solved
             zero_streak = zero_streak + 1 if solved == 0 else 0
@@ -317,6 +352,7 @@ def main() -> None:
     parser.add_argument("--solver", action="append", default=[], help="Solver directory (repeatable).")
     parser.add_argument("--scores-output", default=str(WORKSPACE / "scoring" / "scores_test.json"))
     parser.add_argument("--details-output", default=None, help="Optional per-level diagnostics JSON.")
+    parser.add_argument("--checkpoint", default=None, help="Optional per-level progress file (resume after interruption).")
     args = parser.parse_args()
 
     _become_subreaper()
@@ -333,7 +369,7 @@ def main() -> None:
             key = f"{name}_{suffix}"
             suffix += 1
         print(f"Evaluating {key} ({slot})", flush=True)
-        res = evaluate_solver(key, command, error, ladders)
+        res = evaluate_solver(key, command, error, ladders, Checkpoint(args.checkpoint))
         results[key] = res["metrics"]
         details[key] = {k: v for k, v in res.items() if k != "metrics"} | {"metrics": res["metrics"], "slot": str(slot)}
         print(f"  {key}: {res['metrics']}" + (f" (FAILED: {res['reason']})" if res["failed"] else ""), flush=True)

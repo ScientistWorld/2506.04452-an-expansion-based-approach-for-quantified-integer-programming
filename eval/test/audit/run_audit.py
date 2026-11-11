@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -47,18 +48,47 @@ CASES = [
     ("weaker_tenth_budget", "weaker", V + ["tenth_budget"]),
     ("guess_true_on_timeout", "shortcut", V + ["guess_true_on_timeout"]),
     ("guess_false_on_timeout", "shortcut", V + ["guess_false_on_timeout"]),
+    ("cpu_portfolio_before", "shortcut_subset", S + ["escape_portfolio"]),
+    ("cpu_portfolio", "shortcut_subset", S + ["escape_portfolio"]),
 ]
 
 # Subset runs (escape probe): MCN levels from size 28 up, scored by the
 # evaluator with and without the CPU-accounting fix (eval_variant.py).
-ESCAPE_MIN_MCN_SIZE = 28
-WRAPPED = {"cpu_escape_before": ["--legacy-cpu"], "cpu_escape": []}
+# (wrapper flags, smallest MCN size in the subset)
+WRAPPED = {
+    "cpu_escape_before": (["--legacy-cpu"], 28),
+    "cpu_escape": ([], 28),
+    "cpu_portfolio_before": (["--legacy-cpu"], 40),
+    "cpu_portfolio": ([], 40),
+}
+
+# Results of the previous audit job (same instances on every level they cover):
+# finished levels are reused through the evaluator's checkpoint, so only
+# levels added since then are run.  Subset cases listed here are copied as is.
+PREVIOUS = OUT.parent / "audit_job1"
+COPY_AS_IS = {"cpu_escape_before", "cpu_escape"}
 
 
-def _subset_spec() -> str:
+def _subset_spec(min_size: int) -> str:
     table = json.loads((WORKSPACE / "eval" / "test" / "instances.json").read_text())
-    sizes = [l["size"] for l in table["experiments"]["mcn_ladder"]["levels"] if l["size"] >= ESCAPE_MIN_MCN_SIZE]
+    sizes = [l["size"] for l in table["experiments"]["mcn_ladder"]["levels"] if l["size"] >= min_size]
     return "mcn_ladder:" + ",".join(str(s) for s in sizes) + ";qrandomparity_ladder:"
+
+
+def _seed_checkpoint(case: str, ckpt_path: Path) -> None:
+    details_path = PREVIOUS / case / "details.json"
+    if ckpt_path.exists() or not details_path.exists():
+        return
+    data = {}
+    for name, detail in json.loads(details_path.read_text()).items():
+        if detail.get("failed"):
+            data[f"{name}|failed"] = detail.get("reason")
+            continue
+        for exp, levels in detail.get("levels", {}).items():
+            for record in levels:
+                if not record.get("skipped") and "of" in record:
+                    data[f"{name}|{exp}|{record['size']}"] = record
+    ckpt_path.write_text(json.dumps(data))
 
 
 def main() -> None:
@@ -74,20 +104,27 @@ def main() -> None:
         if (case_dir / "scores_test.json").exists():
             print(f"[audit] {case}: done, skipping", flush=True)
             continue
+        if case in COPY_AS_IS and (PREVIOUS / case / "scores_test.json").exists():
+            shutil.copytree(PREVIOUS / case, case_dir, dirs_exist_ok=True)
+            print(f"[audit] {case}: copied from the previous audit job", flush=True)
+            continue
         solver_dir = case_dir / "solver"
         solver_dir.mkdir(parents=True, exist_ok=True)
+        _seed_checkpoint(case, case_dir / "checkpoint.json")
         if command is not None:
             (solver_dir / "solver.json").write_text(json.dumps({"name": case, "command": command}, indent=1))
         start = time.time()
         evaluator = ["python3", "eval/test/evaluate.py"]
         if case in WRAPPED:
-            evaluator = ["python3", "eval/test/audit/eval_variant.py"] + WRAPPED[case] + ["--sizes", _subset_spec(), "--"]
+            flags, min_size = WRAPPED[case]
+            evaluator = ["python3", "eval/test/audit/eval_variant.py"] + flags + ["--sizes", _subset_spec(min_size), "--"]
         with (case_dir / "log.txt").open("w") as log:
             rc = subprocess.call(
                 evaluator + [
                     "--solver", str(solver_dir),
                     "--scores-output", str(case_dir / "scores_test.json.tmp"),
                     "--details-output", str(case_dir / "details.json"),
+                    "--checkpoint", str(case_dir / "checkpoint.json"),
                 ],
                 cwd=str(WORKSPACE), stdout=log, stderr=subprocess.STDOUT,
             )

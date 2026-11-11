@@ -20,6 +20,9 @@ Ground truth
   The extended ladder grows until a level cannot be filled, a time budget is
   spent, or two consecutive levels are far beyond a 10 s CPU budget for the
   ground-truth solver itself.  Once finished, the extension is frozen.
+* MCN family, phase 2 (sizes 80-128): exact optimum from the bitmask minimax
+  with a long time cap (cross-checked against the CEGAR optima of the phase-1
+  levels), CEGAR as fallback; frozen once finished.
 
 The builder checks that the public generator in ``data/benchmark.py`` produces
 byte-identical text to the hidden copy on the train split.
@@ -32,6 +35,8 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import resource
+import subprocess
 import sys
 import tempfile
 import time
@@ -57,6 +62,11 @@ GT_GRAPH_CAP_S = float(os.environ.get("QIP_GT_GRAPH_CAP_S", "240"))
 GT_TRIES_PER_SLOT = 3
 GT_BEYOND_REACH_S = 3.0 * CPU_BUDGET_S
 GT_DEADLINE_S = float(os.environ.get("QIP_GT_DEADLINE_S", "6000"))
+# phase 2 (sizes above the phase-1 frontier): exact bitmask minimax first,
+# CEGAR as fallback; both are exact, whichever certifies the optimum is used
+GT_BITMASK_CAP_S = float(os.environ.get("QIP_GT_BITMASK_CAP_S", "300"))
+GT_FALLBACK_GRAPH_CAP_S = 150.0
+MCN_V2_SIZES = [80, 96, 112, 128]
 
 TEST_PATH = HERE / "instances.json"
 TRAIN_PATH = WORKSPACE / "data" / "train_instances.json"
@@ -154,10 +164,31 @@ class CegarTruth:
         cpu = time.process_time() - t0
         return {"SAT": True, "UNSAT": False}.get(result["status"]), cpu
 
-    def optimum(self, size: int, seed: int):
+    def bitmask(self, size: int, seed: int, cap: float):
+        """Exact optimum by the bitmask minimax, in a subprocess with a time cap."""
+        key = f"bm:{size}:{seed}"
+        if key in self.cache:
+            return self.cache[key]
+        code = (f"import sys; sys.path.insert(0, {str(HERE)!r}); import qip_hidden_gen as g; "
+                f"print(g.mcn_optimum(g.mcn_params({size}, {seed})))")
+        before = resource.getrusage(resource.RUSAGE_CHILDREN)
+        try:
+            out = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, timeout=cap)
+            ok = out.returncode == 0 and out.stdout.strip().lstrip("-").isdigit()
+        except subprocess.TimeoutExpired:
+            ok = False
+        after = resource.getrusage(resource.RUSAGE_CHILDREN)
+        cpu = (after.ru_utime + after.ru_stime) - (before.ru_utime + before.ru_stime)
+        result = {"opt": int(out.stdout.strip()), "cpu": cpu} if ok else {"failed": True, "cpu": cpu}
+        self.cache[key] = result
+        self.save()
+        return result
+
+    def optimum(self, size: int, seed: int, graph_cap: float | None = None):
         key = f"{size}:{seed}"
         if key in self.cache:
             return self.cache[key]
+        graph_cap = GT_GRAPH_CAP_S if graph_cap is None else graph_cap
         params = gen.mcn_params(size, seed)
         lo, hi = 0, size - params["attack"] + 1  # K=0 is TRUE; K=hi is FALSE by counting
         times: dict = {}
@@ -165,7 +196,7 @@ class CegarTruth:
         result = None
         while hi - lo > 1:
             mid = (lo + hi) // 2
-            cap = min(GT_DECISION_CAP_S, GT_GRAPH_CAP_S - spent)
+            cap = min(GT_DECISION_CAP_S, graph_cap - spent)
             if cap < 1.0:
                 break
             answer, cpu = self.decide(size, seed, mid, cap)
@@ -340,6 +371,83 @@ def extend_mcn(test: dict, train: dict, secret: int) -> None:
         GT_CACHE.unlink()
 
 
+def extend_mcn_v2(test: dict, train: dict, secret: int) -> None:
+    """Phase 2: sizes above the phase-1 frontier, exact optimum from the bitmask
+    minimax (cross-checked against the CEGAR optima of the phase-1 levels) with
+    the CEGAR solver as fallback."""
+    meta = test.setdefault("mcn_extension_v2", {})
+    if meta.get("frozen"):
+        log(f"MCN extension (phase 2) frozen: {meta.get('stop_reason')}")
+        return
+    truth = CegarTruth()
+    agree = 0
+    for table in (test, train):
+        for lvl in table["experiments"]["mcn_ladder"]["levels"]:
+            if lvl["size"] not in MCN_EXTENDED_SIZES:
+                continue
+            for spec in lvl["instances"]:
+                res = truth.bitmask(lvl["size"], spec["seed"], 120.0)
+                if res.get("failed"):
+                    continue
+                if res["opt"] != spec["optimum"]:
+                    meta.update({"frozen": True, "stop_reason": f"bitmask/CEGAR disagreement at size {lvl['size']}"})
+                    log(f"phase 2 skipped: bitmask optimum {res['opt']} != CEGAR optimum {spec['optimum']}")
+                    return
+                agree += 1
+    log(f"bitmask minimax agrees with the CEGAR optimum on {agree} phase-1 graphs")
+    if agree < 12:
+        meta.update({"frozen": True, "stop_reason": "too few phase-1 graphs certified by the bitmask minimax"})
+        return
+    start = time.time()
+    test_levels = test["experiments"]["mcn_ladder"]["levels"]
+    train_levels = train["experiments"]["mcn_ladder"]["levels"]
+    stop_reason = "all phase-2 sizes built"
+    for size in MCN_V2_SIZES:
+        if size in {lvl["size"] for lvl in test_levels}:
+            continue
+        li = len(MCN_EXACT_SIZES) + MCN_EXTENDED_SIZES.index(size)
+        log(f"=== MCN extended size {size} (phase 2) ===")
+        new = {"test": [], "train": []}
+        ok = True
+        for split in ("test", "train"):
+            for j, answer in enumerate(MCN_ANSWERS_PER_LEVEL):
+                if time.time() - start > GT_DEADLINE_S:
+                    ok, stop_reason = False, f"ground-truth time budget spent before size {size} was complete"
+                    break
+                entry = None
+                for a in range(GT_TRIES_PER_SLOT):
+                    seed = test_seed(secret, "mcn_ladder", li, j, a) if split == "test" else train_seed("mcn_ladder", li, j, a)
+                    bm = truth.bitmask(size, seed, GT_BITMASK_CAP_S)
+                    if not bm.get("failed"):
+                        entry = mcn_entry(size, answer, seed, bm["opt"], "bitmask_minimax", bm["cpu"])
+                        log(f"  {split} slot {j}: opt={bm['opt']} by bitmask minimax in {bm['cpu']:.0f}s")
+                        break
+                    res = truth.optimum(size, seed, GT_FALLBACK_GRAPH_CAP_S)
+                    if not res.get("failed"):
+                        cpu = res["t_true"] if answer else res["t_false"]
+                        entry = mcn_entry(size, answer, seed, res["opt"], "cegar_cpsat", cpu)
+                        log(f"  {split} slot {j}: opt={res['opt']} by CEGAR (decision cpu {cpu:.1f}s)")
+                        break
+                    log(f"    seed {seed}: not certified (bitmask {bm['cpu']:.0f}s, CEGAR {res['spent']:.0f}s)")
+                if entry is None:
+                    ok, stop_reason = False, f"no certified graph for a slot at size {size}"
+                    break
+                new[split].append(entry)
+            if not ok:
+                break
+        if not ok:
+            break
+        test_levels.append({"size": size, "instances": new["test"]})
+        train_levels.append({"size": size, "instances": new["train"]})
+        save(TEST_PATH, test, hidden=True)
+        save(TRAIN_PATH, train, hidden=False)
+        log(f"  size {size} done; elapsed {time.time() - start:.0f}s")
+    meta.update({"frozen": True, "stop_reason": stop_reason, "elapsed_s": round(time.time() - start)})
+    log(f"MCN extension (phase 2) finished: {stop_reason}")
+    if GT_CACHE.exists():
+        GT_CACHE.unlink()
+
+
 def check_public_generator(train: dict) -> None:
     sys.path.insert(0, str(WORKSPACE))
     import data.benchmark as public  # noqa: E402
@@ -374,11 +482,17 @@ def main() -> None:
         meta = test.setdefault("mcn_extension", {})
         if not meta.get("frozen"):
             meta.update({"frozen": True, "stop_reason": "builder stopped abnormally; extension kept as built"})
+        meta2 = test.setdefault("mcn_extension_v2", {})
+        if not meta2.get("frozen"):
+            meta2.update({"frozen": True, "stop_reason": "builder stopped abnormally; extension kept as built"})
         if GT_CACHE.exists():
             GT_CACHE.unlink()
         save(TEST_PATH, test, hidden=True)
     elif "--no-extend" not in sys.argv:
         extend_mcn(test, train, secret)
+        save(TEST_PATH, test, hidden=True)
+        save(TRAIN_PATH, train, hidden=False)
+        extend_mcn_v2(test, train, secret)
         save(TEST_PATH, test, hidden=True)
         save(TRAIN_PATH, train, hidden=False)
 

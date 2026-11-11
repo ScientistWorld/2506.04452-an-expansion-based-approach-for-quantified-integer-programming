@@ -2,7 +2,8 @@
 # Reproduce the reference end to end and audit the hidden test (CPU job).
 #
 #   1. build/verify the instance tables (hidden test + public train); the MCN
-#      ladder is extended with exact (CEGAR) ground truth once, then frozen
+#      ladder is extended once with exact ground truth (CEGAR, then bitmask
+#      minimax for the largest sizes), then frozen
 #   2. smoke test of method/ and baseline/
 #   3. frozen reference: `bash scripts/evaluate_test.sh` with no arguments
 #      (method/ + baseline/) -> scoring/scores_test.json
@@ -10,7 +11,8 @@
 #      (scoring/scores.json is the same protocol; copied)
 #   5. audit cases (reference reruns, better/weaker variants, shortcuts)
 #      through the hidden-test evaluator, then a summary in hardening/
-# Every stage is skipped when its output already exists, so a killed job resumes.
+# Every stage is skipped when its output already exists, and the evaluations
+# checkpoint finished levels, so a killed job resumes where it stopped.
 
 set -uo pipefail
 cd /home/user
@@ -48,6 +50,7 @@ if [ ! -f outputs/audit/reference_frozen/scores_test.json ]; then
     echo "=== frozen reference (hidden test, no arguments) ==="
     start=$(date +%s)
     QIP_DETAILS_OUTPUT=outputs/audit/reference_frozen/details.json \
+    QIP_CHECKPOINT=outputs/audit/reference_frozen/checkpoint.json \
         bash scripts/evaluate_test.sh 2>&1 | tee outputs/audit/reference_frozen.log
     if [ "${PIPESTATUS[0]}" -eq 0 ]; then
         cp scoring/scores_test.json outputs/audit/reference_frozen/scores_test.json
@@ -61,6 +64,7 @@ if [ ! -f outputs/audit/train_done ]; then
     echo "=== train split (no arguments) ==="
     start=$(date +%s)
     QIP_DETAILS_OUTPUT=outputs/audit/train_details.json \
+    QIP_CHECKPOINT=outputs/audit/train_checkpoint.json \
         bash scripts/evaluate_train.sh 2>&1 | tee outputs/audit/train.log \
         && cp scoring/scores_train.json scoring/scores.json && touch outputs/audit/train_done
     echo "train took $(( $(date +%s) - start ))s"
