@@ -1328,10 +1328,56 @@
       }
      ],
      "digest": "5c5f3d896b229d8d88c05e06db24d5590db2bd0297e5091e3f2ec40cb663dffd"
+    },
+    {
+     "size": 64,
+     "instances": [
+      {
+       "kind": "mcn_true",
+       "seed": 81159693537957,
+       "answer": true,
+       "threshold": 18,
+       "optimum": 18,
+       "ground_truth": "cegar_cpsat",
+       "gt_cpu_s": 4.46
+      },
+      {
+       "kind": "mcn_true",
+       "seed": 158131329908637,
+       "answer": true,
+       "threshold": 58,
+       "optimum": 58,
+       "ground_truth": "cegar_cpsat",
+       "gt_cpu_s": 3.56
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 105498693720740,
+       "answer": false,
+       "threshold": 25,
+       "optimum": 24,
+       "ground_truth": "cegar_cpsat",
+       "gt_cpu_s": 26.15
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 127677810047335,
+       "answer": false,
+       "threshold": 47,
+       "optimum": 46,
+       "ground_truth": "cegar_cpsat",
+       "gt_cpu_s": 0.3
+      }
+     ],
+     "digest": "9503be73724b0c9998749104783ff7a0c40b38330a272896ca5b54362d5dcacc"
     }
    ]
   }
  },
  "seed_secret": 9118256452245671983,
- "mcn_extension": {}
+ "mcn_extension": {
+  "frozen": true,
+  "stop_reason": "no certified graph for a slot at size 80",
+  "elapsed_s": 1357
+ }
 }

@@ -1489,6 +1489,51 @@
        "gt_cpu_s": 11.35
       }
      ]
+    },
+    {
+     "size": 64,
+     "instances": [
+      {
+       "kind": "mcn_true",
+       "seed": 23014000,
+       "answer": true,
+       "threshold": 58,
+       "optimum": 58,
+       "ground_truth": "cegar_cpsat",
+       "sha256": "c688693243128cdb11aa2d80d7fdba1f8b3b0cd18251af2de97fb2e0f46a0828",
+       "gt_cpu_s": 1.79
+      },
+      {
+       "kind": "mcn_true",
+       "seed": 23014001,
+       "answer": true,
+       "threshold": 41,
+       "optimum": 41,
+       "ground_truth": "cegar_cpsat",
+       "sha256": "b21f1ee48de3a2acf977e01530f4a375d1777ca257375b60d7709bd17fae30b7",
+       "gt_cpu_s": 3.0
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 23014102,
+       "answer": false,
+       "threshold": 39,
+       "optimum": 38,
+       "ground_truth": "cegar_cpsat",
+       "sha256": "1ab1adc2d17ac97e0e15741f2b639fe7cf3fe8d4d700de7bc0e115b7bb8a25a8",
+       "gt_cpu_s": 85.24
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 23014003,
+       "answer": false,
+       "threshold": 52,
+       "optimum": 51,
+       "ground_truth": "cegar_cpsat",
+       "sha256": "dfb9c460b9a3ea13546849626b9c2eea6f8357ffc65447e4849ff0fecf563b11",
+       "gt_cpu_s": 2.41
+      }
+     ]
     }
    ]
   }
