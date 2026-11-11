@@ -115,22 +115,26 @@ def _constant_constraints_feasible(
     return True
 
 
+_UNKNOWN = object()
+
+
 def _solve_ip_feasible(
     variables: list[Variable],
     constraints: list[Constraint],
     universal_constraints: list[UniversalConstraint],
     time_limit_s: Optional[float] = None,
-) -> Optional[dict[str, int]]:
+):
+    """Return a feasible assignment, None if infeasible, or _UNKNOWN (time limit/error)."""
     if not _constant_constraints_feasible(constraints, universal_constraints):
         return None
+    if not variables:
+        return {}
     highs = _new_highs(time_limit_s)
     names = _add_integer_vars(highs, variables)
     _add_constraints(highs, names, constraints)
     _add_universal_constraints(highs, names, universal_constraints)
-    run_status = highs.run()
+    highs.run()
     model_status = highs.getModelStatus()
-    if run_status != hp.HighsStatus.kOk:
-        return None
     if model_status == hp.HighsModelStatus.kInfeasible:
         return None
     if model_status not in (
@@ -138,14 +142,63 @@ def _solve_ip_feasible(
         hp.HighsModelStatus.kSolutionLimit,
         hp.HighsModelStatus.kModelEmpty,
     ):
-        return None
+        return _UNKNOWN
     solution = highs.getSolution()
     if solution is None or solution.col_value is None:
-        return None
+        return _UNKNOWN
     return {name: int(round(solution.col_value[i])) for i, name in enumerate(names)}
 
 
+def _block_assignments(block_vars: list[Variable], rows: list[tuple[dict, int, bool]]):
+    """Yield assignments of one block that satisfy the rows involving only that block.
+
+    Depth-first enumeration with interval pruning on each row's remaining range.
+    """
+    names = [v.name for v in block_vars]
+    pos = {name: i for i, name in enumerate(names)}
+    k = len(names)
+    prepared = []
+    for coeffs, rhs, is_eq in rows:
+        a = [0] * k
+        for name, coeff in coeffs.items():
+            a[pos[name]] += coeff
+        mins = [0] * (k + 1)
+        maxs = [0] * (k + 1)
+        for i in range(k - 1, -1, -1):
+            lo, hi = block_vars[i].lower, block_vars[i].upper
+            mins[i] = mins[i + 1] + min(a[i] * lo, a[i] * hi)
+            maxs[i] = maxs[i + 1] + max(a[i] * lo, a[i] * hi)
+        prepared.append((a, rhs, is_eq, mins, maxs))
+    values = [0] * k
+
+    def dfs(i: int, partial: list[int]):
+        if i == k:
+            yield dict(zip(names, values))
+            return
+        var = block_vars[i]
+        for val in range(var.lower, var.upper + 1):
+            values[i] = val
+            new_partial = []
+            feasible = True
+            for p, (a, rhs, is_eq, mins, maxs) in zip(partial, prepared):
+                q = p + a[i] * val
+                if q + mins[i + 1] > rhs or (is_eq and q + maxs[i + 1] < rhs):
+                    feasible = False
+                    break
+                new_partial.append(q)
+            if feasible:
+                yield from dfs(i + 1, new_partial)
+
+    yield from dfs(0, [0] * len(prepared))
+
+
 def enumerate_baseline(problem: QIPProblem, timeout_s: float = 30.0) -> dict:
+    """Exhaustive game evaluation for exists-forall-exists QIPs.
+
+    Enumerates every outer assignment (pruned only by rows that involve the
+    outer block alone), every universal reply allowed by the uncertainty set,
+    and decides the innermost existential block with an exact IP.
+    """
     start = time.time()
     blocks = _sorted_blocks(problem)
     if len(blocks) != 3 or blocks[0].quantifier != "E" or blocks[1].quantifier != "A" or blocks[2].quantifier != "E":
@@ -153,19 +206,43 @@ def enumerate_baseline(problem: QIPProblem, timeout_s: float = 30.0) -> dict:
 
     outer_block = blocks[0].variables
     universal_block = blocks[1].variables
+    outer_names = {v.name for v in outer_block}
+    universal_names = {v.name for v in universal_block}
 
-    for outer_assignment in _enumerate_block(outer_block):
-        if time.time() - start > timeout_s:
+    outer_rows = [
+        (c.coeffs, c.rhs, c.is_equality)
+        for c in problem.constraints
+        if c.coeffs and set(c.coeffs) <= outer_names
+    ]
+    universal_rows = [
+        (c.coeffs, c.rhs, False)
+        for c in problem.universal_constraints
+        if c.coeffs and set(c.coeffs) <= universal_names
+    ]
+
+    def timed_out() -> bool:
+        return time.time() - start > timeout_s
+
+    for outer_assignment in _block_assignments(outer_block, outer_rows):
+        if timed_out():
             return {"status": "TIMEOUT", "runtime": time.time() - start}
-
         valid_for_all = True
-        for universal_assignment in _enumerate_block(universal_block):
+        for universal_assignment in _block_assignments(universal_block, universal_rows):
+            if timed_out():
+                return {"status": "TIMEOUT", "runtime": time.time() - start}
             reduced = problem.substitute(outer_assignment | universal_assignment)
-            if _solve_ip_feasible(reduced.variables, reduced.constraints, reduced.universal_constraints) is None:
+            remaining = max(0.1, timeout_s - (time.time() - start))
+            inner = _solve_ip_feasible(reduced.variables, reduced.constraints, reduced.universal_constraints, remaining)
+            if inner is _UNKNOWN:
+                return {"status": "TIMEOUT", "runtime": time.time() - start}
+            if inner is None:
                 valid_for_all = False
                 break
-
         if valid_for_all:
+            if timed_out():
+                return {"status": "TIMEOUT", "runtime": time.time() - start}
             return {"status": "SAT", "assignment": outer_assignment, "runtime": time.time() - start}
 
+    if timed_out():
+        return {"status": "TIMEOUT", "runtime": time.time() - start}
     return {"status": "UNSAT", "runtime": time.time() - start}

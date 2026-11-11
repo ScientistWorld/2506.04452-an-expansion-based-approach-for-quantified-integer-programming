@@ -1,105 +1,155 @@
 {
+  "_note": "Scored experiments are size ladders of QIP decision instances run by the evaluator itself under a fixed 10 s CPU budget per instance (paper: 1800 s, GUROBI, up to n=1000). The gym's results below are the frozen reference run of this workspace; the paper reports no numbers on this scale, so its reported results are kept unchanged under '_paper_reported'.",
   "experiments": {
-    "qrandomparity_n10": {
-      "description": "Scaled active reproduction target for this workspace: fixed 100-instance QRandomParity benchmark at n=10.",
-      "weight": 0.7,
-      "primary_metric": "median_runtime_s",
+    "qrandomparity_ladder": {
+      "description": "QRandomParity family (paper Section 4, QIP encoding (4)) at sizes n = 10..128, 6 hidden instances per size: the paper's own instance, a TRUE counterpart, and planted variants with extra parity side chains (half TRUE, half FALSE). Counts instances decided correctly within the CPU budget; any wrong decision fails the run.",
+      "weight": 0.6,
+      "primary_metric": "instances_solved",
       "metrics": {
-        "median_runtime_s": {
-          "higher_is_better": false,
-          "coefficient": -0.8,
-          "description": "Median runtime over solved instances."
-        },
         "instances_solved": {
           "higher_is_better": true,
-          "coefficient": 0.4,
-          "description": "Count of instances solved within timeout."
-        },
-        "mean_runtime_s": {
-          "higher_is_better": false,
-          "coefficient": -0.3,
-          "description": "Mean runtime over solved instances."
-        },
-        "p90_runtime_s": {
-          "higher_is_better": false,
-          "coefficient": -0.7,
-          "description": "90th percentile capped runtime over the fixed batch."
+          "coefficient": 1.0,
+          "description": "Instances (of 72) whose TRUE/FALSE decision is correct and was reached within the CPU budget. 0 if any decision is wrong or the solver is missing."
         }
       },
       "results": {
         "equips": {
           "type": "proposed",
-          "median_runtime_s": 0.247816,
-          "instances_solved": 99,
-          "mean_runtime_s": 0.328073,
-          "p90_runtime_s": 0.477451
+          "instances_solved": 0
         },
         "search_enumeration": {
           "type": "baseline",
-          "median_runtime_s": 0.690747,
-          "instances_solved": 100,
-          "mean_runtime_s": 0.686851,
-          "p90_runtime_s": 0.708195
+          "instances_solved": 0
         }
       }
     },
-    "qrandomparity_n100": {
-      "description": "Paper reference context from Table 1: QRandomParity median runtimes at n=100 with a 100-instance batch.",
-      "weight": 0.15,
-      "primary_metric": "median_runtime_s",
+    "mcn_ladder": {
+      "description": "Multilevel critical node decision instances (paper Section 5.2, model (5) with the threshold sum(alpha) >= K, K = optimum or optimum + 1) on random graphs with 8..40 nodes, 4 hidden instances per size (half TRUE). Counts instances decided correctly within the CPU budget; any wrong decision fails the run.",
+      "weight": 0.4,
+      "primary_metric": "instances_solved",
       "metrics": {
-        "median_runtime_s": {
-          "higher_is_better": false,
-          "coefficient": -0.8,
-          "description": "Median runtime in seconds on the 100-instance batch."
-        },
-        "instances_unsolved": {
-          "higher_is_better": false,
-          "coefficient": -0.4,
-          "description": "Number of instances not solved within the timeout."
+        "instances_solved": {
+          "higher_is_better": true,
+          "coefficient": 1.0,
+          "description": "Instances (of 48) whose TRUE/FALSE decision is correct and was reached within the CPU budget. 0 if any decision is wrong or the solver is missing."
         }
       },
       "results": {
         "equips": {
           "type": "proposed",
-          "median_runtime_s": 0.06,
-          "instances_unsolved": 0
+          "instances_solved": 0
         },
-        "qfuncms": {
+        "search_enumeration": {
           "type": "baseline",
-          "median_runtime_s": 1.67,
-          "instances_unsolved": 0
+          "instances_solved": 0
         }
+      }
+    }
+  },
+  "_paper_reported": {
+    "_scale_note": "Paper setting: 100 random permutations per n, 1800 s per instance, single thread, EQuIPS with GUROBI 12.0. Not on this gym's scale (10 s CPU, open-source IP backends, hidden size ladders); kept for context only.",
+    "qrandomparity_table1_median_runtime_s": {
+      "n": [
+        100,
+        200,
+        300,
+        400,
+        500,
+        600,
+        700,
+        800,
+        900,
+        1000
+      ],
+      "equips": [
+        0.06,
+        0.18,
+        0.37,
+        0.68,
+        0.99,
+        1.31,
+        1.72,
+        2.13,
+        2.64,
+        3.44
+      ],
+      "equips_unsolved": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        10
+      ],
+      "qfuncms": [
+        1.67,
+        2.21,
+        2.09,
+        2.18,
+        2.37,
+        2.13,
+        2.51,
+        2.22,
+        3.04,
+        null
+      ],
+      "qfuncms_unsolved": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        100
+      ]
+    },
+    "qrandomparity_n100": {
+      "equips": {
+        "type": "proposed",
+        "median_runtime_s": 0.06,
+        "instances_unsolved": 0
+      },
+      "qfuncms": {
+        "type": "baseline",
+        "median_runtime_s": 1.67,
+        "instances_unsolved": 0
       }
     },
     "qrandomparity_n200": {
-      "description": "Paper reference context from Table 1: QRandomParity median runtimes at n=200 with a 100-instance batch.",
-      "weight": 0.15,
-      "primary_metric": "median_runtime_s",
-      "metrics": {
-        "median_runtime_s": {
-          "higher_is_better": false,
-          "coefficient": -0.8,
-          "description": "Median runtime in seconds on the 100-instance batch."
-        },
-        "instances_unsolved": {
-          "higher_is_better": false,
-          "coefficient": -0.4,
-          "description": "Number of instances not solved within the timeout."
-        }
+      "equips": {
+        "type": "proposed",
+        "median_runtime_s": 0.18,
+        "instances_unsolved": 0
       },
-      "results": {
-        "equips": {
-          "type": "proposed",
-          "median_runtime_s": 0.18,
-          "instances_unsolved": 0
-        },
-        "qfuncms": {
-          "type": "baseline",
-          "median_runtime_s": 2.21,
-          "instances_unsolved": 0
-        }
+      "qfuncms": {
+        "type": "baseline",
+        "median_runtime_s": 2.21,
+        "instances_unsolved": 0
       }
+    },
+    "qrandomparity_small_n": "n = 10..26 (Fig. 2): expansion-based solvers outclass DepQBF, Yasol and z3; EQuIPS has the most constant behaviour and outperforms all solvers for n >= 22.",
+    "qrandomparity_clause_encoding": "EQuIPS on the clausal (QBF) encoding solves n = 100 within seconds but no instance of n = 200.",
+    "mcn_solved_instances_2h": {
+      "equips": 465,
+      "yasol": 431,
+      "mcn_cr": 475
+    },
+    "mcn_median_runtime_s_table3": {
+      "equips": 83.8,
+      "yasol": 247.8
+    },
+    "mcn_initial_move_table4": {
+      "lower_bound_solved": 461,
+      "existential_ip_solved": 465,
+      "lower_bound_median_s": 121.9,
+      "existential_ip_median_s": 83.8
     }
   }
 }

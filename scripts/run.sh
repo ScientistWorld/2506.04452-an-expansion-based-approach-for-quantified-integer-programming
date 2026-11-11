@@ -1,52 +1,66 @@
 #!/bin/bash
-# CPU validation job for the repaired optimization path.
+# Hardening job: score the reference end to end and audit the hidden test.
 #
-# This job runs the solver sanity tests in quick mode, then exercises the
-# paper-provided sample `.qlp` instances from the official EQuIPS release to
-# verify that the new parser and decision-to-optimization reduction work inside
-# the packaged environment.
+#   1. verify instance tables (hidden test + public train) and generator parity
+#   2. frozen reference: `bash scripts/evaluate_test.sh` with no arguments
+#      (method/ + baseline/) -> scoring/scores_test.json
+#   3. train split: `bash scripts/evaluate_train.sh` -> scoring/scores_train.json
+#      (scoring/scores.json is the same protocol; copied)
+#   4. audit cases (reruns, better/weaker variants, shortcuts) through the
+#      hidden-test evaluator, then a summary in hardening/
+# Every stage is skipped when its output already exists, so a killed job resumes.
 
-set -euo pipefail
-
+set -uo pipefail
 cd /home/user
+mkdir -p logs outputs/audit
+exec > >(tee -a logs/run.log) 2>&1
+export PYTHONPATH="/home/user${PYTHONPATH:+:$PYTHONPATH}"
 
-mkdir -p /home/user/logs /home/user/tmp/results
-exec > >(tee /home/user/logs/run.log) 2>&1
+echo "=== $(date -u) hardening job ==="
+python3 - <<'PY'
+import importlib
+for name in ("numpy", "highspy", "ortools"):
+    try:
+        mod = importlib.import_module(name)
+        print(name, getattr(mod, "__version__", "?"))
+    except Exception as exc:
+        print(name, "MISSING", exc)
+import os
+print("cpus", os.cpu_count())
+PY
 
-export PYTHONPATH="/home/user:$PYTHONPATH"
-if [ -d "/dev/shm/pylibs" ]; then
-    export PYTHONPATH="/dev/shm/pylibs:$PYTHONPATH"
+python3 eval/test/build_instances.py || { echo "instance build/check failed"; exit 1; }
+
+echo "=== smoke test ==="
+python3 scripts/smoke_test.py || { echo "smoke test failed: aborting"; exit 1; }
+
+if [ ! -f outputs/audit/reference_frozen/scores_test.json ]; then
+    echo "=== frozen reference (hidden test, no arguments) ==="
+    start=$(date +%s)
+    bash scripts/evaluate_test.sh 2>&1 | tee outputs/audit/reference_frozen.log
+    mkdir -p outputs/audit/reference_frozen
+    cp scoring/scores_test.json outputs/audit/reference_frozen/scores_test.json
+    echo "frozen reference took $(( $(date +%s) - start ))s"
 fi
 
-echo "=== EQuIPS Optimization Validation ==="
-echo "Python: $(python3 --version)"
-echo "Working directory: $(pwd)"
+if [ ! -f outputs/audit/train_done ]; then
+    echo "=== train split (no arguments) ==="
+    start=$(date +%s)
+    bash scripts/evaluate_train.sh 2>&1 | tee outputs/audit/train.log && cp scoring/scores_train.json scoring/scores.json && touch outputs/audit/train_done
+    echo "train took $(( $(date +%s) - start ))s"
+fi
 
-QLP_RESULTS="/home/user/tmp/results/equips_qlp_examples.json"
-rm -f "$QLP_RESULTS"
+echo "=== audit cases ==="
+python3 eval/test/audit/run_audit.py
 
-export EQUIPS_TEST_MODE="quick"
-python3 /home/user/scripts/test_equips.py
+echo "=== analysis ==="
+python3 eval/test/audit/analyze.py || true
 
-python3 /home/user/method/run_qlp_instance.py \
-    --instance /home/user/data/downloads/EQuIPS/instances/MiniLotSizing.qlp \
-    --instance /home/user/data/downloads/EQuIPS/instances/MiniMCN.qlp \
-    --timeout 60 \
-    --output "$QLP_RESULTS"
-
-python3 /home/user/validate.py
-
-python3 - <<'PY'
-import json
-from pathlib import Path
-
-path = Path("/home/user/tmp/results/equips_qlp_examples.json")
-payload = json.loads(path.read_text())
-print("=== qlp_examples ===")
-for result in payload.get("results", []):
-    print(
-        f"  {result['instance_name']}: status={result['status']} "
-        f"runtime={result['runtime_s']:.4f}s "
-        f"objective={result['optimal_value']}"
-    )
-PY
+mkdir -p hardening/logs
+cp outputs/audit/reference_frozen.log hardening/logs/ 2>/dev/null || true
+cp outputs/audit/train.log hardening/logs/ 2>/dev/null || true
+for d in outputs/audit/*/; do
+    case=$(basename "$d")
+    [ -f "$d/log.txt" ] && cp "$d/log.txt" "hardening/logs/${case}.log"
+done
+echo "=== $(date -u) done ==="

@@ -1,64 +1,22 @@
 #!/bin/bash
-# Evaluation script for solver result files.
-# It only calls code in eval/ and writes scoring/scores.json.
+# Development evaluation on the public train split; writes scoring/scores.json.
+# Same protocol and code path as scripts/evaluate_train.sh.
+#
+# Usage:
+#   bash scripts/evaluate.sh                 # method/, baseline/, methods/*
+#   bash scripts/evaluate.sh DIR [DIR ...]   # only these solver directories
 
-set -e
+set -euo pipefail
 
 cd /home/user
-
-export PYTHONPATH="/home/user:$PYTHONPATH"
-if [ -d "/dev/shm/pylibs" ]; then
-    export PYTHONPATH="/dev/shm/pylibs:$PYTHONPATH"
-fi
-
+export PYTHONPATH="/home/user${PYTHONPATH:+:$PYTHONPATH}"
 mkdir -p scoring
 
-RESULTS_ARGS=()
-if [ "$#" -eq 0 ]; then
-    while IFS= read -r results_file; do
-        RESULTS_ARGS+=(--results-file "$results_file")
-    done < <(
-        python3 - <<'PY'
-import json
-from pathlib import Path
+SOLVER_ARGS=()
+for solver_dir in "$@"; do
+    SOLVER_ARGS+=(--solver "$solver_dir")
+done
 
-roots = [
-    Path("/home/user/tmp/results"),
-    Path("/home/user/checkpoints"),
-    Path("/home/user/outputs"),
-]
-
-seen = set()
-for root in roots:
-    if not root.exists():
-        continue
-    for path in sorted(root.rglob("*.json")):
-        try:
-            payload = json.loads(path.read_text())
-        except Exception:
-            continue
-        if not isinstance(payload, dict):
-            continue
-        if {"solver", "timeout_s", "results"} <= set(payload):
-            resolved = str(path.resolve())
-            if resolved not in seen:
-                print(resolved)
-                seen.add(resolved)
-PY
-    )
-else
-    for results_file in "$@"; do
-        RESULTS_ARGS+=(--results-file "$results_file")
-    done
-fi
-
-if [ "${#RESULTS_ARGS[@]}" -eq 0 ]; then
-    echo "No solver result files found for evaluation." >&2
-    exit 1
-fi
-
-python3 eval/evaluate.py \
-    "${RESULTS_ARGS[@]}" \
-    --scores-output scoring/scores.json
+python3 eval/evaluate.py "${SOLVER_ARGS[@]}" --scores-output scoring/scores.json
 
 echo "Evaluation complete. Results in scoring/scores.json"

@@ -3,7 +3,9 @@ Minimal QLP parser for the upstream EQuIPS instances used in this workspace.
 
 The parser is intentionally conservative: it supports the constructs needed by
 the released `MiniLotSizing.qlp`, `MiniMCN.qlp`, and `QRandomParity_1000.qlp`
-instances and converts all linear expressions to integer coefficients by row.
+instances and by the benchmark instances of this workspace, and converts all
+linear expressions to integer coefficients by row. Quantifier levels are taken
+from the ORDER section (a new level starts at every quantifier alternation).
 """
 
 from __future__ import annotations
@@ -38,6 +40,10 @@ def _scale_linear_row(coeffs: dict[str, Fraction], rhs: Fraction) -> tuple[dict[
 
 def _parse_linear_expr(expr: str) -> dict[str, Fraction]:
     coeffs: dict[str, Fraction] = {}
+    expr = expr.strip()
+    # Upstream QLP files may omit the sign of the leading term ("t_2 + x_1 ...").
+    if expr and expr[0] not in "+-":
+        expr = "+ " + expr
     for sign, raw_coeff, name in _TERM_RE.findall(expr):
         coeff = Fraction(raw_coeff or "1")
         if sign == "-":
@@ -160,10 +166,30 @@ def parse_qlp(path: str | Path) -> QIPProblem:
         bounds[name] = (lower, upper)
 
     quantifier_by_name: dict[str, tuple[str, int]] = {}
-    for level, (quantifier, names) in enumerate(quantifier_blocks, start=1):
-        mapped = "E" if quantifier == "EXISTS" else "A"
-        for name in names:
-            quantifier_by_name[name] = (mapped, level)
+    if order_names:
+        # In the QLP format the EXISTS/ALL sections only give each variable's
+        # quantifier; the quantifier *levels* follow from the ORDER section:
+        # a new level starts whenever the quantifier alternates.
+        kind_by_name: dict[str, str] = {}
+        for quantifier, names in quantifier_blocks:
+            mapped = "E" if quantifier == "EXISTS" else "A"
+            for name in names:
+                kind_by_name[name] = mapped
+        level = 0
+        previous = None
+        for name in order_names:
+            if name not in kind_by_name:
+                raise ValueError(f"Missing quantifier declaration for variable {name} in {path}")
+            kind = kind_by_name[name]
+            if kind != previous:
+                level += 1
+                previous = kind
+            quantifier_by_name[name] = (kind, level)
+    else:
+        for level, (quantifier, names) in enumerate(quantifier_blocks, start=1):
+            mapped = "E" if quantifier == "EXISTS" else "A"
+            for name in names:
+                quantifier_by_name[name] = (mapped, level)
 
     variable_names = order_names or list(bounds.keys())
     variables: list[Variable] = []
@@ -185,10 +211,11 @@ def parse_qlp(path: str | Path) -> QIPProblem:
     constraints = [_parse_constraint(line) for line in constraint_lines]
     universal_constraints = [_parse_universal_constraint(line) for line in universal_constraint_lines]
 
+    first_line = next((line for line in lines if line), "")
     return QIPProblem(
         variables=variables,
         constraints=constraints,
         universal_constraints=universal_constraints,
         objective=objective,
-        objective_sense="min" if lines[0].strip() == "MINIMIZE" else "max",
+        objective_sense="min" if first_line == "MINIMIZE" else "max",
     )

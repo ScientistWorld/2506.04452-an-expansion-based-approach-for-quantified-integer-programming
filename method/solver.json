@@ -1,0 +1,4 @@
+{
+  "name": "equips",
+  "command": ["python3", "method/solve.py"]
+}

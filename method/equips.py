@@ -26,6 +26,9 @@ from data.qrandomparity import Constraint, MultiGame, QIPProblem, Subgame, Unive
 
 _TIMEOUT = object()
 
+# Optional random seed forwarded to HiGHS and CP-SAT (None keeps solver defaults).
+SOLVER_SEED: Optional[int] = None
+
 
 def _current_level(problem: QIPProblem) -> int:
     return min(v.level for v in problem.variables)
@@ -80,6 +83,8 @@ def _new_highs(time_limit_s: Optional[float] = None) -> hp.Highs:
     highs.setOptionValue("output_flag", False)
     if time_limit_s is not None:
         highs.setOptionValue("time_limit", max(0.1, float(time_limit_s)))
+    if SOLVER_SEED is not None:
+        highs.setOptionValue("random_seed", int(SOLVER_SEED))
     return highs
 
 
@@ -207,6 +212,21 @@ def _cp_sat_expr(var_map: dict[str, "cp_model.IntVar"], coeffs: dict[str, int]):
     return sum(terms) if terms else 0
 
 
+def _cp_sat_is_constant(var_map: dict[str, "cp_model.IntVar"], coeffs: dict[str, int]) -> bool:
+    return not any(name in var_map and coeff != 0 for name, coeff in coeffs.items())
+
+
+def _new_cp_sat_solver(time_limit_s: Optional[float]) -> "cp_model.CpSolver":
+    solver = cp_model.CpSolver()
+    solver.parameters.num_search_workers = 1
+    solver.parameters.log_search_progress = False
+    if SOLVER_SEED is not None:
+        solver.parameters.random_seed = int(SOLVER_SEED)
+    if time_limit_s is not None:
+        solver.parameters.max_time_in_seconds = max(0.1, float(time_limit_s))
+    return solver
+
+
 def _solve_cp_sat_feasible(
     variables: list[Variable],
     constraints: list[Constraint],
@@ -218,19 +238,24 @@ def _solve_cp_sat_feasible(
     model = cp_model.CpModel()
     var_map = _build_cp_sat_vars(model, variables)
     for constraint in constraints:
+        if _cp_sat_is_constant(var_map, constraint.coeffs):
+            holds = constraint.rhs == 0 if constraint.is_equality else 0 <= constraint.rhs
+            if not holds:
+                return None
+            continue
         expr = _cp_sat_expr(var_map, constraint.coeffs)
         if constraint.is_equality:
             model.Add(expr == int(constraint.rhs))
         else:
             model.Add(expr <= int(constraint.rhs))
     for constraint in universal_constraints:
+        if _cp_sat_is_constant(var_map, constraint.coeffs):
+            if 0 > constraint.rhs:
+                return None
+            continue
         model.Add(_cp_sat_expr(var_map, constraint.coeffs) <= int(constraint.rhs))
 
-    solver = cp_model.CpSolver()
-    solver.parameters.num_search_workers = 1
-    solver.parameters.log_search_progress = False
-    if time_limit_s is not None:
-        solver.parameters.max_time_in_seconds = max(0.1, float(time_limit_s))
+    solver = _new_cp_sat_solver(time_limit_s)
     status = solver.Solve(model)
     if status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
         return {name: int(solver.Value(var)) for name, var in var_map.items()}
@@ -250,13 +275,34 @@ def _solve_cp_sat_violate_all(
     model = cp_model.CpModel()
     var_map = _build_cp_sat_vars(model, variables)
     for constraint in universal_constraints:
+        if _cp_sat_is_constant(var_map, constraint.coeffs):
+            if 0 > constraint.rhs:
+                return None
+            continue
         model.Add(_cp_sat_expr(var_map, constraint.coeffs) <= int(constraint.rhs))
 
     for subgame_id, constraints in enumerate(constraint_sets):
         if not constraints:
             return None
+        # A row that no longer depends on the universal variables is either
+        # already violated (the subgame is lost for the existential player
+        # whatever we choose) or can never be violated (ignore it).
+        already_violated = False
+        live_rows = []
+        for constraint in constraints:
+            if _cp_sat_is_constant(var_map, constraint.coeffs):
+                holds = constraint.rhs == 0 if constraint.is_equality else 0 <= constraint.rhs
+                if not holds:
+                    already_violated = True
+                    break
+                continue
+            live_rows.append(constraint)
+        if already_violated:
+            continue
+        if not live_rows:
+            return None
         literals = []
-        for row_id, constraint in enumerate(constraints):
+        for row_id, constraint in enumerate(live_rows):
             violated = model.NewBoolVar(f"viol_{subgame_id}_{row_id}")
             expr = _cp_sat_expr(var_map, constraint.coeffs)
             rhs = int(constraint.rhs)
@@ -271,11 +317,7 @@ def _solve_cp_sat_violate_all(
             literals.append(violated)
         model.Add(sum(literals) >= 1)
 
-    solver = cp_model.CpSolver()
-    solver.parameters.num_search_workers = 1
-    solver.parameters.log_search_progress = False
-    if time_limit_s is not None:
-        solver.parameters.max_time_in_seconds = max(0.1, float(time_limit_s))
+    solver = _new_cp_sat_solver(time_limit_s)
     status = solver.Solve(model)
     if status in (cp_model.OPTIMAL, cp_model.FEASIBLE):
         return {name: int(solver.Value(var)) for name, var in var_map.items()}
@@ -719,7 +761,8 @@ def equips(
         if time.time() - start_time > timeout_s:
             return _TIMEOUT
 
-    return None
+    # Iteration cap reached without a decision: report unknown, never a verdict.
+    return _TIMEOUT
 
 
 def _solve_qip_internal(

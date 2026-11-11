@@ -1,0 +1,4 @@
+{
+  "name": "search_enumeration",
+  "command": ["python3", "baseline/solve.py"]
+}
