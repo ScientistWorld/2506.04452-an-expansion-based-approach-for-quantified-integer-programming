@@ -1,8 +1,8 @@
-# IMPORTANT: Once you set action to 'submit' or 'done', STOP immediately.
+# Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
-# only after your turn ends. Sleeping blocks the entire pipeline.
-action: done
-milestone: core_claim
+# only after your turn ends.
+action: pending
 gpus: 0
 test: false
-notes: "Final verification passed: the workspace is gym-ready at core_claim with clean method/eval separation, reusable evaluation scripts, portable downloads, and a documented scaled-target limitation."
+milestone: core_claim
+notes: ""
