@@ -1,2 +1,8 @@
-action: done
-notes: "Audit committed as 6973d1c: honest backend improvement exceeds seed noise, but wrong constant answers, trusted runtimes, cached labels and omitted candidates beat or tie the reference; enumeration solves the whole test. Gym files restored; evidence in REDTEAM.md and redteam/."
+# Once you set action to 'submit' or 'done', STOP immediately.
+# Do NOT sleep, poll, or wait for jobs. The system reads this file
+# only after your turn ends.
+action: pending
+gpus: 0
+test: false
+milestone: core_claim
+notes: ""
