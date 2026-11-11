@@ -20,7 +20,7 @@ Ground truth
   The extended ladder grows until a level cannot be filled, a time budget is
   spent, or two consecutive levels are far beyond a 10 s CPU budget for the
   ground-truth solver itself.  Once finished, the extension is frozen.
-* MCN family, phase 2 (sizes 80-128): exact optimum from the bitmask minimax
+* MCN family, phase 2 (sizes 80 and 96): exact optimum from the bitmask minimax
   with a long time cap (cross-checked against the CEGAR optima of the phase-1
   levels), CEGAR as fallback; frozen once finished.
 
@@ -66,7 +66,7 @@ GT_DEADLINE_S = float(os.environ.get("QIP_GT_DEADLINE_S", "6000"))
 # CEGAR as fallback; both are exact, whichever certifies the optimum is used
 GT_BITMASK_CAP_S = float(os.environ.get("QIP_GT_BITMASK_CAP_S", "300"))
 GT_FALLBACK_GRAPH_CAP_S = 150.0
-MCN_V2_SIZES = [80, 96, 112, 128]
+MCN_V2_SIZES = [80, 96]
 
 TEST_PATH = HERE / "instances.json"
 TRAIN_PATH = WORKSPACE / "data" / "train_instances.json"

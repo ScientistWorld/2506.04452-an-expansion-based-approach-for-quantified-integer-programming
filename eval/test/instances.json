@@ -1370,6 +1370,90 @@
       }
      ],
      "digest": "9503be73724b0c9998749104783ff7a0c40b38330a272896ca5b54362d5dcacc"
+    },
+    {
+     "size": 80,
+     "instances": [
+      {
+       "kind": "mcn_true",
+       "seed": 50752533971943,
+       "answer": true,
+       "threshold": 76,
+       "optimum": 76,
+       "ground_truth": "bitmask_minimax",
+       "gt_cpu_s": 0.14
+      },
+      {
+       "kind": "mcn_true",
+       "seed": 31698443454170,
+       "answer": true,
+       "threshold": 72,
+       "optimum": 72,
+       "ground_truth": "bitmask_minimax",
+       "gt_cpu_s": 60.6
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 203404495456494,
+       "answer": false,
+       "threshold": 41,
+       "optimum": 40,
+       "ground_truth": "bitmask_minimax",
+       "gt_cpu_s": 0.2
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 201267462973997,
+       "answer": false,
+       "threshold": 56,
+       "optimum": 55,
+       "ground_truth": "bitmask_minimax",
+       "gt_cpu_s": 0.2
+      }
+     ],
+     "digest": "d0ac312da0a5e01ae6226e4e3e8f7d49f9b7e4ffbee64902e72b932e354e7cc7"
+    },
+    {
+     "size": 96,
+     "instances": [
+      {
+       "kind": "mcn_true",
+       "seed": 177660740024712,
+       "answer": true,
+       "threshold": 20,
+       "optimum": 20,
+       "ground_truth": "bitmask_minimax",
+       "gt_cpu_s": 136.9
+      },
+      {
+       "kind": "mcn_true",
+       "seed": 36787420097958,
+       "answer": true,
+       "threshold": 18,
+       "optimum": 18,
+       "ground_truth": "bitmask_minimax",
+       "gt_cpu_s": 14.15
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 3434718445454,
+       "answer": false,
+       "threshold": 59,
+       "optimum": 58,
+       "ground_truth": "bitmask_minimax",
+       "gt_cpu_s": 125.85
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 39904039290017,
+       "answer": false,
+       "threshold": 28,
+       "optimum": 27,
+       "ground_truth": "bitmask_minimax",
+       "gt_cpu_s": 190.4
+      }
+     ],
+     "digest": "b40a4e74eb1c1b69d9dfbc42856fbc6c3d391ca314e4461ffed80779ad5c8591"
     }
    ]
   }
@@ -1379,5 +1463,6 @@
   "frozen": true,
   "stop_reason": "no certified graph for a slot at size 80",
   "elapsed_s": 1357
- }
+ },
+ "mcn_extension_v2": {}
 }
