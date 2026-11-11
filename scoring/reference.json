@@ -1,47 +1,47 @@
 {
-  "_note": "Scored experiments are size ladders of QIP decision instances run by the evaluator itself under a fixed 10 s CPU budget per instance (paper: 1800 s, GUROBI, up to n=1000). The gym's results below are the frozen reference run of this workspace; the paper reports no numbers on this scale, so its reported results are kept unchanged under '_paper_reported'.",
+  "_note": "Scored experiments are size ladders of QIP decision instances run by the evaluator itself under a fixed 10 s CPU budget per instance (paper: 1800 s, GUROBI, up to n=1000 for QRandomParity, |V| up to 100 for MCN). The results below are the frozen reference run of this workspace (bash scripts/evaluate_test.sh, no arguments). The paper reports no numbers on this scale, so its reported results are kept unchanged under '_paper_reported'. Counts depend on the CPU speed of the node: reruns of the reference on other nodes gave 79-86 (parity) and 53-56 (MCN).",
   "experiments": {
     "qrandomparity_ladder": {
-      "description": "QRandomParity family (paper Section 4, QIP encoding (4)) at sizes n = 10..128, 6 hidden instances per size: the paper's own instance, a TRUE counterpart, and planted variants with extra parity side chains (half TRUE, half FALSE). Counts instances decided correctly within the CPU budget; any wrong decision fails the run.",
+      "description": "QRandomParity family (paper Section 4, QIP encoding (4)) at sizes n = 10..1000 (17 sizes, the paper's Table 1 range included), 8 hidden instances per size: the paper's own instance, a TRUE counterpart, planted variants with extra parity side chains (half TRUE, half FALSE) and two variants with an additional cardinality row (one TRUE, one FALSE). Counts instances decided correctly within the CPU budget; any wrong decision fails the run.",
       "weight": 0.6,
       "primary_metric": "instances_solved",
       "metrics": {
         "instances_solved": {
           "higher_is_better": true,
           "coefficient": 1.0,
-          "description": "Instances (of 72) whose TRUE/FALSE decision is correct and was reached within the CPU budget. 0 if any decision is wrong or the solver is missing."
+          "description": "Instances (of 136) whose TRUE/FALSE decision is correct and was reached within the CPU budget. 0 if any decision is wrong or the solver is missing."
         }
       },
       "results": {
         "equips": {
           "type": "proposed",
-          "instances_solved": 0
+          "instances_solved": 79
         },
         "search_enumeration": {
           "type": "baseline",
-          "instances_solved": 0
+          "instances_solved": 17
         }
       }
     },
     "mcn_ladder": {
-      "description": "Multilevel critical node decision instances (paper Section 5.2, model (5) with the threshold sum(alpha) >= K, K = optimum or optimum + 1) on random graphs with 8..40 nodes, 4 hidden instances per size (half TRUE). Counts instances decided correctly within the CPU budget; any wrong decision fails the run.",
+      "description": "Multilevel critical node decision instances (paper Section 5.2, model (5) with the threshold sum(alpha) >= K, K = optimum or optimum + 1, optimum certified exactly) on random graphs with 8..96 nodes (17 sizes), 4 hidden instances per size (half TRUE). Counts instances decided correctly within the CPU budget; any wrong decision fails the run.",
       "weight": 0.4,
       "primary_metric": "instances_solved",
       "metrics": {
         "instances_solved": {
           "higher_is_better": true,
           "coefficient": 1.0,
-          "description": "Instances (of 48) whose TRUE/FALSE decision is correct and was reached within the CPU budget. 0 if any decision is wrong or the solver is missing."
+          "description": "Instances (of 68) whose TRUE/FALSE decision is correct and was reached within the CPU budget. 0 if any decision is wrong or the solver is missing."
         }
       },
       "results": {
         "equips": {
           "type": "proposed",
-          "instances_solved": 0
+          "instances_solved": 56
         },
         "search_enumeration": {
           "type": "baseline",
-          "instances_solved": 0
+          "instances_solved": 38
         }
       }
     }

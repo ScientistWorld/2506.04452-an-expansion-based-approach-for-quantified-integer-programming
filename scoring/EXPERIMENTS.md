@@ -1,12 +1,23 @@
 # Experiment Overview
 
-## qrandomparity_n10
-This experiment checks whether a solver can handle a fixed 100-instance
-QRandomParity batch faster than a search-style exact baseline while still
-returning decisive answers across the batch.
+Both experiments count correctly decided QIP decision instances within a
+fixed CPU budget per instance, along a ladder of growing sizes.  A single
+wrong decision fails the whole run, so a method cannot trade correctness for
+coverage.
 
-## Reference-Only Context
+## qrandomparity_ladder
+Establishes whether a solver can decide quantified parity instances (the
+paper's QRandomParity family and planted variants of it) as their size grows
+from 10 to 1000 outer variables, the range of the paper's own experiments.
+The paper's claim is that a QIP solver working on the linear encoding handles
+this family far beyond what search over assignments can reach; the ladder
+measures how far up a method gets, on TRUE and FALSE instances alike, and
+whether it also copes with variants that add a cardinality relation.
 
-The paper also reports larger QRandomParity settings at `n=100` and `n=200`.
-Those remain documented in `scoring/reference.json` for comparison context, but
-they are not the active scored target in this open-source reproduction.
+## mcn_ladder
+Establishes whether a solver can decide trilevel multilevel critical node
+instances (defender-attacker-defender on a graph, attacker restricted by a
+budget) at their exact optimum and one above it, as graphs grow from 8 to 96
+nodes.  This is the paper's optimization showcase, where its method is
+competitive but not best; the ladder rewards solvers that certify optimality
+on larger graphs than the reference does.

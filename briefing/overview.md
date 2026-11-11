@@ -12,5 +12,5 @@ The paper presents EQuIPS, the first expansion-based solver for Quantified Integ
 ## Key Results
 
 - **QRandomParity (n=1000)**: EQuIPS median runtime ~3.4s (10/100 unsolved); QFUNcms 100/100 unsolved — EQuIPS is dramatically faster
-- **MCN problem instances**: EQuIPS solves 465/500+ instances, Yasol solves 431, MCN_CR solves 475 — EQuIPS competitive on large instances
+- **MCN problem instances**: EQuIPS solves 465 instances, Yasol 431, MCN_CR 475 (two-hour limit) — EQuIPS competitive on large instances, not best
 - **Ablation**: EQuIPS using existential IP relaxation for initial move outperforms lower-bound initialization

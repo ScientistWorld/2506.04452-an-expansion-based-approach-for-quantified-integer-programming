@@ -9,8 +9,9 @@
 #      (method/ + baseline/) -> scoring/scores_test.json
 #   4. train split: `bash scripts/evaluate_train.sh` -> scoring/scores_train.json
 #      (scoring/scores.json is the same protocol; copied)
-#   5. audit cases (reference reruns, better/weaker variants, shortcuts)
-#      through the hidden-test evaluator, then a summary in hardening/
+#   5. only with QIP_RUN_AUDIT=1: audit cases (reference reruns, better/weaker
+#      variants, shortcuts) through the hidden-test evaluator, then a summary
+#      in hardening/
 # Every stage is skipped when its output already exists, and the evaluations
 # checkpoint finished levels, so a killed job resumes where it stopped.
 
@@ -68,6 +69,11 @@ if [ ! -f outputs/audit/train_done ]; then
         bash scripts/evaluate_train.sh 2>&1 | tee outputs/audit/train.log \
         && cp scoring/scores_train.json scoring/scores.json && touch outputs/audit/train_done
     echo "train took $(( $(date +%s) - start ))s"
+fi
+
+if [ "${QIP_RUN_AUDIT:-0}" != "1" ]; then
+    echo "=== $(date -u) reference reproduced in $(( $(date +%s) - JOB_START ))s (set QIP_RUN_AUDIT=1 for the audit) ==="
+    exit 0
 fi
 
 echo "=== audit cases ==="

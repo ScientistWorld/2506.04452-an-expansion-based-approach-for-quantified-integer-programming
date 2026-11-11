@@ -1,33 +1,21 @@
 # Evaluation Targets
 
-This file documents the scored targets that future scientist agents should optimize.
-These target names should appear in `scoring/scores.json` after running:
+Scored targets (hidden test: `bash scripts/evaluate_test.sh` ->
+`scoring/scores_test.json`; train: `bash scripts/evaluate_train.sh` ->
+`scoring/scores_train.json`; `scoring/scores.json` is the train protocol).
 
-```bash
-bash scripts/reproduce.sh
-```
+| Experiment | Metric | Direction | Weight | Reference (test) | Baseline (test) | Bound |
+|---|---|---|---|---:|---:|---:|
+| `qrandomparity_ladder` | `instances_solved` | higher | 0.6 | 79 | 17 | 136 |
+| `mcn_ladder` | `instances_solved` | higher | 0.4 | 56 | 38 | 68 |
 
-## Active Scored Target
+Benefit and constraint in one number: an instance counts only if its decision
+is correct and was reached within the 10 s CPU budget, and any wrong decision
+sets every metric to 0 (the correctness constraint the paper's solver
+satisfies by construction).  The budget is a constraint too: the evaluator
+measures CPU time of the whole process tree itself.
 
-### `qrandomparity_n10`
-- What it tests: a scaled but nontrivial QRandomParity slice where a candidate solver can be compared directly against a search-style exact baseline.
-- Primary metric: `median_runtime_s`
-- Direction: lower is better
-- Evaluation: run both `scripts/method.sh` and `scripts/baseline.sh` on the same 100-instance `n=10` batch, then call `bash scripts/evaluate.sh <method_results> <baseline_results>`
-
-## Constraint Target
-
-### `qrandomparity_n10`
-- What it tests: runtime gains only count if the solver still returns decisive answers across the fixed batch.
-- Constraint metric: `instances_solved`
-- Direction: higher is better
-- Evaluation: computed automatically by `scripts/evaluate.sh`
-
-## Reference Context
-
-The paper's reported large-instance settings remain in `scoring/reference.json`:
-
-- `qrandomparity_n100`
-- `qrandomparity_n200`
-
-Those paper-scale settings are reference-only context in this open-source workspace until the larger run becomes practical with the available backend.
+Reference context (not scored on this scale, kept in `scoring/reference.json`
+under `_paper_reported`): paper Table 1 median runtimes for n = 100..1000,
+Figure 2 comparison for n = 10..26, MCN solved counts (EQuIPS 465, Yasol 431,
+MCN_CR 475) and Appendix A.1.3 (initial move ablation).
