@@ -1,18 +1,22 @@
 {
   "experiments": {
-    "qrandomparity_n10": {
+    "qrandomparity_ladder": {
       "results": {
         "equips": {
-          "median_runtime_s": 0.257841,
-          "instances_solved": 49,
-          "mean_runtime_s": 0.346785,
-          "p90_runtime_s": 0.510841
+          "instances_solved": 53
         },
         "search_enumeration": {
-          "median_runtime_s": 0.690046,
-          "instances_solved": 50,
-          "mean_runtime_s": 0.687464,
-          "p90_runtime_s": 0.702065
+          "instances_solved": 13
+        }
+      }
+    },
+    "mcn_ladder": {
+      "results": {
+        "equips": {
+          "instances_solved": 45
+        },
+        "search_enumeration": {
+          "instances_solved": 35
         }
       }
     }
