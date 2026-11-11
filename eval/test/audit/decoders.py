@@ -8,7 +8,11 @@ Usage: python3 eval/test/audit/decoders.py MODE INSTANCE.qlp ANSWER.json
             assuming mod-2 consistency implies integer feasibility.
   mcn       recognises the critical-node model (5) in the rows, rebuilds the
             graph and budgets, and runs an exact problem-specific minimax.
+  gf2_strict  like gf2, but also abstains when an equality row with several
+            variables has no negative coefficient (a cardinality row), i.e. it
+            answers only on instances made of XOR-shaped rows.
   combined  gf2, then mcn.
+  combined_strict  gf2_strict, then mcn.
 Both decode the generating process rather than solving a QIP.
 """
 
@@ -35,7 +39,7 @@ def _blocks(problem):
     return [[v for v in problem.variables if v.level == lvl] for lvl in levels]
 
 
-def gf2_decide(problem):
+def gf2_decide(problem, strict=False):
     blocks = _blocks(problem)
     if len(blocks) != 3 or blocks[1][0].quantifier != "A" or len(blocks[1]) > 12:
         return None
@@ -57,6 +61,8 @@ def gf2_decide(problem):
             coeffs = {rename.get(n, n): a for n, a in c.coeffs.items() if a != 0}
             if not c.is_equality and len(coeffs) > 1:
                 return None  # not parity-shaped: abstain
+            if strict and c.is_equality and len(coeffs) > 1 and min(coeffs.values()) > 0:
+                return None  # cardinality row: abstain
             constraints.append(Constraint(coeffs, c.rhs, c.is_equality))
     return not gf2_infeasible(variables, constraints, [])
 
@@ -122,7 +128,9 @@ def main() -> None:
     decision = None
     if mode in ("gf2", "combined"):
         decision = gf2_decide(problem)
-    if decision is None and mode in ("mcn", "combined"):
+    if mode in ("gf2_strict", "combined_strict"):
+        decision = gf2_decide(problem, strict=True)
+    if decision is None and mode in ("mcn", "combined", "combined_strict"):
         decision = mcn_decide(problem)
     answer = "UNKNOWN" if decision is None else ("TRUE" if decision else "FALSE")
     Path(answer_path).write_text(json.dumps({"answer": answer}))

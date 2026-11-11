@@ -147,7 +147,38 @@ def sha256_text(text: str) -> str:
 # QRandomParity family
 # --------------------------------------------------------------------------
 
-PARITY_KINDS = ("paper_false", "paper_true", "gen_true", "gen_false")
+PARITY_KINDS = ("paper_false", "paper_true", "gen_true", "gen_false", "card_true", "card_false")
+
+
+def _pinned_subset(rows: list, candidates: list, width: int) -> list:
+    """First ``width`` candidates whose value is the same in every solution of
+    the parity system {sum_{i in seq} x_i = r (mod 2)} (rows are index lists).
+    Returns [] if fewer than ``width`` candidates are pinned."""
+    pivots: dict = {}
+    for seq in rows:
+        row = 0
+        for i in seq:
+            row ^= 1 << i
+        while row:
+            p = row.bit_length() - 1
+            if p in pivots:
+                row ^= pivots[p]
+            else:
+                pivots[p] = row
+                break
+    picked = []
+    for i in candidates:
+        row = 1 << i
+        while row:
+            p = row.bit_length() - 1
+            if p not in pivots:
+                break
+            row ^= pivots[p]
+        if not row:
+            picked.append(i)
+            if len(picked) == width:
+                return picked
+    return []
 
 
 def parity_instance(n: int, kind: str, seed: int) -> tuple[str, bool]:
@@ -189,6 +220,7 @@ def parity_instance(n: int, kind: str, seed: int) -> tuple[str, bool]:
 
     t_seq = list(range(n))
     side: list = []
+    card: list = []
     if kind == "paper_false":
         a, bb = 0, 1
         s_seq = list(range(n))
@@ -201,8 +233,9 @@ def parity_instance(n: int, kind: str, seed: int) -> tuple[str, bool]:
         rng.shuffle(s_seq)
         answer = True
     else:
+        card_kind = kind.startswith("card")
         while True:
-            rho = 0.6 + 0.4 * rng.random()
+            rho = (0.95 + 0.05 * rng.random()) if card_kind else (0.6 + 0.4 * rng.random())
             m = min(n - 1, max(1, int(round(n * rho))))
             side = []
             for _ in range(m):
@@ -212,15 +245,25 @@ def parity_instance(n: int, kind: str, seed: int) -> tuple[str, bool]:
             base = set(t_seq)
             for j in chosen:
                 base ^= set(side[j])
-            if kind == "gen_true":
+            if kind == "gen_true" or card_kind:
                 base ^= set(rng.sample(range(n), rng.randint(1, 2)))
-            if len(base) >= 2:
+            if len(base) < 2:
+                continue
+            if not card_kind:
+                break
+            # card kinds: a consistent parity system plus one cardinality
+            # equality over outer variables whose values the system pins down.
+            width = rng.randint(4, 6)
+            candidates = list(range(n))
+            rng.shuffle(candidates)
+            card = _pinned_subset(side + [t_seq, sorted(base)], candidates, width)
+            if card:
                 break
         s_seq = sorted(base)
         rng.shuffle(s_seq)
         a = parity(t_seq)
-        bb = parity(s_seq) ^ (0 if kind == "gen_true" else 1)
-        answer = kind == "gen_true"
+        bb = parity(s_seq) ^ (1 if kind == "gen_false" else 0)
+        answer = kind in ("gen_true", "card_true")
 
     t_out = chain(t_seq)
     s_out = chain(s_seq)
@@ -235,6 +278,14 @@ def parity_instance(n: int, kind: str, seed: int) -> tuple[str, bool]:
         b.con({"u": 1, s_out: 1}, ">=", 1)
     else:
         b.con({s_out: 1, "u": -1}, "<=", 0)
+    card_rhs = None
+    if card:
+        ones = sum(xstar[i] for i in card)
+        if kind == "card_true":
+            card_rhs = ones
+        else:
+            card_rhs = ones + 2 if ones + 2 <= len(card) else ones - 2
+        b.con({xs[i]: 1 for i in card}, "=", card_rhs)
     return write_qlp(b, rng), answer
 
 

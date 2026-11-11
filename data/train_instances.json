@@ -41,6 +41,18 @@
        "seed": 11000005,
        "answer": false,
        "sha256": "c76e0ae7f114dbd40849da7fb6b6ee3b4f6db38656140d7519d52d3ca107d07a"
+      },
+      {
+       "kind": "card_true",
+       "seed": 11000006,
+       "answer": true,
+       "sha256": "beb3fcd77271468b6fabbb519d1a1728489b70816b4b40c6bb9c862673c423cb"
+      },
+      {
+       "kind": "card_false",
+       "seed": 11000007,
+       "answer": false,
+       "sha256": "b3fde69f3464258e1a08c96eab95d60e85defae1cc2c5fc82966654280d957b8"
       }
      ]
     },
@@ -82,6 +94,18 @@
        "seed": 11001005,
        "answer": false,
        "sha256": "eaa23851e189ed709b9378e3a842ff88516c479e883409c11647011cf1d88a87"
+      },
+      {
+       "kind": "card_true",
+       "seed": 11001006,
+       "answer": true,
+       "sha256": "c7a0e445546bfcb73105c0f54a10c9b8dfef5eae82538910b5d1430fd699c275"
+      },
+      {
+       "kind": "card_false",
+       "seed": 11001007,
+       "answer": false,
+       "sha256": "fea07dd9842056a5253eb8c29ee5ecde5980c648423f3e6b8a184fa7f94b5e73"
       }
      ]
     },
@@ -123,6 +147,18 @@
        "seed": 11002005,
        "answer": false,
        "sha256": "16834dc1ac17c853366c6b935a9beba16a506a3f0e8d7de46c863f50551596df"
+      },
+      {
+       "kind": "card_true",
+       "seed": 11002006,
+       "answer": true,
+       "sha256": "24423066c83782d46eee67671c817f8bb0adbe0e5d0c663b70e607d223c8870c"
+      },
+      {
+       "kind": "card_false",
+       "seed": 11002007,
+       "answer": false,
+       "sha256": "c61451ae24f975caff28632a97135ffed9ace9c8c974e58c0ae9dee99e756cf9"
       }
      ]
     },
@@ -164,6 +200,18 @@
        "seed": 11003005,
        "answer": false,
        "sha256": "8b965cc23e174e398188c8f857586c44a7b91caebb63c840e8f1b27e7caeabbc"
+      },
+      {
+       "kind": "card_true",
+       "seed": 11003006,
+       "answer": true,
+       "sha256": "b371906924ad25a139207cb2856f5da94318ef93ebd180697790f9aaffadf631"
+      },
+      {
+       "kind": "card_false",
+       "seed": 11003007,
+       "answer": false,
+       "sha256": "a3f575d617d8265724db96be440e31834f1429c9afd2615a1c1b33c1355b7fbc"
       }
      ]
     },
@@ -205,6 +253,18 @@
        "seed": 11004005,
        "answer": false,
        "sha256": "892c3b82965336789b2e4fbd50064c76be5fe76941b0bacaebb994452d6d4958"
+      },
+      {
+       "kind": "card_true",
+       "seed": 11004006,
+       "answer": true,
+       "sha256": "b64ac6de550c08b8f24646a558105076071ee3f891acdc443b87f52129c45611"
+      },
+      {
+       "kind": "card_false",
+       "seed": 11004007,
+       "answer": false,
+       "sha256": "86cf1e5c13001210dfc0a2cdfca517a23af1ee6d56d37a729a816a6d3c9f306d"
       }
      ]
     },
@@ -246,6 +306,18 @@
        "seed": 11005005,
        "answer": false,
        "sha256": "6db78300e68ccdbf68fe0a99012be354594cd5b894512a7448425d4f855c211d"
+      },
+      {
+       "kind": "card_true",
+       "seed": 11005006,
+       "answer": true,
+       "sha256": "fbf47da02779fac6032186c230cd7e272f1c612358b3caf660ab4d77edeedd0c"
+      },
+      {
+       "kind": "card_false",
+       "seed": 11005007,
+       "answer": false,
+       "sha256": "2b9601fdae15b222eec842d5770e381211a6ec289717e52867cb52e18bcc444b"
       }
      ]
     },
@@ -287,6 +359,18 @@
        "seed": 11006005,
        "answer": false,
        "sha256": "b348e2cdb71f67787168379fc5a081f93969ac428e3439ddb27436af80a6eccf"
+      },
+      {
+       "kind": "card_true",
+       "seed": 11006006,
+       "answer": true,
+       "sha256": "aa36a822ccb96eeb37af784de5329530d5597c5ecdb9cfb0724c3d1f6be65678"
+      },
+      {
+       "kind": "card_false",
+       "seed": 11006007,
+       "answer": false,
+       "sha256": "3cad09c4b6fcf65d6949dabdc003a5fa777136b59c2374f69263ed1ad775db2b"
       }
      ]
     },
@@ -328,6 +412,18 @@
        "seed": 11007005,
        "answer": false,
        "sha256": "f89e2bc60b0ce4d719aaebb84fd94d8106ece1fffdec698efbf523638bd44e04"
+      },
+      {
+       "kind": "card_true",
+       "seed": 11007006,
+       "answer": true,
+       "sha256": "99e7f526901e545a93ecf730dd4d1f3ed1a74cf8d941e8e71691a28f280259ca"
+      },
+      {
+       "kind": "card_false",
+       "seed": 11007007,
+       "answer": false,
+       "sha256": "384d98437cbaf307ffaa8108d7774600b48b029125d5f987ec43d09d55971d56"
       }
      ]
     },
@@ -369,6 +465,18 @@
        "seed": 11008005,
        "answer": false,
        "sha256": "8546680413d10a6d967c5cc8e9c105386852db69158e8d609a968363e55edccb"
+      },
+      {
+       "kind": "card_true",
+       "seed": 11008006,
+       "answer": true,
+       "sha256": "cf3e9af9746e413efd65fdd02736a27ac4acd812ff3f5c7938adc7dc03201a45"
+      },
+      {
+       "kind": "card_false",
+       "seed": 11008007,
+       "answer": false,
+       "sha256": "e0b864568545996d3f15a1533e54fac2bf2d62516f0d185e77da2c1ba8ed438e"
       }
      ]
     },
@@ -410,6 +518,18 @@
        "seed": 11009005,
        "answer": false,
        "sha256": "db3e64488c38b5da618f1ed2ebb044e9691712cac5b0661aff67c3664722d642"
+      },
+      {
+       "kind": "card_true",
+       "seed": 11009006,
+       "answer": true,
+       "sha256": "4356baad8a0d0ee28b327d6742e25058516cafea2c28820e12aff028a8b1adf2"
+      },
+      {
+       "kind": "card_false",
+       "seed": 11009007,
+       "answer": false,
+       "sha256": "4e6155d8e82c22016f59841827f5f293c6c69151cba244fbc5206dbe73e50b5f"
       }
      ]
     },
@@ -451,6 +571,18 @@
        "seed": 11010005,
        "answer": false,
        "sha256": "3014b11c60a84ad93479bb78643befbbaa1dc4245db4965c3647f56a522134df"
+      },
+      {
+       "kind": "card_true",
+       "seed": 11010006,
+       "answer": true,
+       "sha256": "855ec6bb488f0129692ca69e25f1f4bb90c2e24d8aeb95f817d0de03ce1bc712"
+      },
+      {
+       "kind": "card_false",
+       "seed": 11010007,
+       "answer": false,
+       "sha256": "2743f29c87c1ac6d8b2d270c85658df697c327b68dbacf8a541c4dbc19913578"
       }
      ]
     },
@@ -492,6 +624,283 @@
        "seed": 11011005,
        "answer": false,
        "sha256": "5569dac36e3e66bfe085475d7c6e4ec0aa21d2737c4057b9e4a3ff9c1da0c278"
+      },
+      {
+       "kind": "card_true",
+       "seed": 11011006,
+       "answer": true,
+       "sha256": "a64af06f41f4a1a7997eab37765aa21fb7db5a8a78f8aa5aa798e50eaa3731ed"
+      },
+      {
+       "kind": "card_false",
+       "seed": 11011007,
+       "answer": false,
+       "sha256": "d6870a3b1b17cd000c65fea3192e8ec2a0b8ef9b2675043cf2a66d0a6aa18e41"
+      }
+     ]
+    },
+    {
+     "size": 160,
+     "instances": [
+      {
+       "kind": "paper_false",
+       "seed": 11012000,
+       "answer": false,
+       "sha256": "a9fe3dffd2421782fca1926d2376c33d6576206d485d488e83ef2f17be2ba220"
+      },
+      {
+       "kind": "paper_true",
+       "seed": 11012001,
+       "answer": true,
+       "sha256": "f8bfcae4092c2ecc7a3d744817f14c13bcf6d0f3ad869a0ef1a1439a61730755"
+      },
+      {
+       "kind": "gen_true",
+       "seed": 11012002,
+       "answer": true,
+       "sha256": "042d6a4ef06d13fa04de429c14377447cc437957483b4ee7b800529ce00fe4f3"
+      },
+      {
+       "kind": "gen_true",
+       "seed": 11012003,
+       "answer": true,
+       "sha256": "aaaa9e8bb3030e11241cd172cf0583889b58c5ece76715cf3998006110f0197e"
+      },
+      {
+       "kind": "gen_false",
+       "seed": 11012004,
+       "answer": false,
+       "sha256": "ce5812086c47472968db614d2e218e0c7bf41188ca040131f0efaac30f414f63"
+      },
+      {
+       "kind": "gen_false",
+       "seed": 11012005,
+       "answer": false,
+       "sha256": "dbacf6e3f6598bfe4ae8c3dd96db66b504c0403069cd9ab1af71aaa67bf4094e"
+      },
+      {
+       "kind": "card_true",
+       "seed": 11012006,
+       "answer": true,
+       "sha256": "9ff5b26d3cf554f9331cab16281d0c3d02a356c9aab572f5378890ad71f89eaa"
+      },
+      {
+       "kind": "card_false",
+       "seed": 11012007,
+       "answer": false,
+       "sha256": "2d7e505392f3850cf41492ff19af8ea3db28a2c5a5c5012adf2bdb13b1085936"
+      }
+     ]
+    },
+    {
+     "size": 256,
+     "instances": [
+      {
+       "kind": "paper_false",
+       "seed": 11013000,
+       "answer": false,
+       "sha256": "617ad940f0aaf3cbf696d8d7dccc1024a84feeca02a1c40b339c0c7f347db3aa"
+      },
+      {
+       "kind": "paper_true",
+       "seed": 11013001,
+       "answer": true,
+       "sha256": "65f0d3af7c92c99a2fad1b0dcea2b2e666d46f024ac5f62402e3d5e0b75d406b"
+      },
+      {
+       "kind": "gen_true",
+       "seed": 11013002,
+       "answer": true,
+       "sha256": "fe1351dff36c2eede2b973246ede15b4bb0b0c70c55cbb2a1954e7ca1f23c256"
+      },
+      {
+       "kind": "gen_true",
+       "seed": 11013003,
+       "answer": true,
+       "sha256": "7261ef9bec83c2bffdfae8e5123ecca522e9f4f6937f6d4b1740e8ec33a4c72a"
+      },
+      {
+       "kind": "gen_false",
+       "seed": 11013004,
+       "answer": false,
+       "sha256": "4913bd7fe867156bb15a6806f8a838afea28fdb34c614ed3a453bcdb18e2ec50"
+      },
+      {
+       "kind": "gen_false",
+       "seed": 11013005,
+       "answer": false,
+       "sha256": "36444fe7f00ede5d8811fd9b3c64ed672be1ab02f1da5d63247a08b6ae5bc2bc"
+      },
+      {
+       "kind": "card_true",
+       "seed": 11013006,
+       "answer": true,
+       "sha256": "1aad5716e87b6b5f21423913e73c0948514c1fe3dbae370480c170460d9f38e8"
+      },
+      {
+       "kind": "card_false",
+       "seed": 11013007,
+       "answer": false,
+       "sha256": "6a844b80310d02ed1e602a9a4433721b7f59761083c242c1e88261975e14e27f"
+      }
+     ]
+    },
+    {
+     "size": 400,
+     "instances": [
+      {
+       "kind": "paper_false",
+       "seed": 11014000,
+       "answer": false,
+       "sha256": "4bf0f129d1d3ff45a55a9e31802a5bb4bc4e98c181ab44cce6b39555a4689d56"
+      },
+      {
+       "kind": "paper_true",
+       "seed": 11014001,
+       "answer": true,
+       "sha256": "ff50accd81d4deb01090ef1dfd04da5d5ff9a0ddb8389c2e0e624dac52599b08"
+      },
+      {
+       "kind": "gen_true",
+       "seed": 11014002,
+       "answer": true,
+       "sha256": "d980cde1b061715dc07afdc7bd07e2bc601a6cf614dae4e7741506f0c367681a"
+      },
+      {
+       "kind": "gen_true",
+       "seed": 11014003,
+       "answer": true,
+       "sha256": "9958c60606ad945b87bff5fb0268605d82686f2be9c6da679639dfeff5dd7c6d"
+      },
+      {
+       "kind": "gen_false",
+       "seed": 11014004,
+       "answer": false,
+       "sha256": "296c6ce4cdacbe9a4531042048b452d26a9a4e4fa05e1339f58b8f54403cf43d"
+      },
+      {
+       "kind": "gen_false",
+       "seed": 11014005,
+       "answer": false,
+       "sha256": "15db970a84f5edc620e45d55f160dbdf8929e3b07e54c92c58bb97245705b026"
+      },
+      {
+       "kind": "card_true",
+       "seed": 11014006,
+       "answer": true,
+       "sha256": "cda7d4d8a5fa11ae8902161cda007f4cd7cf334abe51939a157a4096cfc9b301"
+      },
+      {
+       "kind": "card_false",
+       "seed": 11014007,
+       "answer": false,
+       "sha256": "b695320a67ccdad0260b0a5bef9333c727af14e6296eea932c6eedf7565fb524"
+      }
+     ]
+    },
+    {
+     "size": 640,
+     "instances": [
+      {
+       "kind": "paper_false",
+       "seed": 11015000,
+       "answer": false,
+       "sha256": "7d4ec0ef308e086357212568704767aa9cb0b90ee45213f490df171c449cc1ca"
+      },
+      {
+       "kind": "paper_true",
+       "seed": 11015001,
+       "answer": true,
+       "sha256": "09f2e2cf95e48c9194d7d59e85a458077b27b1ec0bfda412bed92387fc7988fd"
+      },
+      {
+       "kind": "gen_true",
+       "seed": 11015002,
+       "answer": true,
+       "sha256": "979e7c677b3660fce90edf493010d003f3e275df1d0eeccea5e48bfbf4e50d78"
+      },
+      {
+       "kind": "gen_true",
+       "seed": 11015003,
+       "answer": true,
+       "sha256": "c646093503daf7bba2773c67e21a6701ffaefc2a48e08345b04644ecc5b47c97"
+      },
+      {
+       "kind": "gen_false",
+       "seed": 11015004,
+       "answer": false,
+       "sha256": "6038080dc33a8d723d015464ccc2f21b2282d923ba08c986477215a9c606aca2"
+      },
+      {
+       "kind": "gen_false",
+       "seed": 11015005,
+       "answer": false,
+       "sha256": "010c2ca8acaf462910599a8c86bb2aef2d1a45d04504698877dcc2f7efb5c033"
+      },
+      {
+       "kind": "card_true",
+       "seed": 11015006,
+       "answer": true,
+       "sha256": "86958571227faebebb48c5f8209ff9057b4f051c783682acff05e67a39028a79"
+      },
+      {
+       "kind": "card_false",
+       "seed": 11015007,
+       "answer": false,
+       "sha256": "3d371880e8387857dac77517a3fb8c194b3c4178cb320e31f7d6d225bdc28f35"
+      }
+     ]
+    },
+    {
+     "size": 1000,
+     "instances": [
+      {
+       "kind": "paper_false",
+       "seed": 11016000,
+       "answer": false,
+       "sha256": "13bc8494cf4629e5af0567920521dc2f5b48751b1b376bea01547c7fbbace8e6"
+      },
+      {
+       "kind": "paper_true",
+       "seed": 11016001,
+       "answer": true,
+       "sha256": "4c50e29756dbcf8c55043fe667fd8e65d99f07373716ef5153379afa8ef895de"
+      },
+      {
+       "kind": "gen_true",
+       "seed": 11016002,
+       "answer": true,
+       "sha256": "6214b27f50b3904262f35b5039afc98f7f31b53762a13561c1cceea7eb66f710"
+      },
+      {
+       "kind": "gen_true",
+       "seed": 11016003,
+       "answer": true,
+       "sha256": "5141f8987c2e3b87ea623fa0438bc9b33457ccb892d728ef2182f64ccb97421d"
+      },
+      {
+       "kind": "gen_false",
+       "seed": 11016004,
+       "answer": false,
+       "sha256": "db11396a18010dfdfd41d8c8aaec98e7a89b0df21c55fd97b1c873357e7f4c79"
+      },
+      {
+       "kind": "gen_false",
+       "seed": 11016005,
+       "answer": false,
+       "sha256": "5503f334660b6a0708bbe502cd8c5287a958c0beaa3d31ba9ecc6f1f77c61cb1"
+      },
+      {
+       "kind": "card_true",
+       "seed": 11016006,
+       "answer": true,
+       "sha256": "64818a38602e09da06c5548f636ea4136d1cfd7aba60b5e34e6358ab4461174b"
+      },
+      {
+       "kind": "card_false",
+       "seed": 11016007,
+       "answer": false,
+       "sha256": "0229d16ca68ce7e41a49685c8f0f1e8e0e8b780c2c50b42f775e73f526076447"
       }
      ]
     }
@@ -508,7 +917,8 @@
        "answer": true,
        "threshold": 7,
        "optimum": 7,
-       "sha256": "bd3cf7348ff79a7b1bd7d48d5fa9788b4020fad40b6d7fbd50b66a50be2b43eb"
+       "sha256": "bd3cf7348ff79a7b1bd7d48d5fa9788b4020fad40b6d7fbd50b66a50be2b43eb",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_true",
@@ -516,7 +926,8 @@
        "answer": true,
        "threshold": 5,
        "optimum": 5,
-       "sha256": "a3d89b2e5b25edf875b7575f5de6a3a043aea013b831c9961b9389702e073f52"
+       "sha256": "a3d89b2e5b25edf875b7575f5de6a3a043aea013b831c9961b9389702e073f52",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_false",
@@ -524,7 +935,8 @@
        "answer": false,
        "threshold": 4,
        "optimum": 3,
-       "sha256": "ccdbf37d4cd50bbc7e40acb2cffbe96b789c7bc54f071ab7351db6a333719148"
+       "sha256": "ccdbf37d4cd50bbc7e40acb2cffbe96b789c7bc54f071ab7351db6a333719148",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_false",
@@ -532,7 +944,8 @@
        "answer": false,
        "threshold": 6,
        "optimum": 5,
-       "sha256": "8a06dad57452e1cae4d89fc2346ace5d20a5be34589f2d2aef1220c3f2c2586f"
+       "sha256": "8a06dad57452e1cae4d89fc2346ace5d20a5be34589f2d2aef1220c3f2c2586f",
+       "ground_truth": "bitmask_minimax"
       }
      ]
     },
@@ -545,7 +958,8 @@
        "answer": true,
        "threshold": 5,
        "optimum": 5,
-       "sha256": "f63411295b7f171f638d517429917ab533a758cea51b670674eaeecaf2816a1b"
+       "sha256": "f63411295b7f171f638d517429917ab533a758cea51b670674eaeecaf2816a1b",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_true",
@@ -553,7 +967,8 @@
        "answer": true,
        "threshold": 9,
        "optimum": 9,
-       "sha256": "058ef4b3525a959bc59e220ba6f0561d3eca44376da837156d43f6cd1e7b1417"
+       "sha256": "058ef4b3525a959bc59e220ba6f0561d3eca44376da837156d43f6cd1e7b1417",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_false",
@@ -561,7 +976,8 @@
        "answer": false,
        "threshold": 8,
        "optimum": 7,
-       "sha256": "ea45e5596c1cc321611040be15d71409a16aad38ffb7f63b2af2b41b2d2adb47"
+       "sha256": "ea45e5596c1cc321611040be15d71409a16aad38ffb7f63b2af2b41b2d2adb47",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_false",
@@ -569,7 +985,8 @@
        "answer": false,
        "threshold": 7,
        "optimum": 6,
-       "sha256": "1222c75a2fd9d2135bfb4a9f392480ab88faa3d81f842846fbf28ba6be9eca19"
+       "sha256": "1222c75a2fd9d2135bfb4a9f392480ab88faa3d81f842846fbf28ba6be9eca19",
+       "ground_truth": "bitmask_minimax"
       }
      ]
     },
@@ -582,7 +999,8 @@
        "answer": true,
        "threshold": 9,
        "optimum": 9,
-       "sha256": "fbf6e30a36d73121790ef311c9ee43b07b54162768081cccde81d844c05434d0"
+       "sha256": "fbf6e30a36d73121790ef311c9ee43b07b54162768081cccde81d844c05434d0",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_true",
@@ -590,7 +1008,8 @@
        "answer": true,
        "threshold": 7,
        "optimum": 7,
-       "sha256": "0986b22be8966505563585f9e7e43f409c74d7dae8185333a9e085a19c7bb19f"
+       "sha256": "0986b22be8966505563585f9e7e43f409c74d7dae8185333a9e085a19c7bb19f",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_false",
@@ -598,7 +1017,8 @@
        "answer": false,
        "threshold": 10,
        "optimum": 9,
-       "sha256": "450a1f830bc167e784965d76044ec9aa362dfb5cb30d7ac1618314708cd0b5da"
+       "sha256": "450a1f830bc167e784965d76044ec9aa362dfb5cb30d7ac1618314708cd0b5da",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_false",
@@ -606,7 +1026,8 @@
        "answer": false,
        "threshold": 9,
        "optimum": 8,
-       "sha256": "13ea666a554aec04c6af2acb11d5ec18285415c1515e7d3c2c56b2e453517b62"
+       "sha256": "13ea666a554aec04c6af2acb11d5ec18285415c1515e7d3c2c56b2e453517b62",
+       "ground_truth": "bitmask_minimax"
       }
      ]
     },
@@ -619,7 +1040,8 @@
        "answer": true,
        "threshold": 13,
        "optimum": 13,
-       "sha256": "563ed9f2e0464b1338529bee2a98497d0b27035e7d5aff9ab3cee803b224378f"
+       "sha256": "563ed9f2e0464b1338529bee2a98497d0b27035e7d5aff9ab3cee803b224378f",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_true",
@@ -627,7 +1049,8 @@
        "answer": true,
        "threshold": 8,
        "optimum": 8,
-       "sha256": "534be26cc454d55fabf4b2740662ec63320fa8d1a1bc48458e513ec15cd1e1cd"
+       "sha256": "534be26cc454d55fabf4b2740662ec63320fa8d1a1bc48458e513ec15cd1e1cd",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_false",
@@ -635,7 +1058,8 @@
        "answer": false,
        "threshold": 13,
        "optimum": 12,
-       "sha256": "d1d4f67471455c46ecb872a20e970411cb4d5b043cba1bb63bf8217ba8f88fd8"
+       "sha256": "d1d4f67471455c46ecb872a20e970411cb4d5b043cba1bb63bf8217ba8f88fd8",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_false",
@@ -643,7 +1067,8 @@
        "answer": false,
        "threshold": 10,
        "optimum": 9,
-       "sha256": "f70cf1085923a0246e3512fe76feb694223ca4059fc8000e24a1ec3efa38dbd1"
+       "sha256": "f70cf1085923a0246e3512fe76feb694223ca4059fc8000e24a1ec3efa38dbd1",
+       "ground_truth": "bitmask_minimax"
       }
      ]
     },
@@ -656,7 +1081,8 @@
        "answer": true,
        "threshold": 7,
        "optimum": 7,
-       "sha256": "c8ee9e1a06c0cc67b36a1d3db95a14fb6a0b6071d1c7e50511cdfebe7dee55b1"
+       "sha256": "c8ee9e1a06c0cc67b36a1d3db95a14fb6a0b6071d1c7e50511cdfebe7dee55b1",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_true",
@@ -664,7 +1090,8 @@
        "answer": true,
        "threshold": 5,
        "optimum": 5,
-       "sha256": "64a4972538405b2241a867d0d474d8812901cdae751ff03d77aa7bbfd94c9cfc"
+       "sha256": "64a4972538405b2241a867d0d474d8812901cdae751ff03d77aa7bbfd94c9cfc",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_false",
@@ -672,7 +1099,8 @@
        "answer": false,
        "threshold": 10,
        "optimum": 9,
-       "sha256": "80e7f8ec564e213deeb81e1a31558bfe12dbc883dca24b4c13e24a610c4d26dc"
+       "sha256": "80e7f8ec564e213deeb81e1a31558bfe12dbc883dca24b4c13e24a610c4d26dc",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_false",
@@ -680,7 +1108,8 @@
        "answer": false,
        "threshold": 12,
        "optimum": 11,
-       "sha256": "f7416cd9cf71e3ae46871b29e16373552fed437425aa7787edb7a11b21608e61"
+       "sha256": "f7416cd9cf71e3ae46871b29e16373552fed437425aa7787edb7a11b21608e61",
+       "ground_truth": "bitmask_minimax"
       }
      ]
     },
@@ -693,7 +1122,8 @@
        "answer": true,
        "threshold": 13,
        "optimum": 13,
-       "sha256": "b46d2cbd124ccfbf25bf35e264d032e8918263c0a224340d622b4760d665afb2"
+       "sha256": "b46d2cbd124ccfbf25bf35e264d032e8918263c0a224340d622b4760d665afb2",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_true",
@@ -701,7 +1131,8 @@
        "answer": true,
        "threshold": 6,
        "optimum": 6,
-       "sha256": "e35110dbff349b86ae4708c40e748906660a5c02e98b892e9da1003a002c40b5"
+       "sha256": "e35110dbff349b86ae4708c40e748906660a5c02e98b892e9da1003a002c40b5",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_false",
@@ -709,7 +1140,8 @@
        "answer": false,
        "threshold": 14,
        "optimum": 13,
-       "sha256": "77aa9466a9399c936948fb6d19b144ae5de43a92e2033b00567149c0b7e93fd4"
+       "sha256": "77aa9466a9399c936948fb6d19b144ae5de43a92e2033b00567149c0b7e93fd4",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_false",
@@ -717,7 +1149,8 @@
        "answer": false,
        "threshold": 10,
        "optimum": 9,
-       "sha256": "adbcabcde2468b7831d6639857424a1982c55315599cf414efff6be34b1022a0"
+       "sha256": "adbcabcde2468b7831d6639857424a1982c55315599cf414efff6be34b1022a0",
+       "ground_truth": "bitmask_minimax"
       }
      ]
     },
@@ -730,7 +1163,8 @@
        "answer": true,
        "threshold": 10,
        "optimum": 10,
-       "sha256": "e95d2fa91d3feffe0792b1ea41c588de6d11f690e61050da28b111b993c0ca28"
+       "sha256": "e95d2fa91d3feffe0792b1ea41c588de6d11f690e61050da28b111b993c0ca28",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_true",
@@ -738,7 +1172,8 @@
        "answer": true,
        "threshold": 7,
        "optimum": 7,
-       "sha256": "18b0752b4769a636167dfcca108d4e14df951fbcc2f6e01ea1cb60ad17753461"
+       "sha256": "18b0752b4769a636167dfcca108d4e14df951fbcc2f6e01ea1cb60ad17753461",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_false",
@@ -746,7 +1181,8 @@
        "answer": false,
        "threshold": 15,
        "optimum": 14,
-       "sha256": "6dee080b4bf4703d579f75021c842c363a7f8095071c013a2ea6f26a8d683ef7"
+       "sha256": "6dee080b4bf4703d579f75021c842c363a7f8095071c013a2ea6f26a8d683ef7",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_false",
@@ -754,7 +1190,8 @@
        "answer": false,
        "threshold": 7,
        "optimum": 6,
-       "sha256": "1140bd52e7f3854abd1177780d57ed7a7ad9021c4a17494bf92b071d61211c54"
+       "sha256": "1140bd52e7f3854abd1177780d57ed7a7ad9021c4a17494bf92b071d61211c54",
+       "ground_truth": "bitmask_minimax"
       }
      ]
     },
@@ -767,7 +1204,8 @@
        "answer": true,
        "threshold": 21,
        "optimum": 21,
-       "sha256": "902b4e1cf43d41aeb26f022cc5c1876c3e7084792df8eac8468270c29ac01024"
+       "sha256": "902b4e1cf43d41aeb26f022cc5c1876c3e7084792df8eac8468270c29ac01024",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_true",
@@ -775,7 +1213,8 @@
        "answer": true,
        "threshold": 18,
        "optimum": 18,
-       "sha256": "df79f28524abffd7e734a0978ca6b3fd683df278fa07945613afc0b1b8f1fb9e"
+       "sha256": "df79f28524abffd7e734a0978ca6b3fd683df278fa07945613afc0b1b8f1fb9e",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_false",
@@ -783,7 +1222,8 @@
        "answer": false,
        "threshold": 12,
        "optimum": 11,
-       "sha256": "4dd6cbf81c5c24e62e309f17cf3fecaf1ff78fbdbae912c0f2d775ec2989188b"
+       "sha256": "4dd6cbf81c5c24e62e309f17cf3fecaf1ff78fbdbae912c0f2d775ec2989188b",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_false",
@@ -791,7 +1231,8 @@
        "answer": false,
        "threshold": 15,
        "optimum": 14,
-       "sha256": "4885507da210ce8a0d567593b96c783127f06dca4d3d4b212b49c361b3fbe43b"
+       "sha256": "4885507da210ce8a0d567593b96c783127f06dca4d3d4b212b49c361b3fbe43b",
+       "ground_truth": "bitmask_minimax"
       }
      ]
     },
@@ -804,7 +1245,8 @@
        "answer": true,
        "threshold": 19,
        "optimum": 19,
-       "sha256": "dc5c13ac05012daf5503bdd62490d7d8c1c6944da2ddb384450932a5e739bfce"
+       "sha256": "dc5c13ac05012daf5503bdd62490d7d8c1c6944da2ddb384450932a5e739bfce",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_true",
@@ -812,7 +1254,8 @@
        "answer": true,
        "threshold": 22,
        "optimum": 22,
-       "sha256": "2ea373659cc9908b6af18f34e4c375aae41519f5536dc44cff334d87970e7402"
+       "sha256": "2ea373659cc9908b6af18f34e4c375aae41519f5536dc44cff334d87970e7402",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_false",
@@ -820,7 +1263,8 @@
        "answer": false,
        "threshold": 28,
        "optimum": 27,
-       "sha256": "71d20926d696753993912507c622a9042b0dad4cd85f1f23c45cc227cacbd233"
+       "sha256": "71d20926d696753993912507c622a9042b0dad4cd85f1f23c45cc227cacbd233",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_false",
@@ -828,7 +1272,8 @@
        "answer": false,
        "threshold": 11,
        "optimum": 10,
-       "sha256": "153a6bfcc42cbffbcf8f130e26bcecbe7a54e6dbeb7dba9e6de87b92866097f8"
+       "sha256": "153a6bfcc42cbffbcf8f130e26bcecbe7a54e6dbeb7dba9e6de87b92866097f8",
+       "ground_truth": "bitmask_minimax"
       }
      ]
     },
@@ -841,7 +1286,8 @@
        "answer": true,
        "threshold": 29,
        "optimum": 29,
-       "sha256": "f33f79ff5c0117fc854cf4c3170b22db870344cc7a87134b0f49cfb7a8164f71"
+       "sha256": "f33f79ff5c0117fc854cf4c3170b22db870344cc7a87134b0f49cfb7a8164f71",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_true",
@@ -849,7 +1295,8 @@
        "answer": true,
        "threshold": 22,
        "optimum": 22,
-       "sha256": "ba214baef5aa630746a53fed97971d4c26dd7d7acc975fa8795129279994ebe4"
+       "sha256": "ba214baef5aa630746a53fed97971d4c26dd7d7acc975fa8795129279994ebe4",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_false",
@@ -857,7 +1304,8 @@
        "answer": false,
        "threshold": 28,
        "optimum": 27,
-       "sha256": "e6f5bcd8505abf5d0c9d02273bfd80f69277738fd2260b8967b85b83437a30af"
+       "sha256": "e6f5bcd8505abf5d0c9d02273bfd80f69277738fd2260b8967b85b83437a30af",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_false",
@@ -865,7 +1313,8 @@
        "answer": false,
        "threshold": 11,
        "optimum": 10,
-       "sha256": "395ef00b6f0b256609a3ead03aa588773479fee47681ccc9f728246743c47e47"
+       "sha256": "395ef00b6f0b256609a3ead03aa588773479fee47681ccc9f728246743c47e47",
+       "ground_truth": "bitmask_minimax"
       }
      ]
     },
@@ -878,7 +1327,8 @@
        "answer": true,
        "threshold": 24,
        "optimum": 24,
-       "sha256": "a868a82c3f7e586676292d81bd1171fafd893b3bd0cfdd732084b456da3da740"
+       "sha256": "a868a82c3f7e586676292d81bd1171fafd893b3bd0cfdd732084b456da3da740",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_true",
@@ -886,7 +1336,8 @@
        "answer": true,
        "threshold": 34,
        "optimum": 34,
-       "sha256": "9016e4bc19a6d02d547041f1b8cb8de674f273fce7095bf739989531b79f609d"
+       "sha256": "9016e4bc19a6d02d547041f1b8cb8de674f273fce7095bf739989531b79f609d",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_false",
@@ -894,7 +1345,8 @@
        "answer": false,
        "threshold": 34,
        "optimum": 33,
-       "sha256": "9eb21a68c9aeb43222a1689b2acd3e0a9220a0d0a73ec77e6f11dab65944b623"
+       "sha256": "9eb21a68c9aeb43222a1689b2acd3e0a9220a0d0a73ec77e6f11dab65944b623",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_false",
@@ -902,7 +1354,8 @@
        "answer": false,
        "threshold": 31,
        "optimum": 30,
-       "sha256": "097933b554221fa520f9f9faa82100666d0eed896d28574040b69fa99a48dd87"
+       "sha256": "097933b554221fa520f9f9faa82100666d0eed896d28574040b69fa99a48dd87",
+       "ground_truth": "bitmask_minimax"
       }
      ]
     },
@@ -915,7 +1368,8 @@
        "answer": true,
        "threshold": 16,
        "optimum": 16,
-       "sha256": "4f6f38d9c57ee3a467dc577376f65135f6cdb5abff880118bd63e173423f8e25"
+       "sha256": "4f6f38d9c57ee3a467dc577376f65135f6cdb5abff880118bd63e173423f8e25",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_true",
@@ -923,7 +1377,8 @@
        "answer": true,
        "threshold": 35,
        "optimum": 35,
-       "sha256": "89df73c6857f801afca9f2dc2940f6f650f0473e3c512d31ed1040a26d528891"
+       "sha256": "89df73c6857f801afca9f2dc2940f6f650f0473e3c512d31ed1040a26d528891",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_false",
@@ -931,7 +1386,8 @@
        "answer": false,
        "threshold": 19,
        "optimum": 18,
-       "sha256": "2ad05463449678f03ef8d2c7b3ca33a6f1c360846b853f3e958aa0d539467f63"
+       "sha256": "2ad05463449678f03ef8d2c7b3ca33a6f1c360846b853f3e958aa0d539467f63",
+       "ground_truth": "bitmask_minimax"
       },
       {
        "kind": "mcn_false",
@@ -939,7 +1395,8 @@
        "answer": false,
        "threshold": 32,
        "optimum": 31,
-       "sha256": "a943023794a4fec86d2db566b81afd3c9a1a9bf7a17ce7171ddabd023b61929a"
+       "sha256": "a943023794a4fec86d2db566b81afd3c9a1a9bf7a17ce7171ddabd023b61929a",
+       "ground_truth": "bitmask_minimax"
       }
      ]
     }

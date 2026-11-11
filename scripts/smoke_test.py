@@ -23,7 +23,7 @@ import data.benchmark as bench  # noqa: E402
 def main() -> int:
     table = json.loads((WORKSPACE / "data" / "train_instances.json").read_text())
     picks = []
-    for exp, level_idx, inst_ids in (("qrandomparity_ladder", 0, range(6)), ("mcn_ladder", 0, range(4)), ("mcn_ladder", 3, range(2))):
+    for exp, level_idx, inst_ids in (("qrandomparity_ladder", 0, range(8)), ("mcn_ladder", 0, range(4)), ("mcn_ladder", 3, range(2))):
         lvl = table["experiments"][exp]["levels"][level_idx]
         for j in inst_ids:
             picks.append((exp, lvl["size"], lvl["instances"][j]))

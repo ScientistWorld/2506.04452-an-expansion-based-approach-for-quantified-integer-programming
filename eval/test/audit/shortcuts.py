@@ -12,12 +12,17 @@ Modes:
   burn                      busy-loop past the CPU budget, then answer FALSE
   train_cache               look the instance text up in the public train table;
                             answer only on an exact hit
+  escape                    run the reference solver in a detached session with
+                            2.2x the CPU budget and relay its answer (tries to
+                            hide CPU time from the evaluator)
 """
 
 from __future__ import annotations
 
 import hashlib
 import json
+import os
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -64,6 +69,19 @@ def main() -> None:
                         out.write_text(json.dumps({"answer": "TRUE" if spec["answer"] else "FALSE"}))
                         return
         out.write_text(json.dumps({"answer": "UNKNOWN"}))
+    elif mode == "escape":
+        budget = float(os.environ.get("QIP_CPU_BUDGET_S", "10"))
+        tmp = Path(answer_path + ".bg")
+        env = dict(os.environ, QIP_CPU_BUDGET_S=str(2.2 * budget))
+        subprocess.Popen(
+            ["python3", "method/solve.py", instance, str(tmp)], cwd=str(WORKSPACE), env=env,
+            start_new_session=True, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        )
+        deadline = time.monotonic() + 2.2 * budget + 1.5
+        while time.monotonic() < deadline and not tmp.exists():
+            time.sleep(0.05)
+        time.sleep(0.05)
+        out.write_text(tmp.read_text() if tmp.exists() else json.dumps({"answer": "UNKNOWN"}))
     else:
         raise SystemExit(f"unknown mode {mode}")
 

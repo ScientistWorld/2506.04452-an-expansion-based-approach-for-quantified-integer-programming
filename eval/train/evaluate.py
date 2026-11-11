@@ -15,7 +15,8 @@ only what it observes:
   ``QIP_CPU_BUDGET_S`` in the environment, under a CPU-time limit and a
   wall-clock watchdog, and reads ``{"answer": "TRUE" | "FALSE" | "UNKNOWN"}``.
 * An instance counts as solved only if the decision is correct and the solver
-  process tree used at most the CPU budget (measured by the evaluator).
+  process tree used at most the CPU budget (measured by the evaluator, which
+  also kills and reaps detached descendants and counts their CPU time).
 * Any wrong decisive answer fails the whole run: the solver then scores the
   worst value (0) in every experiment.  A missing/invalid manifest also scores
   the worst value, so a method that is absent never ties a working one.
@@ -136,6 +137,51 @@ def _limits() -> None:
     resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
 
 
+def _become_subreaper() -> None:
+    """Orphaned descendants of a solver are re-parented to this process (not to
+    init), so they can be killed and reaped here and their CPU time counted."""
+    try:
+        import ctypes
+
+        libc = ctypes.CDLL(None, use_errno=True)
+        libc.prctl(36, 1, 0, 0, 0)  # PR_SET_CHILD_SUBREAPER
+    except Exception:  # noqa: BLE001
+        pass
+
+
+def _child_pids() -> list:
+    me = os.getpid()
+    pids = []
+    for entry in os.listdir("/proc"):
+        if not entry.isdigit():
+            continue
+        try:
+            with open(f"/proc/{entry}/stat") as fh:
+                stat = fh.read()
+            if int(stat.rsplit(")", 1)[1].split()[1]) == me:
+                pids.append(int(entry))
+        except (OSError, ValueError, IndexError):
+            continue
+    return pids
+
+
+def _reap_strays() -> None:
+    """Kill and reap every remaining descendant (detached or not)."""
+    for _ in range(100):
+        try:
+            pid, _status = os.waitpid(-1, os.WNOHANG)
+        except ChildProcessError:
+            return
+        if pid:
+            continue
+        for child in _child_pids():
+            try:
+                os.kill(child, signal.SIGKILL)
+            except (ProcessLookupError, PermissionError):
+                pass
+        time.sleep(0.01)
+
+
 def _children_cpu() -> float:
     usage = resource.getrusage(resource.RUSAGE_CHILDREN)
     return usage.ru_utime + usage.ru_stime
@@ -194,6 +240,7 @@ def run_instance(command: list, text: str) -> dict:
                 except (ProcessLookupError, PermissionError):
                     pass
                 proc.wait()
+                _reap_strays()
         wall = time.monotonic() - start
         cpu = _children_cpu() - cpu_before
         answer = _read_answer(answer_path)
@@ -266,6 +313,7 @@ def main() -> None:
     parser.add_argument("--details-output", default=None, help="Optional per-level diagnostics JSON.")
     args = parser.parse_args()
 
+    _become_subreaper()
     ladders = load_ladders()
     slots = [Path(s).resolve() for s in args.solver] if args.solver else default_slots()
 

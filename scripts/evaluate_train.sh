@@ -18,6 +18,6 @@ for solver_dir in "$@"; do
     SOLVER_ARGS+=(--solver "$solver_dir")
 done
 
-python3 eval/train/evaluate.py "${SOLVER_ARGS[@]}" --scores-output scoring/scores_train.json
+python3 eval/train/evaluate.py "${SOLVER_ARGS[@]}" ${QIP_DETAILS_OUTPUT:+--details-output "$QIP_DETAILS_OUTPUT"} --scores-output scoring/scores_train.json
 
 echo "Train evaluation complete. Results in scoring/scores_train.json"

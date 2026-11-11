@@ -9,6 +9,7 @@ Results: outputs/audit/<case>/{scores_test.json,details.json,log.txt}.
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 import time
@@ -22,7 +23,7 @@ V = ["python3", "eval/test/audit/variant_solve.py"]
 S = ["python3", "eval/test/audit/shortcuts.py"]
 D = ["python3", "eval/test/audit/decoders.py"]
 
-# (case, group, command or None for an empty solver slot)
+# (case, group, command or None for an empty solver slot), in priority order
 CASES = [
     ("const_true", "shortcut", S + ["const_true"]),
     ("const_false", "shortcut", S + ["const_false"]),
@@ -32,25 +33,42 @@ CASES = [
     ("train_cache", "shortcut", S + ["train_cache"]),
     ("empty_slot", "shortcut", None),
     ("decoder_gf2", "shortcut", D + ["gf2"]),
-    ("decoder_mcn", "shortcut", D + ["mcn"]),
     ("decoder_combined", "shortcut", D + ["combined"]),
     ("reference_seed1", "reference", ["python3", "method/solve.py", "--solver-seed", "1"]),
-    ("reference_seed2", "reference", ["python3", "method/solve.py", "--solver-seed", "2"]),
-    ("better_gf2_presolve", "better", V + ["gf2_presolve"]),
-    ("better_cpsat_all", "better", V + ["cpsat_all"]),
     ("better_cpsat_gf2", "better", V + ["cpsat_gf2"]),
-    ("weaker_tenth_budget", "weaker", V + ["tenth_budget"]),
-    ("weaker_lb_initial_move", "weaker", V + ["lb_initial_move"]),
     ("weaker_highs_only", "weaker", V + ["highs_only"]),
-    ("guess_false_on_timeout", "shortcut", V + ["guess_false_on_timeout"]),
+    ("decoder_mcn", "shortcut", D + ["mcn"]),
+    ("decoder_gf2_strict", "shortcut", D + ["gf2_strict"]),
+    ("decoder_combined_strict", "shortcut", D + ["combined_strict"]),
+    ("cpu_escape_before", "shortcut_subset", S + ["escape"]),
+    ("cpu_escape", "shortcut_subset", S + ["escape"]),
+    ("reference_seed2", "reference", ["python3", "method/solve.py", "--solver-seed", "2"]),
+    ("better_cpsat_all", "better", V + ["cpsat_all"]),
+    ("weaker_tenth_budget", "weaker", V + ["tenth_budget"]),
     ("guess_true_on_timeout", "shortcut", V + ["guess_true_on_timeout"]),
+    ("guess_false_on_timeout", "shortcut", V + ["guess_false_on_timeout"]),
 ]
+
+# Subset runs (escape probe): MCN levels from size 28 up, scored by the
+# evaluator with and without the CPU-accounting fix (eval_variant.py).
+ESCAPE_MIN_MCN_SIZE = 28
+WRAPPED = {"cpu_escape_before": ["--legacy-cpu"], "cpu_escape": []}
+
+
+def _subset_spec() -> str:
+    table = json.loads((WORKSPACE / "eval" / "test" / "instances.json").read_text())
+    sizes = [l["size"] for l in table["experiments"]["mcn_ladder"]["levels"] if l["size"] >= ESCAPE_MIN_MCN_SIZE]
+    return "mcn_ladder:" + ",".join(str(s) for s in sizes) + ";qrandomparity_ladder:"
 
 
 def main() -> None:
     only = set(sys.argv[1:])
+    deadline = float(os.environ.get("QIP_AUDIT_DEADLINE", "inf"))
     for case, group, command in CASES:
         if only and case not in only:
+            continue
+        if time.time() > deadline:
+            print(f"[audit] {case}: skipped (job time budget)", flush=True)
             continue
         case_dir = OUT / case
         if (case_dir / "scores_test.json").exists():
@@ -61,10 +79,12 @@ def main() -> None:
         if command is not None:
             (solver_dir / "solver.json").write_text(json.dumps({"name": case, "command": command}, indent=1))
         start = time.time()
+        evaluator = ["python3", "eval/test/evaluate.py"]
+        if case in WRAPPED:
+            evaluator = ["python3", "eval/test/audit/eval_variant.py"] + WRAPPED[case] + ["--sizes", _subset_spec(), "--"]
         with (case_dir / "log.txt").open("w") as log:
             rc = subprocess.call(
-                [
-                    "python3", "eval/test/evaluate.py",
+                evaluator + [
                     "--solver", str(solver_dir),
                     "--scores-output", str(case_dir / "scores_test.json.tmp"),
                     "--details-output", str(case_dir / "details.json"),
