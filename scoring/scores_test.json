@@ -3,7 +3,7 @@
     "qrandomparity_ladder": {
       "results": {
         "equips": {
-          "instances_solved": 79
+          "instances_solved": 82
         },
         "search_enumeration": {
           "instances_solved": 17
@@ -13,10 +13,10 @@
     "mcn_ladder": {
       "results": {
         "equips": {
-          "instances_solved": 56
+          "instances_solved": 41
         },
         "search_enumeration": {
-          "instances_solved": 38
+          "instances_solved": 23
         }
       }
     }

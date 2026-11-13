@@ -1,6 +1,8 @@
 # Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends.
-action: done
+action: submit
+gpus: 0
+test: false
 milestone: core_claim
-notes: "Hardened hidden test: decoder and escape shortcuts fail; better variant 114/61 vs reference 79/56; MCN brute force (60) still outranks the reference (left, see HARDENING.md)."
+notes: "Hardening: sandbox self-test, MCN ladder rebuild (budgets 1-3, exact ground truth in parallel), frozen reference + train under the new instruction-counted sandboxed evaluator, and the audit (reference reruns/seeds, better/weaker variants, brute-force decoders, shortcuts incl. new read_hidden/call_counter probes)."
