@@ -169,6 +169,25 @@ def main() -> None:
                        "max_relative_instruction_diff": max(diffs) if diffs else None,
                        "median_relative_instruction_diff": statistics.median(diffs) if diffs else None}
 
+    # cross-node: the frozen run of an earlier job (another compute node) on the
+    # levels both runs share (the parity ladder did not change between jobs)
+    cross = None
+    prev_path = OUT / "job1_reference_frozen_details.json"
+    if prev_path.exists():
+        prev = load_details(prev_path)
+        cross = {}
+        for name in ("equips", "search_enumeration"):
+            if name not in prev or name not in frozen:
+                continue
+            a = instance_vector(prev[name], budget)
+            b = instance_vector(frozen[name], budget)
+            keys = [k for k in a if k in b and k[0] == "qrandomparity_ladder" and a[k][1] and b[k][1]]
+            diffs = [abs(a[k][1] - b[k][1]) / a[k][1] for k in keys]
+            cross[name] = {"instances_compared": len(keys), "solved_flips": sum(a[k][0] != b[k][0] for k in keys),
+                           "solved_earlier_job": sum(a[k][0] for k in keys), "solved_this_job": sum(b[k][0] for k in keys),
+                           "median_relative_instruction_diff": statistics.median(diffs) if diffs else None,
+                           "max_relative_instruction_diff": max(diffs) if diffs else None}
+
     # calibration: instructions per CPU-second of the frozen reference
     rates, modes = [], set()
     for e in EXPS:
@@ -190,6 +209,7 @@ def main() -> None:
         "weights": {e: exps[e]["weight"] for e in exps},
         "sigma": {e: round(v, 4) for e, v in sigma.items()},
         "determinism_rerun": determinism,
+        "determinism_cross_node": cross,
         "calibration": calibration,
         "train": train,
         "cases": cases,
@@ -219,6 +239,7 @@ def main() -> None:
         failed = "yes: " + str(c["reason"]) if c["failed"] else "no"
         lines.append(f"| {name} | {c['group']} | {vals} | {failed} | {rank} | {ptxt} |")
     lines += ["", f"Determinism (unchanged reference rerun vs frozen run): {determinism}",
+              f"Cross-node (frozen run of the earlier job vs this one, parity ladder): {cross}",
               f"Calibration: {calibration}", f"Train (same budget): {train}", "",
               "Per-level solved counts (size:solved):", ""]
     for name, c in ranked:

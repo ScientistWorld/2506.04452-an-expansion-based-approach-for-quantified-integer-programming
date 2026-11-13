@@ -11,7 +11,7 @@ Ground truth
 * Parity family: the answer follows from the planted construction and is
   re-derived independently by GF(2) elimination (plus, for the cardinality
   kinds, the cardinality row evaluated on the variables the system pins).
-* MCN family (budgets 1-3 for vaccination, attack and protection): exact
+* MCN family (vaccination budget 1-3, attack 1-2, protection 2-3): exact
   optimum of each graph by the bitmask minimax over full-budget choices
   (``gt_mcn.py bitmask``) when it finishes within ``GT_BITMASK_CAP_S``; such
   graphs from 20 nodes up are cross-checked by an expansion-based CEGAR solver
@@ -53,23 +53,23 @@ PARITY_SIZES = [10, 14, 18, 22, 26, 32, 40, 50, 64, 80, 100, 128, 160, 256, 400,
 PARITY_KINDS_PER_LEVEL = [
     "paper_false", "paper_true", "gen_true", "gen_true", "gen_false", "gen_false", "card_true", "card_false",
 ]
-MCN_TAG = "mcn_v3"
-MCN_SIZES = [12, 16, 20, 24, 28, 32, 36, 40, 48, 56, 64, 72, 80]
+MCN_TAG = "mcn_v4"
+MCN_SIZES = [16, 24, 32, 40, 48, 56, 64, 72, 80, 96]
 MCN_ANSWERS_PER_LEVEL = [True, True, True, False, False, False]
 
 GT_BITMASK_CAP_S = float(os.environ.get("QIP_GT_BITMASK_CAP_S", "60"))
-GT_DECISION_CAP_S = float(os.environ.get("QIP_GT_DECISION_CAP_S", "150"))
-GT_GRAPH_CAP_S = float(os.environ.get("QIP_GT_GRAPH_CAP_S", "600"))
+GT_DECISION_CAP_S = float(os.environ.get("QIP_GT_DECISION_CAP_S", "200"))
+GT_GRAPH_CAP_S = float(os.environ.get("QIP_GT_GRAPH_CAP_S", "900"))
 GT_VERIFY_MIN_SIZE = 20
-GT_TRIES_PER_SLOT = 4
-GT_DEADLINE_S = float(os.environ.get("QIP_GT_DEADLINE_S", "7200"))
+GT_TRIES_PER_SLOT = 3
+GT_DEADLINE_S = float(os.environ.get("QIP_GT_DEADLINE_S", "9000"))
 GT_WORKERS = max(1, min(8, len(os.sched_getaffinity(0))))
 
 TEST_PATH = HERE / "instances.json"
 TRAIN_PATH = WORKSPACE / "data" / "train_instances.json"
-GT_CACHE = WORKSPACE / "outputs" / "gt_mcn_v3_cache.json"
+GT_CACHE = WORKSPACE / "outputs" / "gt_mcn_v4_cache.json"
 GT_TOOL = HERE / "gt_mcn.py"
-TRAIN_OFFSETS = {"qrandomparity_ladder": 11_000_000, "mcn_ladder": 23_000_000, MCN_TAG: 31_000_000}
+TRAIN_OFFSETS = {"qrandomparity_ladder": 11_000_000, "mcn_ladder": 23_000_000, MCN_TAG: 41_000_000}
 
 
 def log(msg: str) -> None:
@@ -135,7 +135,7 @@ def level_digest(exp: str, size: int, instances: list) -> str:
 
 def load(path: Path) -> dict:
     table = json.loads(path.read_text()) if path.exists() else {}
-    for stale in ("cpu_budget_s", "mcn_extension", "mcn_extension_v2"):
+    for stale in ("cpu_budget_s", "mcn_extension", "mcn_extension_v2", "mcn_v3"):
         table.pop(stale, None)
     table.setdefault("experiments", {})
     for exp in ("qrandomparity_ladder", "mcn_ladder"):

@@ -308,8 +308,8 @@ def parity_instance_with_system(n: int, kind: str, seed: int):
 
 
 def mcn_params(num_nodes: int, seed: int) -> dict:
-    """Random undirected graph (average degree 1.5-3) and budgets
-    (vaccinate, attack, protect), each drawn from {1, 2, 3}."""
+    """Random undirected graph (average degree 1.5-3) and budgets:
+    vaccinate in {1, 2, 3}, attack in {1, 2}, protect in {2, 3}."""
     rng = Rng(seed)
     avg_degree = 1.5 + 1.5 * rng.random()
     p = avg_degree / (num_nodes - 1)
@@ -323,8 +323,8 @@ def mcn_params(num_nodes: int, seed: int) -> dict:
         "num_nodes": num_nodes,
         "edges": edges,
         "vaccinate": rng.randint(1, 3),
-        "attack": rng.randint(1, 3),
-        "protect": rng.randint(1, 3),
+        "attack": rng.randint(1, 2),
+        "protect": rng.randint(2, 3),
     }
 
 

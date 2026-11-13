@@ -49,7 +49,7 @@ python3 eval/test/audit/sandbox_check.py
 
 echo "=== instance tables ==="
 start=$(date +%s)
-QIP_GT_DEADLINE_S=${QIP_GT_DEADLINE_S:-5400} python3 eval/test/build_instances.py || { echo "instance build failed"; exit 1; }
+QIP_GT_DEADLINE_S=${QIP_GT_DEADLINE_S:-9000} python3 eval/test/build_instances.py || { echo "instance build failed"; exit 1; }
 echo "tables took $(( $(date +%s) - start ))s"
 
 echo "=== smoke test ==="
