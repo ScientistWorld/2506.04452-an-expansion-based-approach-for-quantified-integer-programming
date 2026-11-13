@@ -32,6 +32,7 @@ def _new_highs(time_limit_s: Optional[float] = None) -> hp.Highs:
     highs = hp.Highs()
     highs.setOptionValue("log_to_console", False)
     highs.setOptionValue("output_flag", False)
+    highs.setOptionValue("threads", 1)
     if time_limit_s is not None:
         highs.setOptionValue("time_limit", max(0.1, float(time_limit_s)))
     return highs

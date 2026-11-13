@@ -13,9 +13,13 @@ with one change:
   highs_only              HiGHS for every subproblem (paper's Problem (2) as a MIP)
   lb_initial_move         lower-bound first move instead of the existential IP
                           relaxation (paper Appendix A.1.3, "LB")
-  tenth_budget            gives up after 10% of the CPU budget
-  guess_false_on_timeout  answers FALSE whenever the reference would time out
-  guess_true_on_timeout   answers TRUE whenever the reference would time out
+  short_timeout           gives up after 3 s of its own CPU time (start-up
+                          included), a fraction of what the budget allows
+  guess_false_on_timeout  stops after 3 s of CPU time and then answers FALSE
+  guess_true_on_timeout   stops after 3 s of CPU time and then answers TRUE
+
+The audit runner copies this file and equips_copy.py into each case's solver
+directory, because the solver sandbox cannot read eval/test/.
 """
 
 from __future__ import annotations
@@ -97,7 +101,7 @@ def _floor_div(num: int, den: int) -> int:
 
 def main() -> None:
     variant, instance, answer_path = sys.argv[1], sys.argv[2], sys.argv[3]
-    budget = float(os.environ.get("QIP_CPU_BUDGET_S", "10"))
+    limit = float(os.environ.get("QIP_WALL_LIMIT_S", "600"))
     if variant in ("cpsat_all", "cpsat_gf2"):
         os.environ["EQUIPS_MIP_BACKEND"] = "cp-sat"
     elif variant == "highs_only":
@@ -125,10 +129,12 @@ def main() -> None:
         }
 
     problem = parse_qlp(instance)
-    timeout = 0.92 * budget - time.process_time() - 0.2
-    if variant == "tenth_budget":
-        timeout = min(timeout, 0.1 * budget)
-    result = eq.solve_qip(problem, timeout_s=max(0.2, timeout))
+    timeout = limit
+    if variant == "short_timeout":
+        timeout = max(0.1, 3.0 - time.process_time())
+    elif variant in ("guess_false_on_timeout", "guess_true_on_timeout"):
+        timeout = max(0.1, 3.0 - time.process_time())
+    result = eq.solve_qip(problem, timeout_s=timeout)
     answer = {"SAT": "TRUE", "UNSAT": "FALSE"}.get(result["status"], "UNKNOWN")
     if answer == "UNKNOWN" and variant == "guess_false_on_timeout":
         answer = "FALSE"

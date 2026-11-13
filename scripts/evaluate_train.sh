@@ -1,7 +1,8 @@
 #!/bin/bash
 # Train-split evaluation: runs every solver on disk on the public train
 # instances (data/train_instances.json) and writes scoring/scores_train.json.
-# Only code in eval/train/ (and the public data/ generator) is used.
+# Only code in eval/train/ (and the public data/ generator) is used.  Same
+# protocol as the hidden test: sandboxed solver, counted instruction budget.
 #
 # Usage:
 #   bash scripts/evaluate_train.sh                 # method/, baseline/, methods/*

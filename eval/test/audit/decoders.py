@@ -14,20 +14,24 @@ Usage: python3 eval/test/audit/decoders.py MODE INSTANCE.qlp ANSWER.json
   combined  gf2, then mcn.
   combined_strict  gf2_strict, then mcn.
 Both decode the generating process rather than solving a QIP.
+
+The audit runner copies this file with variant_solve.py and a copy of the
+hidden generator module (for its exact MCN minimax) into each case's solver
+directory, because the solver sandbox cannot read eval/test/.
 """
 
 from __future__ import annotations
 
 import itertools
 import json
+import os
 import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-WORKSPACE = HERE.parents[2]
+WORKSPACE = Path(os.environ.get("PYTHONPATH", "/home/user").split(os.pathsep)[0])
 sys.path.insert(0, str(WORKSPACE))
 sys.path.insert(0, str(HERE))
-sys.path.insert(0, str(HERE.parent))
 
 from data.qlp import parse_qlp  # noqa: E402
 from data.qrandomparity import Constraint, Variable  # noqa: E402

@@ -11,18 +11,19 @@ Ground truth
 * Parity family: the answer follows from the planted construction and is
   re-derived independently by GF(2) elimination (plus, for the cardinality
   kinds, the cardinality row evaluated on the variables the system pins).
-* MCN family, sizes <= 40: exact bitmask minimax over full-budget choices.
-* MCN family, larger sizes: exact optimum by binary search over the threshold
-  with a hidden copy of an expansion-based CEGAR solver (CP-SAT backend), each
-  decision run to completion within generous caps; graphs whose optimum is not
-  certified within the caps are replaced by fresh seeds.  The CEGAR solver is
-  cross-checked against the bitmask minimax on the largest exact levels first.
-  The extended ladder grows until a level cannot be filled, a time budget is
-  spent, or two consecutive levels are far beyond a 10 s CPU budget for the
-  ground-truth solver itself.  Once finished, the extension is frozen.
-* MCN family, phase 2 (sizes 80 and 96): exact optimum from the bitmask minimax
-  with a long time cap (cross-checked against the CEGAR optima of the phase-1
-  levels), CEGAR as fallback; frozen once finished.
+* MCN family (budgets 1-3 for vaccination, attack and protection): exact
+  optimum of each graph by the bitmask minimax over full-budget choices
+  (``gt_mcn.py bitmask``) when it finishes within ``GT_BITMASK_CAP_S``; such
+  graphs from 20 nodes up are cross-checked by an expansion-based CEGAR solver
+  (CP-SAT backend) deciding K = optimum (TRUE) and K = optimum + 1 (FALSE), and
+  any disagreement aborts the build.  Otherwise the optimum comes from a
+  binary search over K with that CEGAR solver, every decision run to
+  completion within ``GT_DECISION_CAP_S`` (``gt_mcn.py cegar``).  A slot whose
+  graph cannot be certified takes the next seed (up to ``GT_TRIES_PER_SLOT``).
+  The ladder is the longest prefix of ``MCN_SIZES`` whose slots are all
+  certified on both splits within the build deadline; it is then frozen.
+  Graphs are certified in parallel and cached in ``outputs/`` so that an
+  interrupted build resumes.
 
 The builder checks that the public generator in ``data/benchmark.py`` produces
 byte-identical text to the hidden copy on the train split.
@@ -35,11 +36,11 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-import resource
 import subprocess
 import sys
-import tempfile
+import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -48,30 +49,27 @@ sys.path.insert(0, str(HERE))
 
 import qip_hidden_gen as gen  # noqa: E402
 
-CPU_BUDGET_S = 10.0
 PARITY_SIZES = [10, 14, 18, 22, 26, 32, 40, 50, 64, 80, 100, 128, 160, 256, 400, 640, 1000]
 PARITY_KINDS_PER_LEVEL = [
     "paper_false", "paper_true", "gen_true", "gen_true", "gen_false", "gen_false", "card_true", "card_false",
 ]
-MCN_EXACT_SIZES = [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40]
-MCN_EXTENDED_SIZES = [48, 56, 64, 80, 96, 112, 128, 160, 192, 256]
-MCN_ANSWERS_PER_LEVEL = [True, True, False, False]
+MCN_TAG = "mcn_v3"
+MCN_SIZES = [12, 16, 20, 24, 28, 32, 36, 40, 48, 56, 64, 72, 80]
+MCN_ANSWERS_PER_LEVEL = [True, True, True, False, False, False]
 
-GT_DECISION_CAP_S = float(os.environ.get("QIP_GT_DECISION_CAP_S", "100"))
-GT_GRAPH_CAP_S = float(os.environ.get("QIP_GT_GRAPH_CAP_S", "240"))
-GT_TRIES_PER_SLOT = 3
-GT_BEYOND_REACH_S = 3.0 * CPU_BUDGET_S
-GT_DEADLINE_S = float(os.environ.get("QIP_GT_DEADLINE_S", "6000"))
-# phase 2 (sizes above the phase-1 frontier): exact bitmask minimax first,
-# CEGAR as fallback; both are exact, whichever certifies the optimum is used
-GT_BITMASK_CAP_S = float(os.environ.get("QIP_GT_BITMASK_CAP_S", "300"))
-GT_FALLBACK_GRAPH_CAP_S = 150.0
-MCN_V2_SIZES = [80, 96]
+GT_BITMASK_CAP_S = float(os.environ.get("QIP_GT_BITMASK_CAP_S", "60"))
+GT_DECISION_CAP_S = float(os.environ.get("QIP_GT_DECISION_CAP_S", "150"))
+GT_GRAPH_CAP_S = float(os.environ.get("QIP_GT_GRAPH_CAP_S", "600"))
+GT_VERIFY_MIN_SIZE = 20
+GT_TRIES_PER_SLOT = 4
+GT_DEADLINE_S = float(os.environ.get("QIP_GT_DEADLINE_S", "7200"))
+GT_WORKERS = max(1, min(8, len(os.sched_getaffinity(0))))
 
 TEST_PATH = HERE / "instances.json"
 TRAIN_PATH = WORKSPACE / "data" / "train_instances.json"
-GT_CACHE = HERE / ".gt_cache.json"
-TRAIN_OFFSETS = {"qrandomparity_ladder": 11_000_000, "mcn_ladder": 23_000_000}
+GT_CACHE = WORKSPACE / "outputs" / "gt_mcn_v3_cache.json"
+GT_TOOL = HERE / "gt_mcn.py"
+TRAIN_OFFSETS = {"qrandomparity_ladder": 11_000_000, "mcn_ladder": 23_000_000, MCN_TAG: 31_000_000}
 
 
 def log(msg: str) -> None:
@@ -104,7 +102,8 @@ def parity_entry(size: int, kind: str, seed: int) -> dict:
     return {"kind": kind, "seed": seed, "answer": answer, "sha256": gen.sha256_text(text)}
 
 
-def mcn_entry(size: int, answer: bool, seed: int, opt: int, gt: str, gt_cpu=None) -> dict:
+def mcn_entry(size: int, answer: bool, seed: int, cert: dict) -> dict:
+    opt = cert["opt"]
     threshold = opt if answer else opt + 1
     text = gen.mcn_instance(size, seed, threshold)
     entry = {
@@ -113,11 +112,11 @@ def mcn_entry(size: int, answer: bool, seed: int, opt: int, gt: str, gt_cpu=None
         "answer": answer,
         "threshold": threshold,
         "optimum": opt,
-        "ground_truth": gt,
+        "ground_truth": cert["gt"],
         "sha256": gen.sha256_text(text),
     }
-    if gt_cpu is not None:
-        entry["gt_cpu_s"] = round(gt_cpu, 2)
+    if cert.get("crosscheck"):
+        entry["crosscheck"] = cert["crosscheck"]
     return entry
 
 
@@ -130,120 +129,14 @@ def level_digest(exp: str, size: int, instances: list) -> str:
 
 
 # --------------------------------------------------------------------------
-# CEGAR ground truth for large MCN graphs
-# --------------------------------------------------------------------------
-
-
-class CegarTruth:
-    def __init__(self) -> None:
-        os.environ["EQUIPS_MIP_BACKEND"] = "cp-sat"
-        sys.path.insert(0, str(WORKSPACE))
-        sys.path.insert(0, str(HERE / "audit"))
-        import equips_copy as eq  # noqa: E402
-        from data.qlp import parse_qlp  # noqa: E402
-
-        eq._solve_ip_feasible = eq._solve_cp_sat_feasible
-        self.eq = eq
-        self.parse = parse_qlp
-        self.cache = json.loads(GT_CACHE.read_text()) if GT_CACHE.exists() else {}
-
-    def save(self) -> None:
-        GT_CACHE.write_text(json.dumps(self.cache))
-
-    def decide(self, size: int, seed: int, threshold: int, cap: float):
-        text = gen.mcn_instance(size, seed, threshold)
-        with tempfile.NamedTemporaryFile("w", suffix=".qlp", delete=False) as fh:
-            fh.write(text)
-            path = fh.name
-        try:
-            problem = self.parse(path)
-        finally:
-            os.unlink(path)
-        t0 = time.process_time()
-        result = self.eq.solve_qip(problem, timeout_s=max(1.0, cap))
-        cpu = time.process_time() - t0
-        return {"SAT": True, "UNSAT": False}.get(result["status"]), cpu
-
-    def bitmask(self, size: int, seed: int, cap: float):
-        """Exact optimum by the bitmask minimax, in a subprocess with a time cap."""
-        key = f"bm:{size}:{seed}"
-        if key in self.cache:
-            return self.cache[key]
-        code = (f"import sys; sys.path.insert(0, {str(HERE)!r}); import qip_hidden_gen as g; "
-                f"print(g.mcn_optimum(g.mcn_params({size}, {seed})))")
-        before = resource.getrusage(resource.RUSAGE_CHILDREN)
-        try:
-            out = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, timeout=cap)
-            ok = out.returncode == 0 and out.stdout.strip().lstrip("-").isdigit()
-        except subprocess.TimeoutExpired:
-            ok = False
-        after = resource.getrusage(resource.RUSAGE_CHILDREN)
-        cpu = (after.ru_utime + after.ru_stime) - (before.ru_utime + before.ru_stime)
-        result = {"opt": int(out.stdout.strip()), "cpu": cpu} if ok else {"failed": True, "cpu": cpu}
-        self.cache[key] = result
-        self.save()
-        return result
-
-    def optimum(self, size: int, seed: int, graph_cap: float | None = None):
-        key = f"{size}:{seed}"
-        if key in self.cache:
-            return self.cache[key]
-        graph_cap = GT_GRAPH_CAP_S if graph_cap is None else graph_cap
-        params = gen.mcn_params(size, seed)
-        lo, hi = 0, size - params["attack"] + 1  # K=0 is TRUE; K=hi is FALSE by counting
-        times: dict = {}
-        spent = 0.0
-        result = None
-        while hi - lo > 1:
-            mid = (lo + hi) // 2
-            cap = min(GT_DECISION_CAP_S, graph_cap - spent)
-            if cap < 1.0:
-                break
-            answer, cpu = self.decide(size, seed, mid, cap)
-            spent += cpu
-            if answer is None:
-                break
-            times[mid] = cpu
-            if answer:
-                lo = mid
-            else:
-                hi = mid
-        else:
-            result = {"opt": lo, "t_true": times.get(lo, 0.0), "t_false": times.get(hi, 0.0), "spent": spent}
-        if result is None:
-            result = {"failed": True, "spent": spent}
-        self.cache[key] = result
-        self.save()
-        return result
-
-
-def crosscheck(truth: CegarTruth, test: dict) -> bool:
-    """CEGAR optimum must equal the exact bitmask optimum on the largest exact
-    levels: no disagreement, and at least 8 of 12 graphs certified."""
-    levels = {lvl["size"]: lvl for lvl in test["experiments"]["mcn_ladder"]["levels"]}
-    agree = 0
-    for size in (32, 36, 40):
-        for spec in levels[size]["instances"]:
-            res = truth.optimum(size, spec["seed"])
-            if res.get("failed"):
-                log(f"  crosscheck size {size}: not certified within caps")
-                continue
-            if res["opt"] != spec["optimum"]:
-                log(f"  crosscheck size {size}: CEGAR optimum {res['opt']} != exact {spec['optimum']}")
-                return False
-            agree += 1
-    log(f"CEGAR ground truth agrees with the exact minimax on {agree}/12 graphs of sizes 32-40")
-    return agree >= 8
-
-
-# --------------------------------------------------------------------------
 # Tables
 # --------------------------------------------------------------------------
 
 
 def load(path: Path) -> dict:
     table = json.loads(path.read_text()) if path.exists() else {}
-    table["cpu_budget_s"] = CPU_BUDGET_S
+    for stale in ("cpu_budget_s", "mcn_extension", "mcn_extension_v2"):
+        table.pop(stale, None)
     table.setdefault("experiments", {})
     for exp in ("qrandomparity_ladder", "mcn_ladder"):
         table["experiments"].setdefault(exp, {"levels": []})
@@ -278,174 +171,132 @@ def fill_parity(table: dict, seed_fn) -> None:
     exp_table["levels"] = levels
 
 
-def fill_mcn_exact(table: dict, seed_fn) -> None:
-    exp_table = table["experiments"]["mcn_ladder"]
-    existing = {lvl["size"]: lvl for lvl in exp_table["levels"]}
-    levels = []
-    for li, size in enumerate(MCN_EXACT_SIZES):
-        lvl = existing.get(size, {"size": size, "instances": []})
-        while len(lvl["instances"]) < len(MCN_ANSWERS_PER_LEVEL):
-            j = len(lvl["instances"])
-            seed = seed_fn("mcn_ladder", li, j)
-            opt = gen.mcn_optimum(gen.mcn_params(size, seed))
-            lvl["instances"].append(mcn_entry(size, MCN_ANSWERS_PER_LEVEL[j], seed, opt, "bitmask_minimax"))
-        for spec in lvl["instances"]:
-            spec.setdefault("ground_truth", "bitmask_minimax")
-        levels.append(lvl)
-    # keep already-built extended levels
-    levels.extend(lvl for lvl in exp_table["levels"] if lvl["size"] not in MCN_EXACT_SIZES)
-    exp_table["levels"] = levels
+# --------------------------------------------------------------------------
+# MCN ground truth
+# --------------------------------------------------------------------------
 
 
-def build_slot(truth: CegarTruth, size: int, answer: bool, seeds: list):
-    for seed in seeds:
-        res = truth.optimum(size, seed)
-        if res.get("failed"):
-            log(f"    seed {seed}: ground truth not certified within caps ({res['spent']:.0f}s)")
-            continue
-        cpu = res["t_true"] if answer else res["t_false"]
-        return mcn_entry(size, answer, seed, res["opt"], "cegar_cpsat", cpu), res
-    return None, None
+class GroundTruth:
+    def __init__(self) -> None:
+        self.lock = threading.Lock()
+        self.cache = json.loads(GT_CACHE.read_text()) if GT_CACHE.exists() else {}
+        self.start = time.time()
 
+    def _save(self) -> None:
+        GT_CACHE.parent.mkdir(parents=True, exist_ok=True)
+        tmp = GT_CACHE.with_suffix(".tmp")
+        tmp.write_text(json.dumps(self.cache))
+        tmp.replace(GT_CACHE)
 
-def extend_mcn(test: dict, train: dict, secret: int) -> None:
-    meta = test.setdefault("mcn_extension", {})
-    if meta.get("frozen"):
-        log(f"MCN extension frozen: {meta.get('stop_reason')}")
-        return
-    truth = CegarTruth()
-    if not crosscheck(truth, test):
-        meta.update({"frozen": True, "stop_reason": "CEGAR ground truth failed the cross-check; no extension"})
-        log("MCN extension skipped: cross-check failed")
-        return
-    start = time.time()
-    beyond_streak = 0
-    test_levels = test["experiments"]["mcn_ladder"]["levels"]
-    train_levels = train["experiments"]["mcn_ladder"]["levels"]
-    built = {lvl["size"] for lvl in test_levels}
-    stop_reason = "all extended sizes built"
-    for k, size in enumerate(MCN_EXTENDED_SIZES):
-        li = len(MCN_EXACT_SIZES) + k
-        if size in built:
-            times = [spec.get("gt_cpu_s", 0.0) for spec in next(l for l in test_levels if l["size"] == size)["instances"]]
-            beyond_streak = beyond_streak + 1 if sorted(times)[len(times) // 2] > GT_BEYOND_REACH_S else 0
-            continue
-        if beyond_streak >= 2:
-            stop_reason = f"two consecutive levels beyond {GT_BEYOND_REACH_S:.0f}s for the ground-truth solver"
-            break
-        log(f"=== MCN extended size {size} ===")
-        new = {"test": [], "train": []}
-        ok = True
-        for split in ("test", "train"):
-            for j, answer in enumerate(MCN_ANSWERS_PER_LEVEL):
-                if time.time() - start > GT_DEADLINE_S:
-                    ok = False
-                    stop_reason = f"ground-truth time budget spent before size {size} was complete"
-                    break
-                if split == "test":
-                    seeds = [test_seed(secret, "mcn_ladder", li, j, a) for a in range(GT_TRIES_PER_SLOT)]
+    def _tool(self, args: list, timeout: float):
+        try:
+            out = subprocess.run([sys.executable, str(GT_TOOL)] + [str(a) for a in args], capture_output=True,
+                                 text=True, timeout=timeout, cwd=str(WORKSPACE))
+            lines = [l for l in out.stdout.splitlines() if l.strip()]
+            return json.loads(lines[-1]) if out.returncode == 0 and lines else None
+        except (subprocess.TimeoutExpired, ValueError):
+            return None
+
+    def certify(self, size: int, seed: int) -> dict:
+        key = f"{size}:{seed}"
+        with self.lock:
+            if key in self.cache:
+                return self.cache[key]
+        t0 = time.time()
+        bm = self._tool(["bitmask", size, seed], GT_BITMASK_CAP_S)
+        if bm is not None:
+            res = {"opt": bm["opt"], "gt": "bitmask_minimax"}
+            if size >= GT_VERIFY_MIN_SIZE:
+                v = self._tool(["verify", size, seed, bm["opt"], GT_DECISION_CAP_S], 2 * GT_DECISION_CAP_S + 60)
+                if v is None or v["at_opt"] is None or v["above_opt"] is None:
+                    res["crosscheck"] = "cegar_unfinished"
+                elif v["at_opt"] is True and v["above_opt"] is False:
+                    res["crosscheck"] = "cegar_agrees"
                 else:
-                    seeds = [train_seed("mcn_ladder", li, j, a) for a in range(GT_TRIES_PER_SLOT)]
-                entry, res = build_slot(truth, size, answer, seeds)
-                if entry is None:
-                    ok = False
-                    stop_reason = f"no certified graph for a slot at size {size}"
-                    break
-                log(f"  {split} slot {j} ({'TRUE' if answer else 'FALSE'}): opt={res['opt']} "
-                    f"decision cpu={entry['gt_cpu_s']}s (graph total {res['spent']:.0f}s)")
-                new[split].append(entry)
-            if not ok:
-                break
-        if not ok:
-            break
-        test_levels.append({"size": size, "instances": new["test"]})
-        train_levels.append({"size": size, "instances": new["train"]})
-        save(TEST_PATH, test, hidden=True)
-        save(TRAIN_PATH, train, hidden=False)
-        times = sorted(e["gt_cpu_s"] for e in new["test"])
-        beyond_streak = beyond_streak + 1 if times[len(times) // 2] > GT_BEYOND_REACH_S else 0
-        log(f"  size {size} done; test decision cpu {times}; elapsed {time.time() - start:.0f}s")
-    meta.update({"frozen": True, "stop_reason": stop_reason, "elapsed_s": round(time.time() - start)})
-    log(f"MCN extension finished: {stop_reason}")
-    if GT_CACHE.exists():
-        GT_CACHE.unlink()
+                    res = {"mismatch": True, "bitmask": bm, "cegar": v}
+        else:
+            cg = self._tool(["cegar", size, seed, GT_DECISION_CAP_S, GT_GRAPH_CAP_S], GT_GRAPH_CAP_S + 120)
+            if cg is None or cg.get("failed"):
+                res = {"failed": True}
+            else:
+                res = {"opt": cg["opt"], "gt": "cegar_cpsat"}
+        res["wall_s"] = round(time.time() - t0, 1)
+        with self.lock:
+            self.cache[key] = res
+            self._save()
+        return res
 
 
-def extend_mcn_v2(test: dict, train: dict, secret: int) -> None:
-    """Phase 2: sizes above the phase-1 frontier, exact optimum from the bitmask
-    minimax (cross-checked against the CEGAR optima of the phase-1 levels) with
-    the CEGAR solver as fallback."""
-    meta = test.setdefault("mcn_extension_v2", {})
+def build_mcn(test: dict, train: dict, secret: int) -> None:
+    meta = test.get(MCN_TAG, {})
     if meta.get("frozen"):
-        log(f"MCN extension (phase 2) frozen: {meta.get('stop_reason')}")
+        log(f"MCN ladder frozen: {meta.get('stop_reason')}")
         return
-    truth = CegarTruth()
-    agree = 0
-    for table in (test, train):
-        for lvl in table["experiments"]["mcn_ladder"]["levels"]:
-            if lvl["size"] not in MCN_EXTENDED_SIZES:
-                continue
-            for spec in lvl["instances"]:
-                res = truth.bitmask(lvl["size"], spec["seed"], 120.0)
-                if res.get("failed"):
-                    continue
-                if res["opt"] != spec["optimum"]:
-                    meta.update({"frozen": True, "stop_reason": f"bitmask/CEGAR disagreement at size {lvl['size']}"})
-                    log(f"phase 2 skipped: bitmask optimum {res['opt']} != CEGAR optimum {spec['optimum']}")
-                    return
-                agree += 1
-    log(f"bitmask minimax agrees with the CEGAR optimum on {agree} phase-1 graphs")
-    if agree < 12:
-        meta.update({"frozen": True, "stop_reason": "too few phase-1 graphs certified by the bitmask minimax"})
-        return
-    start = time.time()
-    test_levels = test["experiments"]["mcn_ladder"]["levels"]
-    train_levels = train["experiments"]["mcn_ladder"]["levels"]
-    stop_reason = "all phase-2 sizes built"
-    for size in MCN_V2_SIZES:
-        if size in {lvl["size"] for lvl in test_levels}:
-            continue
-        li = len(MCN_EXACT_SIZES) + MCN_EXTENDED_SIZES.index(size)
-        log(f"=== MCN extended size {size} (phase 2) ===")
-        new = {"test": [], "train": []}
-        ok = True
-        for split in ("test", "train"):
-            for j, answer in enumerate(MCN_ANSWERS_PER_LEVEL):
-                if time.time() - start > GT_DEADLINE_S:
-                    ok, stop_reason = False, f"ground-truth time budget spent before size {size} was complete"
-                    break
-                entry = None
-                for a in range(GT_TRIES_PER_SLOT):
-                    seed = test_seed(secret, "mcn_ladder", li, j, a) if split == "test" else train_seed("mcn_ladder", li, j, a)
-                    bm = truth.bitmask(size, seed, GT_BITMASK_CAP_S)
-                    if not bm.get("failed"):
-                        entry = mcn_entry(size, answer, seed, bm["opt"], "bitmask_minimax", bm["cpu"])
-                        log(f"  {split} slot {j}: opt={bm['opt']} by bitmask minimax in {bm['cpu']:.0f}s")
-                        break
-                    res = truth.optimum(size, seed, GT_FALLBACK_GRAPH_CAP_S)
-                    if not res.get("failed"):
-                        cpu = res["t_true"] if answer else res["t_false"]
-                        entry = mcn_entry(size, answer, seed, res["opt"], "cegar_cpsat", cpu)
-                        log(f"  {split} slot {j}: opt={res['opt']} by CEGAR (decision cpu {cpu:.1f}s)")
-                        break
-                    log(f"    seed {seed}: not certified (bitmask {bm['cpu']:.0f}s, CEGAR {res['spent']:.0f}s)")
-                if entry is None:
-                    ok, stop_reason = False, f"no certified graph for a slot at size {size}"
-                    break
-                new[split].append(entry)
-            if not ok:
-                break
-        if not ok:
+    gt = GroundTruth()
+    deadline = gt.start + GT_DEADLINE_S
+    stop = {"size": None}
+    slots = {}  # (split, size, j) -> entry or None
+
+    def fill(split: str, li: int, size: int, j: int, answer: bool):
+        for attempt in range(GT_TRIES_PER_SLOT):
+            if stop["size"] is not None and size > stop["size"]:
+                return None
+            if time.time() > deadline:
+                return None
+            seed = test_seed(secret, MCN_TAG, li, j, attempt) if split == "test" else train_seed(MCN_TAG, li, j, attempt)
+            cert = gt.certify(size, seed)
+            if cert.get("mismatch"):
+                raise RuntimeError(f"bitmask/CEGAR disagreement on MCN size {size} seed {seed}: {cert}")
+            if not cert.get("failed"):
+                return mcn_entry(size, answer, seed, cert)
+            log(f"    {split} size {size} slot {j}: seed {seed} not certified ({cert['wall_s']}s)")
+        return None
+
+    def task(split, li, size, j, answer):
+        entry = fill(split, li, size, j, answer)
+        slots[(split, size, j)] = entry
+        if entry is None and time.time() <= deadline:
+            with gt.lock:
+                if stop["size"] is None or size < stop["size"]:
+                    stop["size"] = size
+        elif entry is not None:
+            log(f"  {split} size {size} slot {j}: opt={entry['optimum']} ({entry['ground_truth']}"
+                f"{', ' + entry['crosscheck'] if entry.get('crosscheck') else ''})")
+
+    jobs = [(split, li, size, j, answer)
+            for li, size in enumerate(MCN_SIZES)
+            for split in ("test", "train")
+            for j, answer in enumerate(MCN_ANSWERS_PER_LEVEL)]
+    with ThreadPoolExecutor(max_workers=GT_WORKERS) as pool:
+        futures = [pool.submit(task, *job) for job in jobs]
+        for f in futures:
+            f.result()
+
+    test_levels, train_levels = [], []
+    stop_reason = "all sizes built"
+    for size in MCN_SIZES:
+        tl = [slots.get(("test", size, j)) for j in range(len(MCN_ANSWERS_PER_LEVEL))]
+        rl = [slots.get(("train", size, j)) for j in range(len(MCN_ANSWERS_PER_LEVEL))]
+        if any(e is None for e in tl + rl):
+            stop_reason = f"size {size}: a slot could not be certified (caps or deadline)"
             break
-        test_levels.append({"size": size, "instances": new["test"]})
-        train_levels.append({"size": size, "instances": new["train"]})
-        save(TEST_PATH, test, hidden=True)
-        save(TRAIN_PATH, train, hidden=False)
-        log(f"  size {size} done; elapsed {time.time() - start:.0f}s")
-    meta.update({"frozen": True, "stop_reason": stop_reason, "elapsed_s": round(time.time() - start)})
-    log(f"MCN extension (phase 2) finished: {stop_reason}")
-    if GT_CACHE.exists():
-        GT_CACHE.unlink()
+        test_levels.append({"size": size, "instances": tl})
+        train_levels.append({"size": size, "instances": rl})
+    test["experiments"]["mcn_ladder"]["levels"] = test_levels
+    train["experiments"]["mcn_ladder"]["levels"] = train_levels
+    counts: dict = {}
+    for lvl in test_levels + train_levels:
+        for spec in lvl["instances"]:
+            k = spec["ground_truth"] + ("/" + spec["crosscheck"] if spec.get("crosscheck") else "")
+            counts[k] = counts.get(k, 0) + 1
+    test[MCN_TAG] = {
+        "frozen": True,
+        "stop_reason": stop_reason,
+        "elapsed_s": round(time.time() - gt.start),
+        "ground_truth_counts": counts,
+        "caps_s": {"bitmask": GT_BITMASK_CAP_S, "decision": GT_DECISION_CAP_S, "graph": GT_GRAPH_CAP_S},
+    }
+    log(f"MCN ladder built: sizes {[l['size'] for l in test_levels]} ({stop_reason}); ground truth {counts}")
 
 
 def check_public_generator(train: dict) -> None:
@@ -472,29 +323,18 @@ def main() -> None:
 
     fill_parity(test, lambda exp, li, j: test_seed(secret, exp, li, j))
     fill_parity(train, train_seed)
-    fill_mcn_exact(test, lambda exp, li, j: test_seed(secret, exp, li, j))
-    fill_mcn_exact(train, train_seed)
+    if not test.get(MCN_TAG, {}).get("frozen"):
+        # MCN levels of earlier ladders (other budgets) are replaced
+        test["experiments"]["mcn_ladder"]["levels"] = []
+        train["experiments"]["mcn_ladder"]["levels"] = []
     save(TEST_PATH, test, hidden=True)
     save(TRAIN_PATH, train, hidden=False)
-    check_public_generator(train)
 
-    if "--freeze-extension" in sys.argv:
-        meta = test.setdefault("mcn_extension", {})
-        if not meta.get("frozen"):
-            meta.update({"frozen": True, "stop_reason": "builder stopped abnormally; extension kept as built"})
-        meta2 = test.setdefault("mcn_extension_v2", {})
-        if not meta2.get("frozen"):
-            meta2.update({"frozen": True, "stop_reason": "builder stopped abnormally; extension kept as built"})
-        if GT_CACHE.exists():
-            GT_CACHE.unlink()
-        save(TEST_PATH, test, hidden=True)
-    elif "--no-extend" not in sys.argv:
-        extend_mcn(test, train, secret)
+    if "--no-extend" not in sys.argv:
+        build_mcn(test, train, secret)
         save(TEST_PATH, test, hidden=True)
         save(TRAIN_PATH, train, hidden=False)
-        extend_mcn_v2(test, train, secret)
-        save(TEST_PATH, test, hidden=True)
-        save(TRAIN_PATH, train, hidden=False)
+    check_public_generator(train)
 
     for name, table in (("test", test), ("train", train)):
         for exp, exp_table in table["experiments"].items():

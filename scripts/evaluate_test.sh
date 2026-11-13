@@ -8,7 +8,8 @@
 #
 # A solver directory holds solver.json: {"name": ..., "command": [...]}.
 # The evaluator calls `command + [instance.qlp, answer.json]` from the
-# workspace root and measures CPU time itself.
+# workspace root inside a sandbox and counts the instructions of the solver's
+# whole process tree itself (budget per instance; see eval/test/evaluate.py).
 # Optional: QIP_DETAILS_OUTPUT=path writes per-level diagnostics;
 # QIP_CHECKPOINT=path lets an interrupted run resume finished levels.
 

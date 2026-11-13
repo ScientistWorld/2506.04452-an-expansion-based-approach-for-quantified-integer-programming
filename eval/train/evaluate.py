@@ -8,40 +8,49 @@ only what it observes:
 
 * Instances are QIP decision problems in QLP format, regenerated from the
   public table ``data/train_instances.json`` by ``data/benchmark.py`` and
-  checked against stored text hashes.
+  checked against stored text hashes.  As in the hidden test, the solver runs
+  in a sandbox that cannot read ``eval/test/``.
 * Each solver is a directory with a ``solver.json`` manifest
   (``{"name": ..., "command": [...]}``).  The evaluator calls
-  ``command + [instance.qlp, answer.json]`` from the workspace root with
-  ``QIP_CPU_BUDGET_S`` in the environment, under a CPU-time limit and a
-  wall-clock watchdog, and reads ``{"answer": "TRUE" | "FALSE" | "UNKNOWN"}``.
-* An instance counts as solved only if the decision is correct and the solver
-  process tree used at most the CPU budget (measured by the evaluator, which
-  also kills and reaps detached descendants and counts their CPU time).
-* Any wrong decisive answer fails the whole run: the solver then scores the
-  worst value (0) in every experiment.  A missing/invalid manifest also scores
-  the worst value, so a method that is absent never ties a working one.
+  ``command + [instance.qlp, answer.json]`` from the workspace root inside the
+  sandbox of ``sandbox.py`` and reads ``{"answer": "TRUE" | "FALSE" | "UNKNOWN"}``.
+* Budget: ``BUDGET_INSTRUCTIONS`` user-space instructions per instance,
+  counted by a hardware counter over the solver's whole process tree (threads,
+  children, detached descendants).  The count does not depend on the speed or
+  load of the machine, so a rerun anywhere gives the same result.  The tree is
+  killed when it passes the budget; a wall-clock watchdog (``WALL_LIMIT_S``)
+  only guards against solvers that wait instead of computing.
+* An instance counts as solved only if the solver finished within the budget
+  and its decision is correct.  Any wrong decision fails the whole run: the
+  solver then scores the worst value (0) in every experiment.  A
+  missing/invalid manifest also scores 0, so a method that is absent never
+  ties a working one.  An answer left by a solver that was killed (budget or
+  watchdog) is ignored.
+* Instances of a level are run in an order drawn at random for every
+  evaluation; the solver may write only inside its private working directory,
+  which is deleted after the instance, so nothing carries over between runs.
 * Each experiment is a size ladder.  After two consecutive levels with no
   solved instance, the remaining (larger) levels are counted as unsolved
   without running them.
 
 Default solver slots (no ``--solver`` argument): ``method/`` (always scored,
 even if broken), ``baseline/`` and every directory under ``methods/``.
+Solvers are evaluated concurrently (each one instance at a time); the
+counted budget makes this independent of the machine's load.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
-import math
 import os
+import random
 import re
-import resource
 import shutil
-import signal
 import subprocess
 import sys
 import tempfile
-import time
+import threading
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -51,12 +60,16 @@ sys.path.insert(0, str(WORKSPACE))
 import data.benchmark as gen  # noqa: E402
 
 TABLE_PATH = WORKSPACE / "data" / "train_instances.json"
+HIDDEN_DIR = WORKSPACE / "eval" / "test"
+SANDBOX = HERE / "sandbox.py"
 EXPERIMENTS = ("qrandomparity_ladder", "mcn_ladder")
 METRIC = "instances_solved"
-CPU_BUDGET_S = 10.0
-WALL_LIMIT_S = 2.0 * CPU_BUDGET_S + 5.0
+BUDGET_INSTRUCTIONS = 60_000_000_000
+WALL_LIMIT_S = 90.0
+CPU_LIMIT_S = 120
 ZERO_LEVELS_BEFORE_STOP = 2
 MAX_ANSWER_BYTES = 1_000_000
+MAX_WORKERS = 8
 NAME_RE = re.compile(r"^[A-Za-z0-9_.\-]{1,64}$")
 
 
@@ -131,60 +144,24 @@ def read_manifest(slot: Path) -> tuple[str, list | None, str | None]:
 # --------------------------------------------------------------------------
 
 
-def _limits() -> None:
-    soft = int(math.ceil(CPU_BUDGET_S)) + 1
-    resource.setrlimit(resource.RLIMIT_CPU, (soft, soft + 1))
-    resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
-
-
-def _become_subreaper() -> None:
-    """Orphaned descendants of a solver are re-parented to this process (not to
-    init), so they can be killed and reaped here and their CPU time counted."""
-    try:
-        import ctypes
-
-        libc = ctypes.CDLL(None, use_errno=True)
-        libc.prctl(36, 1, 0, 0, 0)  # PR_SET_CHILD_SUBREAPER
-    except Exception:  # noqa: BLE001
-        pass
-
-
-def _child_pids() -> list:
-    me = os.getpid()
-    pids = []
-    for entry in os.listdir("/proc"):
-        if not entry.isdigit():
-            continue
-        try:
-            with open(f"/proc/{entry}/stat") as fh:
-                stat = fh.read()
-            if int(stat.rsplit(")", 1)[1].split()[1]) == me:
-                pids.append(int(entry))
-        except (OSError, ValueError, IndexError):
-            continue
-    return pids
-
-
-def _reap_strays() -> None:
-    """Kill and reap every remaining descendant (detached or not)."""
-    for _ in range(100):
-        try:
-            pid, _status = os.waitpid(-1, os.WNOHANG)
-        except ChildProcessError:
-            return
-        if pid:
-            continue
-        for child in _child_pids():
-            try:
-                os.kill(child, signal.SIGKILL)
-            except (ProcessLookupError, PermissionError):
-                pass
-        time.sleep(0.01)
-
-
-def _children_cpu() -> float:
-    usage = resource.getrusage(resource.RUSAGE_CHILDREN)
-    return usage.ru_utime + usage.ru_stime
+def solver_env(run_dir: Path) -> dict:
+    env = {
+        "PATH": os.environ.get("PATH", "/usr/local/bin:/usr/bin:/bin"),
+        "HOME": str(run_dir),
+        "TMPDIR": str(run_dir),
+        "LANG": "C.UTF-8",
+        "LC_ALL": "C.UTF-8",
+        "PYTHONPATH": str(WORKSPACE),
+        "PYTHONHASHSEED": "0",
+        "OMP_NUM_THREADS": "1",
+        "OPENBLAS_NUM_THREADS": "1",
+        "MKL_NUM_THREADS": "1",
+        "QIP_INSTRUCTION_BUDGET": str(BUDGET_INSTRUCTIONS),
+        "QIP_WALL_LIMIT_S": str(WALL_LIMIT_S),
+    }
+    if os.environ.get("LD_LIBRARY_PATH"):
+        env["LD_LIBRARY_PATH"] = os.environ["LD_LIBRARY_PATH"]
+    return env
 
 
 def _read_answer(path: Path):
@@ -206,60 +183,49 @@ def _read_answer(path: Path):
     return None
 
 
-def run_instance(command: list, text: str) -> dict:
-    tmp = Path(tempfile.mkdtemp(prefix="qip_eval_"))
-    instance = tmp / "instance.qlp"
-    answer_path = tmp / "answer.json"
-    instance.write_text(text)
-    env = dict(os.environ)
-    env["PYTHONPATH"] = str(WORKSPACE) + (os.pathsep + env["PYTHONPATH"] if env.get("PYTHONPATH") else "")
-    env["QIP_CPU_BUDGET_S"] = str(CPU_BUDGET_S)
-    log_path = tmp / "solver.log"
-    cpu_before = _children_cpu()
-    start = time.monotonic()
-    killed = False
+def run_instance(command: list, text: str, scratch: Path) -> dict:
+    run_dir = Path(tempfile.mkdtemp(prefix="run_", dir=str(scratch)))
     try:
-        with log_path.open("wb") as log:
-            proc = subprocess.Popen(
-                command + [str(instance), str(answer_path)],
-                cwd=str(WORKSPACE),
-                env=env,
-                stdin=subprocess.DEVNULL,
-                stdout=log,
-                stderr=subprocess.STDOUT,
-                start_new_session=True,
-                preexec_fn=_limits,
-            )
-            try:
-                proc.wait(timeout=WALL_LIMIT_S)
-            except subprocess.TimeoutExpired:
-                killed = True
-            finally:
-                try:
-                    os.killpg(proc.pid, signal.SIGKILL)
-                except (ProcessLookupError, PermissionError):
-                    pass
-                proc.wait()
-                _reap_strays()
-        wall = time.monotonic() - start
-        cpu = _children_cpu() - cpu_before
-        answer = _read_answer(answer_path)
-        tail = ""
-        if answer is None:
-            raw = log_path.read_bytes()[-400:]
-            tail = raw.decode("utf-8", "replace")
-        return {
-            "answer": answer,
-            "cpu_s": cpu,
-            "wall_s": wall,
-            "killed": killed,
-            "returncode": proc.returncode,
-            "log_tail": tail,
+        instance = run_dir / "instance.qlp"
+        answer_path = run_dir / "answer.json"
+        log_path = scratch / (run_dir.name + ".log")
+        instance.write_text(text)
+        job = {
+            "command": command + [str(instance), str(answer_path)],
+            "cwd": str(WORKSPACE),
+            "env": solver_env(run_dir),
+            "log": str(log_path),
+            "budget": BUDGET_INSTRUCTIONS,
+            "wall_limit_s": WALL_LIMIT_S,
+            "cpu_limit_s": CPU_LIMIT_S,
+            "hide": [str(HIDDEN_DIR), str(scratch)],
+            "writable": [str(run_dir)],
         }
-    except OSError as exc:
-        return {"answer": None, "cpu_s": 0.0, "wall_s": 0.0, "killed": False, "returncode": None, "log_tail": str(exc)}
+        try:
+            proc = subprocess.run(
+                [sys.executable, "-I", str(SANDBOX)], input=json.dumps(job), capture_output=True, text=True,
+                timeout=WALL_LIMIT_S + 120,
+            )
+            lines = [l for l in proc.stdout.splitlines() if l.strip()]
+            res = json.loads(lines[-1]) if lines else None
+        except (subprocess.TimeoutExpired, ValueError, OSError):
+            res = None
+        if not isinstance(res, dict) or not isinstance(res.get("instructions"), int):
+            return {"error": "sandbox failed", "instructions": None, "answer": None}
+        finished = not res["over_budget"] and not res["wall_killed"]
+        res["answer"] = _read_answer(answer_path) if finished else None
+        if res["answer"] is None:
+            try:
+                res["log_tail"] = log_path.read_bytes()[-300:].decode("utf-8", "replace")
+            except OSError:
+                pass
+        return res
     finally:
-        shutil.rmtree(tmp, ignore_errors=True)
+        shutil.rmtree(run_dir, ignore_errors=True)
+        try:
+            (scratch / (run_dir.name + ".log")).unlink()
+        except OSError:
+            pass
 
 
 # --------------------------------------------------------------------------
@@ -270,6 +236,8 @@ def run_instance(command: list, text: str) -> dict:
 class Checkpoint:
     """Optional per-level progress file so an interrupted evaluation resumes
     where it stopped (the same instances; only finished levels are reused)."""
+
+    _lock = threading.Lock()
 
     def __init__(self, path):
         self.path = Path(path) if path else None
@@ -282,22 +250,43 @@ class Checkpoint:
 
     def put(self, key, value) -> None:
         if self.path:
-            self.data[key] = value
-            self.path.parent.mkdir(parents=True, exist_ok=True)
-            tmp = self.path.with_suffix(".tmp")
-            tmp.write_text(json.dumps(self.data))
-            tmp.replace(self.path)
+            with self._lock:
+                self.data[key] = value
+                self.path.parent.mkdir(parents=True, exist_ok=True)
+                tmp = self.path.with_suffix(".tmp")
+                tmp.write_text(json.dumps(self.data))
+                tmp.replace(self.path)
 
 
-def evaluate_solver(name: str, command: list | None, error: str | None, ladders: dict, ckpt: Checkpoint | None = None) -> dict:
+def _record(out: dict, truth: bool) -> dict:
+    """Per-instance record (no instance identity, no answer)."""
+    rec = {
+        "instructions": out.get("instructions"),
+        "correct": None if out.get("answer") is None else out["answer"] == truth,
+        "over_budget": out.get("over_budget"),
+        "wall_killed": out.get("wall_killed"),
+        "cpu_s": out.get("cpu_s"),
+        "wall_s": out.get("wall_s"),
+        "mode": out.get("mode"),
+    }
+    if out.get("error"):
+        rec["error"] = out["error"]
+    if out.get("log_tail") and out.get("answer") is None and not out.get("over_budget"):
+        rec["log_tail"] = out["log_tail"][-200:]
+    return rec
+
+
+def evaluate_solver(name: str, command: list | None, error: str | None, ladders: dict, scratch: Path,
+                    ckpt: Checkpoint | None = None, log=print) -> dict:
     worst = {exp: 0 for exp in EXPERIMENTS}
     ckpt = ckpt or Checkpoint(None)
     if command is None:
         return {"name": name, "failed": True, "reason": error, "metrics": worst, "levels": {}}
     if ckpt.get(f"{name}|failed"):
         reason = ckpt.get(f"{name}|failed")
-        print(f"  {name}: {reason} -> run failed (resumed)", flush=True)
+        log(f"  {name}: {reason} -> run failed (resumed)")
         return {"name": name, "failed": True, "reason": reason, "metrics": worst, "levels": {}}
+    rng = random.SystemRandom()
     levels_out: dict = {}
     metrics: dict = {}
     for exp in EXPERIMENTS:
@@ -311,30 +300,40 @@ def evaluate_solver(name: str, command: list | None, error: str | None, ladders:
             done = ckpt.get(f"{name}|{exp}|{size}")
             if done is not None and done.get("of") == len(items):
                 levels_out[exp].append(done)
-                print(f"  {name}: {exp} size={size}: {done['solved']}/{len(items)} solved (resumed)", flush=True)
+                log(f"  {name}: {exp} size={size}: {done['solved']}/{len(items)} solved (resumed)")
                 solved_total += done["solved"]
                 zero_streak = zero_streak + 1 if done["solved"] == 0 else 0
                 continue
+            order = list(range(len(items)))
+            rng.shuffle(order)
+            records: list = [None] * len(items)
             solved = 0
-            unknown = 0
-            cpu_total = 0.0
-            for text, truth in items:
-                out = run_instance(command, text)
-                cpu_total += out["cpu_s"]
-                if out["answer"] is None:
-                    unknown += 1
+            for idx in order:
+                text, truth = items[idx]
+                out = run_instance(command, text, scratch)
+                records[idx] = _record(out, truth)
+                if out.get("answer") is None:
                     continue
                 if out["answer"] != truth:
                     reason = f"wrong decision on {exp} at size {size}"
-                    print(f"  {name}: {reason} -> run failed", flush=True)
+                    log(f"  {name}: {reason} -> run failed")
                     ckpt.put(f"{name}|failed", reason)
                     return {"name": name, "failed": True, "reason": reason, "metrics": worst, "levels": levels_out}
-                if out["cpu_s"] <= CPU_BUDGET_S and not out["killed"]:
-                    solved += 1
-            record = {"size": size, "solved": solved, "of": len(items), "no_answer": unknown, "cpu_s": round(cpu_total, 2)}
+                solved += 1
+            counts = [r["instructions"] for r in records if r["instructions"] is not None]
+            record = {
+                "size": size, "solved": solved, "of": len(items),
+                "instructions_total": sum(counts), "modes": sorted({r["mode"] for r in records if r.get("mode")}),
+                "instances": records,
+            }
             levels_out[exp].append(record)
             ckpt.put(f"{name}|{exp}|{size}", record)
-            print(f"  {name}: {exp} size={size}: {solved}/{len(items)} solved", flush=True)
+            note = ""
+            if any(r.get("error") for r in records):
+                note += " [sandbox errors]"
+            if "cpu" in record["modes"]:
+                note += " [no instruction counter: CPU-time fallback]"
+            log(f"  {name}: {exp} size={size}: {solved}/{len(items)} solved{note}")
             solved_total += solved
             zero_streak = zero_streak + 1 if solved == 0 else 0
         metrics[exp] = solved_total
@@ -349,24 +348,65 @@ def main() -> None:
     parser.add_argument("--checkpoint", default=None, help="Optional per-level progress file (resume after interruption).")
     args = parser.parse_args()
 
-    _become_subreaper()
     ladders = load_ladders()
     slots = [Path(s).resolve() for s in args.solver] if args.solver else default_slots()
 
-    results: dict = {}
-    details: dict = {}
+    entries = []
+    taken: set = set()
     for slot in slots:
         name, command, error = read_manifest(slot)
         key = name
         suffix = 2
-        while key in results:
+        while key in taken:
             key = f"{name}_{suffix}"
             suffix += 1
-        print(f"Evaluating {key} ({slot})", flush=True)
-        res = evaluate_solver(key, command, error, ladders, Checkpoint(args.checkpoint))
-        results[key] = res["metrics"]
-        details[key] = {k: v for k, v in res.items() if k != "metrics"} | {"metrics": res["metrics"], "slot": str(slot)}
-        print(f"  {key}: {res['metrics']}" + (f" (FAILED: {res['reason']})" if res["failed"] else ""), flush=True)
+        taken.add(key)
+        entries.append((key, slot, command, error))
+
+    print_lock = threading.Lock()
+
+    def log(msg: str) -> None:
+        with print_lock:
+            print(msg, flush=True)
+
+    scratch = Path(tempfile.mkdtemp(prefix="qip_eval_"))
+    ckpt = Checkpoint(args.checkpoint)
+    results: dict = {}
+    details: dict = {}
+    try:
+        def work(entry):
+            key, slot, command, error = entry
+            log(f"Evaluating {key} ({slot})")
+            res = evaluate_solver(key, command, error, ladders, scratch, ckpt, log)
+            log(f"  {key}: {res['metrics']}" + (f" (FAILED: {res['reason']})" if res["failed"] else ""))
+            return key, slot, res
+
+        workers = max(1, min(MAX_WORKERS, len(entries), len(os.sched_getaffinity(0))))
+        threads_out: dict = {}
+        errors: list = []
+        sem = threading.Semaphore(workers)
+
+        def guarded(entry):
+            with sem:
+                try:
+                    key, slot, res = work(entry)
+                    threads_out[key] = (slot, res)
+                except BaseException as exc:  # noqa: BLE001 - re-raised below
+                    errors.append(exc)
+
+        threads = [threading.Thread(target=guarded, args=(e,)) for e in entries]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+        if errors:
+            raise errors[0]
+        for key, slot, _command, _error in entries:
+            slot_, res = threads_out[key]
+            results[key] = res["metrics"]
+            details[key] = {k: v for k, v in res.items() if k != "metrics"} | {"metrics": res["metrics"], "slot": str(slot_)}
+    finally:
+        shutil.rmtree(scratch, ignore_errors=True)
 
     scores = {
         "experiments": {
@@ -380,7 +420,7 @@ def main() -> None:
     if args.details_output:
         dpath = Path(args.details_output)
         dpath.parent.mkdir(parents=True, exist_ok=True)
-        dpath.write_text(json.dumps(details, indent=2) + "\n")
+        dpath.write_text(json.dumps({"budget_instructions": BUDGET_INSTRUCTIONS, "solvers": details}, indent=1) + "\n")
     print(f"Wrote {out}")
 
 
