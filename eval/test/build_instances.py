@@ -14,7 +14,7 @@ Ground truth
 * MCN family (vaccination budget 1-3, attack 1-2, protection 2-3): exact
   optimum of each graph by the bitmask minimax over full-budget choices
   (``gt_mcn.py bitmask``) when it finishes within ``GT_BITMASK_CAP_S``; such
-  graphs from 20 nodes up are cross-checked by an expansion-based CEGAR solver
+  graphs of 20-56 nodes are cross-checked by an expansion-based CEGAR solver
   (CP-SAT backend) deciding K = optimum (TRUE) and K = optimum + 1 (FALSE), and
   any disagreement aborts the build.  Otherwise the optimum comes from a
   binary search over K with that CEGAR solver, every decision run to
@@ -29,6 +29,7 @@ The builder checks that the public generator in ``data/benchmark.py`` produces
 byte-identical text to the hidden copy on the train split.
 
 Idempotent: existing entries are reused, missing ones are filled in.
+``--extend-mcn`` reopens a frozen MCN ladder to add sizes (built slots stay).
 """
 
 from __future__ import annotations
@@ -57,11 +58,12 @@ MCN_TAG = "mcn_v4"
 MCN_SIZES = [16, 24, 32, 40, 48, 56, 64, 72, 80, 96]
 MCN_ANSWERS_PER_LEVEL = [True, True, True, False, False, False]
 
-GT_BITMASK_CAP_S = float(os.environ.get("QIP_GT_BITMASK_CAP_S", "60"))
+GT_BITMASK_CAP_S = float(os.environ.get("QIP_GT_BITMASK_CAP_S", "180"))
 GT_DECISION_CAP_S = float(os.environ.get("QIP_GT_DECISION_CAP_S", "200"))
 GT_GRAPH_CAP_S = float(os.environ.get("QIP_GT_GRAPH_CAP_S", "900"))
 GT_VERIFY_MIN_SIZE = 20
-GT_TRIES_PER_SLOT = 3
+GT_VERIFY_MAX_SIZE = 56
+GT_TRIES_PER_SLOT = 6
 GT_DEADLINE_S = float(os.environ.get("QIP_GT_DEADLINE_S", "9000"))
 GT_WORKERS = max(1, min(8, len(os.sched_getaffinity(0))))
 
@@ -199,14 +201,17 @@ class GroundTruth:
 
     def certify(self, size: int, seed: int) -> dict:
         key = f"{size}:{seed}"
+        caps = [GT_BITMASK_CAP_S, GT_DECISION_CAP_S, GT_GRAPH_CAP_S]
         with self.lock:
-            if key in self.cache:
-                return self.cache[key]
+            hit = self.cache.get(key)
+            # a graph that failed under smaller caps is tried again
+            if hit is not None and not (hit.get("failed") and hit.get("caps") != caps):
+                return hit
         t0 = time.time()
         bm = self._tool(["bitmask", size, seed], GT_BITMASK_CAP_S)
         if bm is not None:
             res = {"opt": bm["opt"], "gt": "bitmask_minimax"}
-            if size >= GT_VERIFY_MIN_SIZE:
+            if GT_VERIFY_MIN_SIZE <= size <= GT_VERIFY_MAX_SIZE:
                 v = self._tool(["verify", size, seed, bm["opt"], GT_DECISION_CAP_S], 2 * GT_DECISION_CAP_S + 60)
                 if v is None or v["at_opt"] is None or v["above_opt"] is None:
                     res["crosscheck"] = "cegar_unfinished"
@@ -217,7 +222,7 @@ class GroundTruth:
         else:
             cg = self._tool(["cegar", size, seed, GT_DECISION_CAP_S, GT_GRAPH_CAP_S], GT_GRAPH_CAP_S + 120)
             if cg is None or cg.get("failed"):
-                res = {"failed": True}
+                res = {"failed": True, "caps": caps}
             else:
                 res = {"opt": cg["opt"], "gt": "cegar_cpsat"}
         res["wall_s"] = round(time.time() - t0, 1)
@@ -232,6 +237,12 @@ def build_mcn(test: dict, train: dict, secret: int) -> None:
     if meta.get("frozen"):
         log(f"MCN ladder frozen: {meta.get('stop_reason')}")
         return
+    # slots already in the tables are kept as they are (extension)
+    existing = {}
+    for split, table in (("test", test), ("train", train)):
+        for lvl in table["experiments"]["mcn_ladder"]["levels"]:
+            for j, entry in enumerate(lvl["instances"]):
+                existing[(split, lvl["size"], j)] = entry
     gt = GroundTruth()
     deadline = gt.start + GT_DEADLINE_S
     stop = {"size": None}
@@ -253,7 +264,7 @@ def build_mcn(test: dict, train: dict, secret: int) -> None:
         return None
 
     def task(split, li, size, j, answer):
-        entry = fill(split, li, size, j, answer)
+        entry = existing.get((split, size, j)) or fill(split, li, size, j, answer)
         slots[(split, size, j)] = entry
         if entry is None and time.time() <= deadline:
             with gt.lock:
@@ -323,10 +334,13 @@ def main() -> None:
 
     fill_parity(test, lambda exp, li, j: test_seed(secret, exp, li, j))
     fill_parity(train, train_seed)
-    if not test.get(MCN_TAG, {}).get("frozen"):
+    if MCN_TAG not in test:
         # MCN levels of earlier ladders (other budgets) are replaced
         test["experiments"]["mcn_ladder"]["levels"] = []
         train["experiments"]["mcn_ladder"]["levels"] = []
+    elif "--extend-mcn" in sys.argv and test[MCN_TAG].get("frozen"):
+        # grow a frozen ladder: built slots are kept, missing sizes are filled
+        test[MCN_TAG]["frozen"] = False
     save(TEST_PATH, test, hidden=True)
     save(TRAIN_PATH, train, hidden=False)
 

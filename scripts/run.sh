@@ -27,6 +27,7 @@ JOB_START=$(date +%s)
 # stop starting new audit cases after 5 h so the job can finish cleanly
 export QIP_AUDIT_DEADLINE=$((JOB_START + 18000))
 QIP_RUN_AUDIT=${QIP_RUN_AUDIT:-1}
+export QIP_EXTEND_MCN=${QIP_EXTEND_MCN:-1}
 
 echo "=== $(date -u) job start ==="
 python3 - <<'PY'
@@ -49,12 +50,13 @@ python3 eval/test/audit/sandbox_check.py
 
 echo "=== instance tables ==="
 start=$(date +%s)
-QIP_GT_DEADLINE_S=${QIP_GT_DEADLINE_S:-9000} python3 eval/test/build_instances.py || { echo "instance build failed"; exit 1; }
+QIP_GT_DEADLINE_S=${QIP_GT_DEADLINE_S:-6000} python3 eval/test/build_instances.py ${QIP_EXTEND_MCN:+--extend-mcn} || { echo "instance build failed"; exit 1; }
 echo "tables took $(( $(date +%s) - start ))s"
 
 echo "=== smoke test ==="
 python3 scripts/smoke_test.py || { echo "smoke test failed: aborting"; exit 1; }
-python3 eval/test/audit/eval_variant.py --sizes "qrandomparity_ladder:10;mcn_ladder:12" -- \
+MCN_MIN=$(python3 -c "import json; print(min(l['size'] for l in json.load(open('eval/test/instances.json'))['experiments']['mcn_ladder']['levels']))")
+python3 eval/test/audit/eval_variant.py --sizes "qrandomparity_ladder:10;mcn_ladder:${MCN_MIN}" -- \
     --solver method --solver baseline --scores-output outputs/sandbox_smoke.json \
     --details-output outputs/sandbox_smoke_details.json || { echo "sandboxed smoke test crashed"; exit 1; }
 python3 - <<'PY' || { echo "sandboxed smoke test: reference solved nothing, aborting"; exit 1; }
