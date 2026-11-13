@@ -908,185 +908,61 @@
   "mcn_ladder": {
    "levels": [
     {
-     "size": 12,
-     "instances": [
-      {
-       "kind": "mcn_true",
-       "seed": 31000000,
-       "answer": true,
-       "threshold": 4,
-       "optimum": 4,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "a6499add902b44b81372b7b589b43dba80e47c43af5c6a031420d8a17bb742ef"
-      },
-      {
-       "kind": "mcn_true",
-       "seed": 31000001,
-       "answer": true,
-       "threshold": 10,
-       "optimum": 10,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "e25805c0eb586d032be68e9a68060ff25fa1830f1ff655f54479611cc0f3d788"
-      },
-      {
-       "kind": "mcn_true",
-       "seed": 31000002,
-       "answer": true,
-       "threshold": 9,
-       "optimum": 9,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "7a352c807ef0ddef1edc430e9334976cf9b4dcab65e2ad22be849f778991d15a"
-      },
-      {
-       "kind": "mcn_false",
-       "seed": 31000003,
-       "answer": false,
-       "threshold": 11,
-       "optimum": 10,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "b9567fc4ac79063e2d03bb1b7a495a43215270e9e47cb1353c48fd20abaa2a3c"
-      },
-      {
-       "kind": "mcn_false",
-       "seed": 31000004,
-       "answer": false,
-       "threshold": 11,
-       "optimum": 10,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "cf2a19b52f1dcc0224c1f7f22f97f51c7612f337489020cd223a0ec4ca5642fc"
-      },
-      {
-       "kind": "mcn_false",
-       "seed": 31000005,
-       "answer": false,
-       "threshold": 12,
-       "optimum": 11,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "cb1448357432dfb7ee05ad32e5972bff5121431c73b05d4c2b5178086ea5beab"
-      }
-     ]
-    },
-    {
      "size": 16,
      "instances": [
       {
        "kind": "mcn_true",
-       "seed": 31001000,
-       "answer": true,
-       "threshold": 8,
-       "optimum": 8,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "62bd7edfa68788478bd40be0d00a50e6bdc9710aa78d4acd29a1abdf520409b7"
-      },
-      {
-       "kind": "mcn_true",
-       "seed": 31001001,
+       "seed": 41000000,
        "answer": true,
        "threshold": 15,
        "optimum": 15,
        "ground_truth": "bitmask_minimax",
-       "sha256": "f8e907b82ed3ecc85f2f44b93c81d18eb9e742b514116b417695630281b79085"
+       "sha256": "047e40312e48aa265883015b785b314ec0750c8c83a342d39981555fc835d2f6"
       },
       {
        "kind": "mcn_true",
-       "seed": 31001002,
-       "answer": true,
-       "threshold": 15,
-       "optimum": 15,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "00acf17c05f0b01c070fb9fb3c163a09a4bdca77c4b52d586a98be50896147f2"
-      },
-      {
-       "kind": "mcn_false",
-       "seed": 31001003,
-       "answer": false,
-       "threshold": 10,
-       "optimum": 9,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "764c4c9d777f6c2605b5c40e6e59f6069b81735804fe979ec874594440d95b69"
-      },
-      {
-       "kind": "mcn_false",
-       "seed": 31001004,
-       "answer": false,
-       "threshold": 12,
-       "optimum": 11,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "1cd99bd0820c152872f1791124ffb387795bfacf880bd6f05896e612e0b865aa"
-      },
-      {
-       "kind": "mcn_false",
-       "seed": 31001005,
-       "answer": false,
-       "threshold": 12,
-       "optimum": 11,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "34c0e688f647c4937309772b1b586c7b0328dd7fd53b089ffef1d87a146db476"
-      }
-     ]
-    },
-    {
-     "size": 20,
-     "instances": [
-      {
-       "kind": "mcn_true",
-       "seed": 31002000,
-       "answer": true,
-       "threshold": 15,
-       "optimum": 15,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "82222c7ca579404839543f0a405eddf15e913828e4b4002d2cb6affa743e01bf",
-       "crosscheck": "cegar_agrees"
-      },
-      {
-       "kind": "mcn_true",
-       "seed": 31002001,
+       "seed": 41000001,
        "answer": true,
        "threshold": 11,
        "optimum": 11,
        "ground_truth": "bitmask_minimax",
-       "sha256": "0d8ab2fa748ce400691d175b15fe49571c31e5a559f8fb7038ca78a78ba87efa",
-       "crosscheck": "cegar_agrees"
+       "sha256": "8a6959f53e256c228dbeeeef0397258e22d1b1214fc30e00b2e76983e33bee0c"
       },
       {
        "kind": "mcn_true",
-       "seed": 31002002,
+       "seed": 41000002,
        "answer": true,
-       "threshold": 10,
-       "optimum": 10,
+       "threshold": 13,
+       "optimum": 13,
        "ground_truth": "bitmask_minimax",
-       "sha256": "b9b900db35f7223b598bb91ce5cdcb7d5cba3de03fa97d515216e8a33ed7a22b",
-       "crosscheck": "cegar_agrees"
+       "sha256": "4e8d7c941f306d1f475565ea9fd48e25391ff8c773a407ea7775aa4c39449a57"
       },
       {
        "kind": "mcn_false",
-       "seed": 31002003,
+       "seed": 41000003,
+       "answer": false,
+       "threshold": 13,
+       "optimum": 12,
+       "ground_truth": "bitmask_minimax",
+       "sha256": "b92091a6cfb1084613c4bfd6d108293bd22a6755a413c20702811ce267f90d81"
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 41000004,
        "answer": false,
        "threshold": 12,
        "optimum": 11,
        "ground_truth": "bitmask_minimax",
-       "sha256": "d1b5ec9ecba1d94dee5ad937ea7ba654f40acbe214de68e551c9d39fd84fa045",
-       "crosscheck": "cegar_agrees"
+       "sha256": "2783dd00f1a6a2706abf541accf08e7f8a3cdbff8cc13848bfb12ee001e9c133"
       },
       {
        "kind": "mcn_false",
-       "seed": 31002004,
+       "seed": 41000005,
        "answer": false,
-       "threshold": 19,
-       "optimum": 18,
+       "threshold": 16,
+       "optimum": 15,
        "ground_truth": "bitmask_minimax",
-       "sha256": "d414d590da7d569ccfdc1b0e8d58ac233785ca40dce4f621ac412f7c3358f601",
-       "crosscheck": "cegar_agrees"
-      },
-      {
-       "kind": "mcn_false",
-       "seed": 31002005,
-       "answer": false,
-       "threshold": 9,
-       "optimum": 8,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "e0184b3f7716b692c8ad4d0132e14b02040d9e1bfbb3cc6813fd57ae5ce4402c",
-       "crosscheck": "cegar_agrees"
+       "sha256": "33dcff5636f46211c9f9871b4b45fcc6ffa12bc7827163025dee391365922f80"
       }
      ]
     },
@@ -1095,127 +971,62 @@
      "instances": [
       {
        "kind": "mcn_true",
-       "seed": 31003000,
+       "seed": 41001000,
        "answer": true,
-       "threshold": 20,
-       "optimum": 20,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "4618ac3902797770cfd542e7a98960de8cb32aa87a3aa2df33282a988cabf104",
-       "crosscheck": "cegar_agrees"
-      },
-      {
-       "kind": "mcn_true",
-       "seed": 31003001,
-       "answer": true,
-       "threshold": 14,
-       "optimum": 14,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "84ee4c390523171a5ed21e890816e2544014cc5f941b7207f7ade6a6f70927b9",
-       "crosscheck": "cegar_agrees"
-      },
-      {
-       "kind": "mcn_true",
-       "seed": 31003002,
-       "answer": true,
-       "threshold": 13,
-       "optimum": 13,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "16b153f45645480d249ba8afcc4e2beabfe6718e43d18500d6d9ae00982beb03",
-       "crosscheck": "cegar_agrees"
-      },
-      {
-       "kind": "mcn_false",
-       "seed": 31003003,
-       "answer": false,
-       "threshold": 15,
-       "optimum": 14,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "7b0790a4bc69cf335fd679981700bb478e701bd738d5b60382d9275820f0d563",
-       "crosscheck": "cegar_agrees"
-      },
-      {
-       "kind": "mcn_false",
-       "seed": 31003004,
-       "answer": false,
-       "threshold": 14,
-       "optimum": 13,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "82691203f1b79102ee5832d6edc79d4fcee488fb12e309443b57b7c69b9a7d89",
-       "crosscheck": "cegar_agrees"
-      },
-      {
-       "kind": "mcn_false",
-       "seed": 31003005,
-       "answer": false,
-       "threshold": 21,
-       "optimum": 20,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "da09c5489cce39060de9a040e643303c41c00cbe47cf9cd4e6de4103f714a8f6",
-       "crosscheck": "cegar_agrees"
-      }
-     ]
-    },
-    {
-     "size": 28,
-     "instances": [
-      {
-       "kind": "mcn_true",
-       "seed": 31004000,
-       "answer": true,
-       "threshold": 6,
-       "optimum": 6,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "9ffd6673aaa50ff7822472ca0e342f226305eedcb3c02ad8f343df0afd48fce5",
-       "crosscheck": "cegar_agrees"
-      },
-      {
-       "kind": "mcn_true",
-       "seed": 31004001,
-       "answer": true,
-       "threshold": 23,
-       "optimum": 23,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "557b09a95af09fca4cbb54d32be60d7fbfbf751648d99cd77b2ddeef6999850f",
-       "crosscheck": "cegar_agrees"
-      },
-      {
-       "kind": "mcn_true",
-       "seed": 31004002,
-       "answer": true,
-       "threshold": 19,
-       "optimum": 19,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "a68932952a6a2ddf4ccf45f5b9b97b649fde268c7cdae63067915edbb5681195",
-       "crosscheck": "cegar_agrees"
-      },
-      {
-       "kind": "mcn_false",
-       "seed": 31004003,
-       "answer": false,
-       "threshold": 15,
-       "optimum": 14,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "6929de5013c0fb2f052aac850baa034b14d07cd982672c3ec0c0a9ef32c72e66",
-       "crosscheck": "cegar_agrees"
-      },
-      {
-       "kind": "mcn_false",
-       "seed": 31004004,
-       "answer": false,
-       "threshold": 27,
-       "optimum": 26,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "9f33e646d764c041286d4f8db14c5d9a91a9b11ed81b83a51340f305ab8b99c2",
-       "crosscheck": "cegar_agrees"
-      },
-      {
-       "kind": "mcn_false",
-       "seed": 31004005,
-       "answer": false,
        "threshold": 22,
+       "optimum": 22,
+       "ground_truth": "bitmask_minimax",
+       "sha256": "820cf0219a70460d462d0b8216e7b29596fe8f5d09253b2172dd7f274095878a",
+       "crosscheck": "cegar_agrees"
+      },
+      {
+       "kind": "mcn_true",
+       "seed": 41001001,
+       "answer": true,
+       "threshold": 14,
+       "optimum": 14,
+       "ground_truth": "bitmask_minimax",
+       "sha256": "89895ad016071de7f83fbb6e9bce57dae876addd2e7736f2dd73fe33fcfc0c69",
+       "crosscheck": "cegar_agrees"
+      },
+      {
+       "kind": "mcn_true",
+       "seed": 41001002,
+       "answer": true,
+       "threshold": 21,
        "optimum": 21,
        "ground_truth": "bitmask_minimax",
-       "sha256": "382860705a0ddfa8f346a0c9bf9995a3c3ceb6021f7ef16fb240a8f95a527421",
+       "sha256": "c34004dcede68d20c16705e45272ac9fff259f0055348e308c272004d7beb650",
+       "crosscheck": "cegar_agrees"
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 41001003,
+       "answer": false,
+       "threshold": 24,
+       "optimum": 23,
+       "ground_truth": "bitmask_minimax",
+       "sha256": "9814162ea6377d242018d12dd5cf20501929f6810232b49c53e0fd5630b3e850",
+       "crosscheck": "cegar_agrees"
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 41001004,
+       "answer": false,
+       "threshold": 15,
+       "optimum": 14,
+       "ground_truth": "bitmask_minimax",
+       "sha256": "2d85845cd97ecd0a98d54b0531d5bfa85f2abb25c25afb62f69b96218d5cfb5b",
+       "crosscheck": "cegar_agrees"
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 41001005,
+       "answer": false,
+       "threshold": 23,
+       "optimum": 22,
+       "ground_truth": "bitmask_minimax",
+       "sha256": "ad9806eef46f08a92cafe475dcc1a30baf22cea0338cb3086e870978929539c6",
        "crosscheck": "cegar_agrees"
       }
      ]
@@ -1225,127 +1036,62 @@
      "instances": [
       {
        "kind": "mcn_true",
-       "seed": 31005000,
+       "seed": 41002000,
        "answer": true,
-       "threshold": 20,
-       "optimum": 20,
+       "threshold": 26,
+       "optimum": 26,
        "ground_truth": "bitmask_minimax",
-       "sha256": "06d5f918d0f9f69140f44c9d2592a44fc726191b542450d25e814b076806ba07",
+       "sha256": "86d5d1a2b178269f71fb566f24953beae37cc21392e8e4944e4a38617f435868",
        "crosscheck": "cegar_agrees"
       },
       {
        "kind": "mcn_true",
-       "seed": 31005001,
+       "seed": 41002001,
        "answer": true,
-       "threshold": 17,
-       "optimum": 17,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "3ad69824bed8c8bf5d6e1624ee6af2ba47b9a9074edea8ff63ac02df8ae1442f",
-       "crosscheck": "cegar_agrees"
-      },
-      {
-       "kind": "mcn_true",
-       "seed": 31005002,
-       "answer": true,
-       "threshold": 15,
-       "optimum": 15,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "4fbe24cfbefa95bcfbeff5e38a81098417ad3098a203de083ecad8b077a592b9",
-       "crosscheck": "cegar_agrees"
-      },
-      {
-       "kind": "mcn_false",
-       "seed": 31005003,
-       "answer": false,
-       "threshold": 19,
-       "optimum": 18,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "707b0786d0331cc1dd7459748d9a53af2564c20e539d796d2f726f4e61f312d7",
-       "crosscheck": "cegar_agrees"
-      },
-      {
-       "kind": "mcn_false",
-       "seed": 31005004,
-       "answer": false,
-       "threshold": 11,
-       "optimum": 10,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "6aa3bcce75539067aac31c65c56fb87a1d95623a2b7b7feaaefb2731aa24f342",
-       "crosscheck": "cegar_agrees"
-      },
-      {
-       "kind": "mcn_false",
-       "seed": 31005005,
-       "answer": false,
-       "threshold": 31,
+       "threshold": 30,
        "optimum": 30,
        "ground_truth": "bitmask_minimax",
-       "sha256": "e985596dff3c202f0d7ad8fa23d0658e9bce5ef0b71a3879a7adedc08b1f11d3",
-       "crosscheck": "cegar_agrees"
-      }
-     ]
-    },
-    {
-     "size": 36,
-     "instances": [
-      {
-       "kind": "mcn_true",
-       "seed": 31006000,
-       "answer": true,
-       "threshold": 18,
-       "optimum": 18,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "f08de55ded145778acfc9dd5e5c0838e62c0c53cac9789e5bdb23632b41e5994",
+       "sha256": "1d0f6bd57e037a8345434d8936392e62c69daf16036801006cb76b83f3d8e841",
        "crosscheck": "cegar_agrees"
       },
       {
        "kind": "mcn_true",
-       "seed": 31006001,
+       "seed": 41002002,
        "answer": true,
-       "threshold": 29,
-       "optimum": 29,
+       "threshold": 21,
+       "optimum": 21,
        "ground_truth": "bitmask_minimax",
-       "sha256": "a5815f1ddb80751719cecc90f6858398cae79d8a5874bd068d0d1e4fecc2dedc",
-       "crosscheck": "cegar_agrees"
-      },
-      {
-       "kind": "mcn_true",
-       "seed": 31006002,
-       "answer": true,
-       "threshold": 9,
-       "optimum": 9,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "d09041cf736bb01d4b1716aebeb9346cd8a73dfe49fd4053aa6e0445a3edda07",
+       "sha256": "6e45c26c6ea099db6a7660d6fb7937da4d6a9f2fc30eb70f3eb80e19f2b4cec8",
        "crosscheck": "cegar_agrees"
       },
       {
        "kind": "mcn_false",
-       "seed": 31006003,
+       "seed": 41002003,
        "answer": false,
        "threshold": 13,
        "optimum": 12,
        "ground_truth": "bitmask_minimax",
-       "sha256": "be836547f9e42c508b455a067eefd5d504e35e8958f02136f14949b7bb15d58f",
+       "sha256": "5a92d50272bee4c4c956bb18a70adebf15da81b058d23c68ed6015c73310a737",
        "crosscheck": "cegar_agrees"
       },
       {
        "kind": "mcn_false",
-       "seed": 31006004,
+       "seed": 41002004,
        "answer": false,
-       "threshold": 19,
-       "optimum": 18,
+       "threshold": 30,
+       "optimum": 29,
        "ground_truth": "bitmask_minimax",
-       "sha256": "de7c2dacfec393c5e4ade31d676768e170df554f0d049d3a821dee6e73cd7e0b",
+       "sha256": "af19d75633aec3a77168d8ace62697ee344dfe58213e1a06f4054ffc39c11270",
        "crosscheck": "cegar_agrees"
       },
       {
        "kind": "mcn_false",
-       "seed": 31006005,
+       "seed": 41002005,
        "answer": false,
-       "threshold": 36,
-       "optimum": 35,
+       "threshold": 14,
+       "optimum": 13,
        "ground_truth": "bitmask_minimax",
-       "sha256": "629cda8c047bb26b5f11aab617d68134b89f9e8330ae6b4cc8935b85cda1823a",
+       "sha256": "905511d8588d404b4493398f5ba36a6fed130f5811ccae9d1916b2a73f831a8d",
        "crosscheck": "cegar_agrees"
       }
      ]
@@ -1355,62 +1101,63 @@
      "instances": [
       {
        "kind": "mcn_true",
-       "seed": 31007000,
+       "seed": 41003000,
        "answer": true,
-       "threshold": 36,
+       "threshold": 34,
+       "optimum": 34,
+       "ground_truth": "bitmask_minimax",
+       "sha256": "9b3638c677e64df46842f4a19f61bbedd2308eafdccdcbc25222c2b864d2ee21",
+       "crosscheck": "cegar_agrees"
+      },
+      {
+       "kind": "mcn_true",
+       "seed": 41003001,
+       "answer": true,
+       "threshold": 26,
+       "optimum": 26,
+       "ground_truth": "bitmask_minimax",
+       "sha256": "bff2f93a6505699dfdca0630a2f2a618d193e879ba6d9fd1f2ccfa63a9b20402",
+       "crosscheck": "cegar_agrees"
+      },
+      {
+       "kind": "mcn_true",
+       "seed": 41003002,
+       "answer": true,
+       "threshold": 38,
+       "optimum": 38,
+       "ground_truth": "bitmask_minimax",
+       "sha256": "8b5f1e4152a1324aa22c96734d5102ae5ad5e5a1ed4b041e8c855c68230f4ef2",
+       "crosscheck": "cegar_agrees"
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 41003003,
+       "answer": false,
+       "threshold": 40,
+       "optimum": 39,
+       "ground_truth": "bitmask_minimax",
+       "sha256": "39b468e2b096eba774a1e687fb5cd442bdeaa5915491a883539ebfc9fcab1c12",
+       "crosscheck": "cegar_agrees"
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 41003004,
+       "answer": false,
+       "threshold": 35,
+       "optimum": 34,
+       "ground_truth": "bitmask_minimax",
+       "sha256": "18c2ee83a430abb0cdbde88fe9cc85710b49086942b2b28d0b48aa4ce340caf0",
+       "crosscheck": "cegar_agrees"
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 41003005,
+       "answer": false,
+       "threshold": 37,
        "optimum": 36,
        "ground_truth": "bitmask_minimax",
-       "sha256": "6b727ba19d9bb2f4e49014e03a82e78b95ce691cded4411f939f5141593d6f05",
+       "sha256": "6f93e697255703dd2a287ec5decd0b0b2d072dce088b5678a049e1ef98464546",
        "crosscheck": "cegar_agrees"
-      },
-      {
-       "kind": "mcn_true",
-       "seed": 31007001,
-       "answer": true,
-       "threshold": 35,
-       "optimum": 35,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "873eb705b8264750393b38d3832302cbfbff580669a83df7d22a913bc5892ac1",
-       "crosscheck": "cegar_agrees"
-      },
-      {
-       "kind": "mcn_true",
-       "seed": 31007002,
-       "answer": true,
-       "threshold": 35,
-       "optimum": 35,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "22078dfca040021d945f2433ba2086a741bfbbb72bbb4c62f2df8a71847fe1bd",
-       "crosscheck": "cegar_agrees"
-      },
-      {
-       "kind": "mcn_false",
-       "seed": 31007003,
-       "answer": false,
-       "threshold": 31,
-       "optimum": 30,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "8405641aca359c5bdbd80f562459f48fc7de686500e5b764a136c0cdf6e20a03",
-       "crosscheck": "cegar_agrees"
-      },
-      {
-       "kind": "mcn_false",
-       "seed": 31007004,
-       "answer": false,
-       "threshold": 16,
-       "optimum": 15,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "843d8c396f8b4c82bd4ead38d1572362a3ed3332d9f28bd4729c558e49d67b74",
-       "crosscheck": "cegar_unfinished"
-      },
-      {
-       "kind": "mcn_false",
-       "seed": 31007005,
-       "answer": false,
-       "threshold": 13,
-       "optimum": 12,
-       "ground_truth": "cegar_cpsat",
-       "sha256": "a1b723452ea51e974ef9d3abff1bb06c42fcaea1ef6d0242f7f98ca35fb7b425"
       }
      ]
     },
@@ -1419,60 +1166,124 @@
      "instances": [
       {
        "kind": "mcn_true",
-       "seed": 31008000,
-       "answer": true,
-       "threshold": 19,
-       "optimum": 19,
-       "ground_truth": "bitmask_minimax",
-       "sha256": "590e52caa392dc23c9b206a05a956ca6f0b554c89a7877051fa92591d81f0abb",
-       "crosscheck": "cegar_agrees"
-      },
-      {
-       "kind": "mcn_true",
-       "seed": 31008301,
+       "seed": 41004000,
        "answer": true,
        "threshold": 45,
        "optimum": 45,
-       "ground_truth": "cegar_cpsat",
-       "sha256": "2c5fc22d71893d705a6b913f968e9ed1b45e0c8fb29445f561b59fc43ecfadad"
+       "ground_truth": "bitmask_minimax",
+       "sha256": "4f7a5b7f93c4fdc8caa5a252787a56ddbd7387f3b6d8d94b0785fe1cf2abc68b",
+       "crosscheck": "cegar_agrees"
       },
       {
        "kind": "mcn_true",
-       "seed": 31008002,
+       "seed": 41004101,
        "answer": true,
-       "threshold": 18,
-       "optimum": 18,
+       "threshold": 45,
+       "optimum": 45,
        "ground_truth": "bitmask_minimax",
-       "sha256": "0fff278769afd7760f7aa9202772cea956a8bd07f451d0d29d5bb1901ddbe296",
+       "sha256": "a0bdf7690fd4635508b3a1eb428a7014db5ea64344c18bb5cfc7d98e591e7a01",
+       "crosscheck": "cegar_agrees"
+      },
+      {
+       "kind": "mcn_true",
+       "seed": 41004002,
+       "answer": true,
+       "threshold": 41,
+       "optimum": 41,
+       "ground_truth": "bitmask_minimax",
+       "sha256": "c9ce9055440fa32772962e422df49919a27ae7e968a1ca5299cd4f57b87cf33f",
        "crosscheck": "cegar_agrees"
       },
       {
        "kind": "mcn_false",
-       "seed": 31008003,
+       "seed": 41004103,
        "answer": false,
-       "threshold": 22,
-       "optimum": 21,
+       "threshold": 42,
+       "optimum": 41,
        "ground_truth": "bitmask_minimax",
-       "sha256": "c7b94b310e1d3dfd1a8d4c926e32e0726497bfe6c2c47c05b272d64f229b27ad",
+       "sha256": "9d7797fcdf9b09e4a310bd2a4c1338340b9c23a9506d40dccacf31a3354b5d31",
        "crosscheck": "cegar_agrees"
       },
       {
        "kind": "mcn_false",
-       "seed": 31008004,
+       "seed": 41004004,
+       "answer": false,
+       "threshold": 10,
+       "optimum": 9,
+       "ground_truth": "bitmask_minimax",
+       "sha256": "823c08927cb2c2b1011a9b714f124eadf7aa0aa912ba28bc3c23ed596a31eb59",
+       "crosscheck": "cegar_agrees"
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 41004005,
+       "answer": false,
+       "threshold": 44,
+       "optimum": 43,
+       "ground_truth": "cegar_cpsat",
+       "sha256": "e1dbe501a4be428c909193e74e0d301a3e6f64e2e0213527b129d890f653f2df"
+      }
+     ]
+    },
+    {
+     "size": 56,
+     "instances": [
+      {
+       "kind": "mcn_true",
+       "seed": 41005000,
+       "answer": true,
+       "threshold": 43,
+       "optimum": 43,
+       "ground_truth": "bitmask_minimax",
+       "sha256": "14fecbb9aefda0847982ebb69bf20d6668cfee0400443f47d111c9e42d8f6c40",
+       "crosscheck": "cegar_agrees"
+      },
+      {
+       "kind": "mcn_true",
+       "seed": 41005001,
+       "answer": true,
+       "threshold": 49,
+       "optimum": 49,
+       "ground_truth": "cegar_cpsat",
+       "sha256": "cf1a14749e95db1a7362a2ab9b1755e3a39c9a3a5e735c3ed969de06b3185b53"
+      },
+      {
+       "kind": "mcn_true",
+       "seed": 41005202,
+       "answer": true,
+       "threshold": 32,
+       "optimum": 32,
+       "ground_truth": "bitmask_minimax",
+       "sha256": "0d1586a1109bf3a05581c48ea610b2fb47d0b54d84dc155c78cd24e140676f4b",
+       "crosscheck": "cegar_agrees"
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 41005003,
+       "answer": false,
+       "threshold": 50,
+       "optimum": 49,
+       "ground_truth": "cegar_cpsat",
+       "sha256": "dcfaff821ed4be9a4094c93b0c5ae5789d74024e798e8305532db539d75ba09d"
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 41005004,
        "answer": false,
        "threshold": 19,
        "optimum": 18,
-       "ground_truth": "cegar_cpsat",
-       "sha256": "ef0e5565fe05168addb13cd106856d93ab694593d6b8fe1dd85d9781a4aee260"
+       "ground_truth": "bitmask_minimax",
+       "sha256": "6a5c0ebfc69b430349f55afbefbef88d3977efe0d921560e119b76a261385860",
+       "crosscheck": "cegar_unfinished"
       },
       {
        "kind": "mcn_false",
-       "seed": 31008005,
+       "seed": 41005105,
        "answer": false,
-       "threshold": 43,
-       "optimum": 42,
+       "threshold": 56,
+       "optimum": 55,
        "ground_truth": "bitmask_minimax",
-       "sha256": "f6ebc0912a1e0181c79000aaacd4f5e1df01759b105e6dd10691d8fc804e2864",
+       "sha256": "4009a55184bbf21d38882e6d757bb392172dc9f800b99af64ece7f4f9043e2e3",
        "crosscheck": "cegar_agrees"
       }
      ]
