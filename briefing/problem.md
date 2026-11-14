@@ -12,7 +12,8 @@ asks for the best worst-case objective value; its decision version ("can the
 existential player guarantee an objective of at least K?") is again a QIP.
 
 The task is to decide QIP instances correctly and quickly: a better solver
-decides more instances, and larger ones, within a fixed CPU budget.
+decides more instances, and larger ones, within a fixed computation budget
+(counted machine instructions per instance).
 
 ## Problem Setting
 
@@ -37,7 +38,8 @@ Two instance families are used, both from the paper's experiments:
   vaccinates nodes, an attacker infects nodes within a budget (the universal
   player with an uncertainty set), the defender protects nodes; the decision
   asks whether at least K nodes can be guaranteed to be saved, with K at the
-  exact optimum or one above it.  Graphs have 8 to 96 nodes.
+  exact optimum or one above it.  Graphs have 16 to 72 nodes; the vaccination
+  budget is 1-3, the attack budget 1-2 and the protection budget 2-3.
 
 The public generator (`data/benchmark.py`) and the train split
 (`data/train_instances.json`, with answers) show the instance distribution;
@@ -47,6 +49,7 @@ the hidden test uses the same generator with secret seeds.
 
 A successful solver:
 - never returns a wrong TRUE/FALSE decision (one wrong decision fails the run),
-- decides as many instances as possible within 10 s of CPU time each,
+- decides as many instances as possible within the instruction budget
+  (6 x 10^10 instructions, about 10 s of CPU time for the reference solver),
 - keeps working as instances grow (the score counts instances across a ladder
   of sizes), on both families.

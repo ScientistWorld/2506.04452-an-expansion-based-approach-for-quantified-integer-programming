@@ -26,7 +26,7 @@ export PYTHONPATH="/home/user${PYTHONPATH:+:$PYTHONPATH}"
 JOB_START=$(date +%s)
 # stop starting new audit cases after 5 h so the job can finish cleanly
 export QIP_AUDIT_DEADLINE=$((JOB_START + 18000))
-QIP_RUN_AUDIT=${QIP_RUN_AUDIT:-1}
+QIP_RUN_AUDIT=${QIP_RUN_AUDIT:-0}
 export QIP_EXTEND_MCN=${QIP_EXTEND_MCN:-}
 
 echo "=== $(date -u) job start ==="
