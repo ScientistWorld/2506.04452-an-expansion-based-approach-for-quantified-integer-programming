@@ -1287,6 +1287,130 @@
        "crosscheck": "cegar_agrees"
       }
      ]
+    },
+    {
+     "size": 64,
+     "instances": [
+      {
+       "kind": "mcn_true",
+       "seed": 41006000,
+       "answer": true,
+       "threshold": 18,
+       "optimum": 18,
+       "ground_truth": "bitmask_minimax",
+       "sha256": "e72329aa5204c7b9a21f4b6cb1be199642437cf8a51cb0a0123b64f5e1200916",
+       "crosscheck": "cegar_unfinished"
+      },
+      {
+       "kind": "mcn_true",
+       "seed": 41006001,
+       "answer": true,
+       "threshold": 12,
+       "optimum": 12,
+       "ground_truth": "cegar_cpsat",
+       "sha256": "13222dccb2ba360bb7d52250f75cf891276b09a0f62205e19193b734b4b6f827"
+      },
+      {
+       "kind": "mcn_true",
+       "seed": 41006002,
+       "answer": true,
+       "threshold": 51,
+       "optimum": 51,
+       "ground_truth": "bitmask_minimax",
+       "sha256": "9f24f9a9cf17eb0375a34c0493da388994b79f701e41e71bee83c4164d21fabf",
+       "crosscheck": "cegar_agrees"
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 41006003,
+       "answer": false,
+       "threshold": 43,
+       "optimum": 42,
+       "ground_truth": "bitmask_minimax",
+       "sha256": "502f92ec5b067922bafda578f877ab6e66abadc70478ce370d816c9102f6aa5b",
+       "crosscheck": "cegar_agrees"
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 41006004,
+       "answer": false,
+       "threshold": 35,
+       "optimum": 34,
+       "ground_truth": "bitmask_minimax",
+       "sha256": "ecfcc75cc4266fc8ab429b14671530a1f253bd4d297de44007aca4b362adfb37"
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 41006005,
+       "answer": false,
+       "threshold": 45,
+       "optimum": 44,
+       "ground_truth": "bitmask_minimax",
+       "sha256": "91ba66d1baf66eb97f7098bb45cdf5b6ef116aa75d87ef02f8ee1e128769e74a",
+       "crosscheck": "cegar_agrees"
+      }
+     ]
+    },
+    {
+     "size": 72,
+     "instances": [
+      {
+       "kind": "mcn_true",
+       "seed": 41007100,
+       "answer": true,
+       "threshold": 68,
+       "optimum": 68,
+       "ground_truth": "cegar_cpsat",
+       "sha256": "b7e96195dfd3d878e0bc75485afdbf95f6aae6771f9fe1a4abb2325959dd0cfc"
+      },
+      {
+       "kind": "mcn_true",
+       "seed": 41007001,
+       "answer": true,
+       "threshold": 17,
+       "optimum": 17,
+       "ground_truth": "bitmask_minimax",
+       "sha256": "8fb5f18dd86b26fec5d07b3fd48a3786a0c207af3c3632d389c32272c7eca524"
+      },
+      {
+       "kind": "mcn_true",
+       "seed": 41007002,
+       "answer": true,
+       "threshold": 19,
+       "optimum": 19,
+       "ground_truth": "bitmask_minimax",
+       "sha256": "7fa6b9b5f014be9f417be2d1eacf8a680e16c38649019966225cb5f00e196823",
+       "crosscheck": "cegar_unfinished"
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 41007003,
+       "answer": false,
+       "threshold": 33,
+       "optimum": 32,
+       "ground_truth": "bitmask_minimax",
+       "sha256": "c00058aacc79e2841d996f5956cde31fc0d029fc2d28009673aa4263899e3f0a",
+       "crosscheck": "cegar_agrees"
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 41007204,
+       "answer": false,
+       "threshold": 28,
+       "optimum": 27,
+       "ground_truth": "bitmask_minimax",
+       "sha256": "c10716ad0220c64fb76056a03fada8efc8d8d001286f67d37c838b9b0b699736"
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 41007005,
+       "answer": false,
+       "threshold": 12,
+       "optimum": 11,
+       "ground_truth": "cegar_cpsat",
+       "sha256": "0efa02c3e3a2fcc4e35a9f3318866958fbd0fc3a18ad2933f9644a7934d7f405"
+      }
+     ]
     }
    ]
   }

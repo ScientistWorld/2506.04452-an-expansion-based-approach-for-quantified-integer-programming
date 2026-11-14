@@ -13,10 +13,10 @@
     "mcn_ladder": {
       "results": {
         "equips": {
-          "instances_solved": 39
+          "instances_solved": 34
         },
         "search_enumeration": {
-          "instances_solved": 21
+          "instances_solved": 16
         }
       }
     }
