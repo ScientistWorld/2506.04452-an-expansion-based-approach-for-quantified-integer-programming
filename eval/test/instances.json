@@ -1137,6 +1137,120 @@
       }
      ],
      "digest": "4b96e78c89dcc4c6dd1fa5ebf6456beaa8a63a3ff421025cf02810d1b1813b74"
+    },
+    {
+     "size": 64,
+     "instances": [
+      {
+       "kind": "mcn_true",
+       "seed": 55533179473311,
+       "answer": true,
+       "threshold": 20,
+       "optimum": 20,
+       "ground_truth": "bitmask_minimax",
+       "crosscheck": "cegar_unfinished"
+      },
+      {
+       "kind": "mcn_true",
+       "seed": 154158208277096,
+       "answer": true,
+       "threshold": 38,
+       "optimum": 38,
+       "ground_truth": "bitmask_minimax",
+       "crosscheck": "cegar_agrees"
+      },
+      {
+       "kind": "mcn_true",
+       "seed": 142186342314040,
+       "answer": true,
+       "threshold": 62,
+       "optimum": 62,
+       "ground_truth": "cegar_cpsat"
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 133385856883342,
+       "answer": false,
+       "threshold": 53,
+       "optimum": 52,
+       "ground_truth": "cegar_cpsat"
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 235363886690854,
+       "answer": false,
+       "threshold": 62,
+       "optimum": 61,
+       "ground_truth": "bitmask_minimax"
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 38164879025150,
+       "answer": false,
+       "threshold": 26,
+       "optimum": 25,
+       "ground_truth": "bitmask_minimax",
+       "crosscheck": "cegar_unfinished"
+      }
+     ],
+     "digest": "f25723845a848dc84d9dbefc1e039ef8c98e435bcc9b146f14012dc5823c83f0"
+    },
+    {
+     "size": 72,
+     "instances": [
+      {
+       "kind": "mcn_true",
+       "seed": 68336750399779,
+       "answer": true,
+       "threshold": 23,
+       "optimum": 23,
+       "ground_truth": "cegar_cpsat"
+      },
+      {
+       "kind": "mcn_true",
+       "seed": 258433507951692,
+       "answer": true,
+       "threshold": 43,
+       "optimum": 43,
+       "ground_truth": "bitmask_minimax",
+       "crosscheck": "cegar_agrees"
+      },
+      {
+       "kind": "mcn_true",
+       "seed": 132837628191441,
+       "answer": true,
+       "threshold": 68,
+       "optimum": 68,
+       "ground_truth": "cegar_cpsat"
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 156829352241606,
+       "answer": false,
+       "threshold": 39,
+       "optimum": 38,
+       "ground_truth": "bitmask_minimax",
+       "crosscheck": "cegar_unfinished"
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 92345904141253,
+       "answer": false,
+       "threshold": 45,
+       "optimum": 44,
+       "ground_truth": "bitmask_minimax",
+       "crosscheck": "cegar_agrees"
+      },
+      {
+       "kind": "mcn_false",
+       "seed": 177907086756215,
+       "answer": false,
+       "threshold": 70,
+       "optimum": 69,
+       "ground_truth": "cegar_cpsat"
+      }
+     ],
+     "digest": "a3dc63995e2fd3e47c761a53df6b7725b7294b625706c549760372189518f2bc"
     }
    ]
   }
@@ -1144,16 +1258,16 @@
  "seed_secret": 9118256452245671983,
  "mcn_v4": {
   "frozen": true,
-  "stop_reason": "size 64: a slot could not be certified (caps or deadline)",
-  "elapsed_s": 2090,
+  "stop_reason": "size 80: a slot could not be certified (caps or deadline)",
+  "elapsed_s": 0,
   "ground_truth_counts": {
-   "bitmask_minimax": 12,
-   "bitmask_minimax/cegar_agrees": 50,
-   "cegar_cpsat": 7,
-   "bitmask_minimax/cegar_unfinished": 3
+   "bitmask_minimax": 16,
+   "bitmask_minimax/cegar_agrees": 57,
+   "cegar_cpsat": 15,
+   "bitmask_minimax/cegar_unfinished": 8
   },
   "caps_s": {
-   "bitmask": 60.0,
+   "bitmask": 180.0,
    "decision": 200.0,
    "graph": 900.0
   }

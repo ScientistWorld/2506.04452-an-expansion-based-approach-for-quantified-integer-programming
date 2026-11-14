@@ -41,6 +41,8 @@ CASES = [
     ("reference_seed2", "reference", "M", ["--solver-seed", "2"], False, None),
     ("better_cpsat_gf2", "better", "V", ["cpsat_gf2"], False, None),
     ("better_cpsat_all", "better", "V", ["cpsat_all"], False, None),
+    ("better_minresp", "better", "V", ["minresp"], False, None),
+    ("better_cpsat_minresp", "better", "V", ["cpsat_minresp"], False, None),
     ("weaker_highs_only", "weaker", "V", ["highs_only"], False, None),
     ("weaker_short_timeout", "weaker", "V", ["short_timeout"], False, None),
     ("decoder_mcn", "shortcut", "D", ["mcn"], False, None),

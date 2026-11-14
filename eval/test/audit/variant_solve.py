@@ -13,6 +13,14 @@ with one change:
   highs_only              HiGHS for every subproblem (paper's Problem (2) as a MIP)
   lb_initial_move         lower-bound first move instead of the existential IP
                           relaxation (paper Appendix A.1.3, "LB")
+  minresp                 minimal responses: a check whose problem is a single
+                          existential block (the answer to a complete move of
+                          the opponent) returns a solution with the smallest
+                          total value of its variables (HiGHS MIP), instead of
+                          any feasible one, so each refinement covers more
+                          opponent moves (wins1 guided by an objective, one of
+                          the paper's suggested improvements)
+  cpsat_minresp           cpsat_all + minimal responses (CP-SAT)
   short_timeout           gives up after 3 s of its own CPU time (start-up
                           included), a fraction of what the budget allows
   guess_false_on_timeout  stops after 3 s of CPU time and then answers FALSE
@@ -91,6 +99,69 @@ def gf2_infeasible(variables, constraints, universal_constraints) -> bool:
     return False
 
 
+def _minimal_cp_sat(eq, variables, constraints, universal_constraints, time_limit_s):
+    cp = eq.cp_model
+    model = cp.CpModel()
+    var_map = eq._build_cp_sat_vars(model, variables)
+    for c in list(constraints) + [None] + list(universal_constraints):
+        if c is None:
+            continue
+        is_eq = getattr(c, "is_equality", False)
+        if eq._cp_sat_is_constant(var_map, c.coeffs):
+            holds = c.rhs == 0 if is_eq else 0 <= c.rhs
+            if not holds:
+                return None
+            continue
+        expr = eq._cp_sat_expr(var_map, c.coeffs)
+        if is_eq:
+            model.Add(expr == int(c.rhs))
+        else:
+            model.Add(expr <= int(c.rhs))
+    model.Minimize(sum(var_map[v.name] for v in variables))
+    solver = eq._new_cp_sat_solver(time_limit_s)
+    status = solver.Solve(model)
+    if status in (cp.OPTIMAL, cp.FEASIBLE):
+        return {name: int(solver.Value(var)) for name, var in var_map.items()}
+    if status == cp.INFEASIBLE:
+        return None
+    return eq._TIMEOUT
+
+
+def _minimal_highs(eq, variables, constraints, universal_constraints, time_limit_s):
+    if not eq._constant_constraints_feasible(constraints, universal_constraints):
+        return None
+    highs = eq._new_highs(time_limit_s)
+    names = eq._add_integer_vars(highs, variables)
+    eq._add_constraints(highs, names, constraints)
+    eq._add_universal_constraints(highs, names, universal_constraints)
+    for col in range(len(names)):
+        highs.changeColCost(col, 1.0)
+    highs.run()
+    status = highs.getModelStatus()
+    if status in (eq.hp.HighsModelStatus.kOptimal, eq.hp.HighsModelStatus.kModelEmpty):
+        return eq._extract_solution(highs, names)
+    if status == eq.hp.HighsModelStatus.kInfeasible:
+        return None
+    return eq._TIMEOUT
+
+
+def install_minimal_responses(eq, minimal) -> None:
+    original = eq._solve_qip_internal
+
+    def internal(problem, timeout_s, stats, depth):
+        if problem.variables and len({v.level for v in problem.variables}) == 1 \
+                and problem.variables[0].quantifier == "E":
+            start = time.time()
+            sol = minimal(eq, problem.variables, problem.constraints, problem.universal_constraints, timeout_s)
+            if sol is eq._TIMEOUT:
+                return {"status": "TIMEOUT", "assignment": None, "runtime": time.time() - start}
+            return {"status": "SAT" if sol is not None else "UNSAT", "assignment": sol,
+                    "runtime": time.time() - start}
+        return original(problem, timeout_s, stats, depth)
+
+    eq._solve_qip_internal = internal
+
+
 def _ceil_div(num: int, den: int) -> int:
     return -((-num) // den)
 
@@ -102,7 +173,7 @@ def _floor_div(num: int, den: int) -> int:
 def main() -> None:
     variant, instance, answer_path = sys.argv[1], sys.argv[2], sys.argv[3]
     limit = float(os.environ.get("QIP_WALL_LIMIT_S", "600"))
-    if variant in ("cpsat_all", "cpsat_gf2"):
+    if variant in ("cpsat_all", "cpsat_gf2", "cpsat_minresp"):
         os.environ["EQUIPS_MIP_BACKEND"] = "cp-sat"
     elif variant == "highs_only":
         os.environ["EQUIPS_MIP_BACKEND"] = "highs"
@@ -112,8 +183,12 @@ def main() -> None:
     import equips_copy as eq
     from data.qlp import parse_qlp
 
-    if variant in ("cpsat_all", "cpsat_gf2"):
+    if variant in ("cpsat_all", "cpsat_gf2", "cpsat_minresp"):
         eq._solve_ip_feasible = eq._solve_cp_sat_feasible
+    if variant == "minresp":
+        install_minimal_responses(eq, _minimal_highs)
+    if variant == "cpsat_minresp":
+        install_minimal_responses(eq, _minimal_cp_sat)
     if variant in ("gf2_presolve", "cpsat_gf2"):
         def wrap(fn):
             def wrapped(variables, constraints, universal_constraints, time_limit_s=None):

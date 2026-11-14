@@ -27,7 +27,7 @@ JOB_START=$(date +%s)
 # stop starting new audit cases after 5 h so the job can finish cleanly
 export QIP_AUDIT_DEADLINE=$((JOB_START + 18000))
 QIP_RUN_AUDIT=${QIP_RUN_AUDIT:-1}
-export QIP_EXTEND_MCN=${QIP_EXTEND_MCN:-1}
+export QIP_EXTEND_MCN=${QIP_EXTEND_MCN:-}
 
 echo "=== $(date -u) job start ==="
 python3 - <<'PY'
@@ -67,6 +67,7 @@ print("sandboxed smoke: equips solved", solved, "of 14")
 sys.exit(0 if solved >= 10 else 1)
 PY
 
+BG_PIDS=()
 if [ ! -f outputs/audit/reference_frozen/scores_test.json ]; then
     (
     echo "=== frozen reference (hidden test, no arguments) ==="
@@ -81,6 +82,7 @@ if [ ! -f outputs/audit/reference_frozen/scores_test.json ]; then
     fi
     echo "frozen reference took $(( $(date +%s) - start ))s"
     ) &
+    BG_PIDS+=($!)
 fi
 if [ ! -f outputs/audit/train_done ]; then
     (
@@ -92,13 +94,16 @@ if [ ! -f outputs/audit/train_done ]; then
         && cp scoring/scores_train.json scoring/scores.json && touch outputs/audit/train_done
     echo "train took $(( $(date +%s) - start ))s"
     ) &
+    BG_PIDS+=($!)
 fi
 
 if [ "$QIP_RUN_AUDIT" = "1" ]; then
     echo "=== audit cases ==="
     python3 eval/test/audit/run_audit.py --workers 6
 fi
-wait
+# wait only for the two evaluations (a bare `wait` would also wait for the
+# `tee` process substitution of this script's own output, forever)
+for pid in "${BG_PIDS[@]}"; do wait "$pid"; done
 tail -n 40 outputs/audit/reference_frozen.log outputs/audit/train.log
 
 if [ "$QIP_RUN_AUDIT" != "1" ]; then
