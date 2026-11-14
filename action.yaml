@@ -1,8 +1,6 @@
 # Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends.
-action: submit
-gpus: 0
-test: false
+action: done
 milestone: core_claim
-notes: "Job 4 (short): audit two new better-variant candidates (minimal existential responses, HiGHS and CP-SAT) on both ladders; all other cases and the frozen reference/train are already done and are skipped; then the analysis."
+notes: "Hardened: counted instruction budget in a sandbox (node-independent: 0 flips across Intel/AMD), call-order and hidden-file shortcuts closed, MCN ladder rebuilt (brute force 20 vs reference 32); MCN better-variant gain (+3) still within seed noise, stated in HARDENING.md."
